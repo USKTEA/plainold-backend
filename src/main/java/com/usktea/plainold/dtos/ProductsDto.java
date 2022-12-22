@@ -4,6 +4,7 @@ import java.util.List;
 
 public class ProductsDto {
     private List<ProductDto> products;
+    private PageDto page;
 
     public ProductsDto() {
     }
@@ -14,5 +15,13 @@ public class ProductsDto {
 
     public List<ProductDto> getProducts() {
         return products;
+    }
+
+    public PageDto getPage() {
+        return page;
+    }
+
+    public void setPage(PageDto page) {
+        this.page = page;
     }
 }
