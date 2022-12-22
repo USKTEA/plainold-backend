@@ -10,8 +10,7 @@ import java.util.List;
 @Service
 @Transactional
 public class GetCategoryService {
-
-    private CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
 
     public GetCategoryService(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;

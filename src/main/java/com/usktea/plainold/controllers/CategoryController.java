@@ -1,8 +1,8 @@
 package com.usktea.plainold.controllers;
 
+import com.usktea.plainold.applications.GetCategoryService;
 import com.usktea.plainold.dtos.CategoriesDto;
 import com.usktea.plainold.models.Category;
-import com.usktea.plainold.applications.GetCategoryService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("categories")
 public class CategoryController {
-    private GetCategoryService getCategoryService;
+    private final GetCategoryService getCategoryService;
 
     public CategoryController(GetCategoryService getCategoryService) {
         this.getCategoryService = getCategoryService;
