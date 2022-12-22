@@ -21,16 +21,16 @@ public class Category {
         this.name = name;
     }
 
+    public static Category fake() {
+        return new Category(1L, "T-shirts");
+    }
+
     public Long getId() {
         return id;
     }
 
     public String getName() {
         return name;
-    }
-
-    public static Category fake() {
-        return new Category(1L, "T-shirts");
     }
 
     public CategoryDto toDto() {
