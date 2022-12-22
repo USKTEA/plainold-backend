@@ -39,4 +39,8 @@ public class CategoryId {
     public Long value() {
         return value;
     }
+
+    public boolean isNull() {
+        return Objects.equals(value, null);
+    }
 }
