@@ -1,6 +1,7 @@
 package com.usktea.plainold.controllers;
 
 import com.usktea.plainold.applications.GetProductService;
+import com.usktea.plainold.exceptions.ProductNotFound;
 import com.usktea.plainold.models.CategoryId;
 import com.usktea.plainold.models.Product;
 import org.junit.jupiter.api.Test;
@@ -52,10 +53,36 @@ class ProductControllerTest {
         given(getProductService.list(any(CategoryId.class), any(Integer.class)))
                 .willReturn(page);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/products?categoryId=1"))
+        Long id = 1L;
+
+        mockMvc.perform(MockMvcRequestBuilders.get(String.format("/products?categoryId=%d", id)))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                         containsString("\"products\":[")
                 ));
+    }
+
+    @Test
+    void whenFindProductSuccess() throws Exception {
+        Long id = 1L;
+
+        given(getProductService.product(id)).willReturn(Product.fake(id));
+
+        mockMvc.perform(MockMvcRequestBuilders.get(String.format("/products/%d", id)))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        containsString("\"id\":1")
+                ));
+    }
+
+    @Test
+    void whenFindProductFail() throws Exception {
+        Long id = 9_999_999L;
+
+        given(getProductService.product(id))
+                .willThrow(ProductNotFound.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.get(String.format("/products/%d", id)))
+                .andExpect(status().isBadRequest());
     }
 }

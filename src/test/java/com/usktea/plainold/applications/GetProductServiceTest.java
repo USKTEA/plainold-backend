@@ -1,5 +1,6 @@
 package com.usktea.plainold.applications;
 
+import com.usktea.plainold.exceptions.ProductNotFound;
 import com.usktea.plainold.models.CategoryId;
 import com.usktea.plainold.models.Product;
 import com.usktea.plainold.repositories.ProductRepository;
@@ -12,8 +13,10 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.BDDMockito.given;
@@ -53,5 +56,27 @@ class GetProductServiceTest {
         Page<Product> products = getProductService.list(new CategoryId(1L), 1);
 
         assertThat(products).hasSize(1);
+    }
+
+    @Test
+    void whenProductExits() {
+        Long id = 1L;
+
+        given(productRepository.findById(id))
+                .willReturn(Optional.of(Product.fake(id)));
+
+        Product product = getProductService.product(id);
+
+        assertThat(product).isEqualTo(Product.fake(id));
+    }
+
+    @Test
+    void whenProductNotExists() {
+        Long id = 9_999_999L;
+
+        given(productRepository.findById(id))
+                .willThrow(ProductNotFound.class);
+
+        assertThrows(ProductNotFound.class, () -> getProductService.product(id));
     }
 }
