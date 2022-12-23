@@ -1,24 +1,16 @@
 package com.usktea.plainold.models;
 
-import com.usktea.plainold.exceptions.InvalidPrice;
-
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.util.Objects;
 
 @Embeddable
-public class Price {
-    @Column(name = "price")
+public class Money {
     private Long amount;
 
-    public Price() {
+    public Money() {
     }
 
-    public Price(Long amount) {
-        if (amount < 0) {
-            throw new InvalidPrice();
-        }
-
+    public Money(Long amount) {
         this.amount = amount;
     }
 
@@ -32,9 +24,9 @@ public class Price {
             return false;
         }
 
-        Price otherPrice = (Price) other;
+        Money otherMoney = (Money) other;
 
-        return Objects.equals(amount, otherPrice.amount);
+        return Objects.equals(amount, otherMoney.amount);
     }
 
     @Override

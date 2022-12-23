@@ -5,15 +5,19 @@ import javax.persistence.Embeddable;
 import java.util.Objects;
 
 @Embeddable
-public class ThumbnailUrl {
-    @Column(name = "thumbnailUrl")
+public class ProductImageUrl {
+    @Column(name = "productImageUrl")
     private String value;
 
-    public ThumbnailUrl() {
+    public ProductImageUrl() {
     }
 
-    public ThumbnailUrl(String value) {
+    public ProductImageUrl(String value) {
         this.value = value;
+    }
+
+    public String productImageUrl() {
+        return value;
     }
 
     @Override
@@ -26,17 +30,13 @@ public class ThumbnailUrl {
             return false;
         }
 
-        ThumbnailUrl otherThumbnailUrl = (ThumbnailUrl) other;
+        ProductImageUrl otherProductImageUrl = (ProductImageUrl) other;
 
-        return Objects.equals(value, otherThumbnailUrl.value);
+        return Objects.equals(value, otherProductImageUrl.value);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(value);
-    }
-
-    public String value() {
-        return value;
     }
 }

@@ -1,5 +1,6 @@
 package com.usktea.plainold.applications;
 
+import com.usktea.plainold.exceptions.ProductNotFound;
 import com.usktea.plainold.models.CategoryId;
 import com.usktea.plainold.models.Product;
 import com.usktea.plainold.repositories.ProductRepository;
@@ -36,5 +37,14 @@ public class GetProductService {
         Page<Product> products = productRepository.findAll(specification, pageable);
 
         return products;
+    }
+
+    public Product product(Long id) {
+        productRepository.save(Product.fake(1L));
+
+        Product product = productRepository.findById(id)
+                .orElseThrow(ProductNotFound::new);
+
+        return product;
     }
 }
