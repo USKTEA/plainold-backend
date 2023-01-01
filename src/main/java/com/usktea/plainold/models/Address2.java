@@ -1,16 +1,28 @@
 package com.usktea.plainold.models;
 
+import com.usktea.plainold.exceptions.IncorrectAddress2;
+
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.util.Objects;
 
 @Embeddable
-public class ProductName {
+public class Address2 {
+    @Column(name = "address2")
     private String value;
 
-    public ProductName() {
+    public Address2() {
     }
 
-    public ProductName(String value) {
+    public Address2(String value) {
+        setValue(value);
+    }
+
+    private void setValue(String value) {
+        if (value.isBlank()) {
+            throw new IncorrectAddress2();
+        }
+
         this.value = value;
     }
 
@@ -24,9 +36,9 @@ public class ProductName {
             return false;
         }
 
-        ProductName otherProductName = (ProductName) other;
+        Address2 otherAddress2 = (Address2) other;
 
-        return Objects.equals(value, otherProductName.value);
+        return Objects.equals(value, otherAddress2.value);
     }
 
     @Override

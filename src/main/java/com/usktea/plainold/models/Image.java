@@ -4,6 +4,7 @@ import com.usktea.plainold.dtos.ImageDto;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -12,7 +13,7 @@ public class Image {
     private ThumbnailUrl thumbnailUrl;
 
     @ElementCollection
-    private Set<ProductImageUrl> productImageUrls;
+    private Set<ProductImageUrl> productImageUrls = new HashSet<>();
 
     public Image() {
     }

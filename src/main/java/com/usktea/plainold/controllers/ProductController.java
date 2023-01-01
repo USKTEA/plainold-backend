@@ -4,6 +4,7 @@ import com.usktea.plainold.applications.GetProductService;
 import com.usktea.plainold.dtos.PageDto;
 import com.usktea.plainold.dtos.ProductDetailDto;
 import com.usktea.plainold.dtos.ProductsDto;
+import com.usktea.plainold.exceptions.CategoryNotFound;
 import com.usktea.plainold.exceptions.ProductNotFound;
 import com.usktea.plainold.models.CategoryId;
 import com.usktea.plainold.models.Product;
@@ -60,6 +61,12 @@ public class ProductController {
     @ExceptionHandler(ProductNotFound.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String productNotFound(Exception exception) {
+        return exception.getMessage();
+    }
+
+    @ExceptionHandler(CategoryNotFound.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String categoryNotFound(Exception exception) {
         return exception.getMessage();
     }
 }

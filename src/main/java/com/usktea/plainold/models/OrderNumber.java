@@ -1,16 +1,19 @@
 package com.usktea.plainold.models;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-public class ProductName {
+public class OrderNumber implements Serializable {
+    @Column(name = "orderNumber")
     private String value;
 
-    public ProductName() {
+    public OrderNumber() {
     }
 
-    public ProductName(String value) {
+    public OrderNumber(String value) {
         this.value = value;
     }
 
@@ -24,9 +27,9 @@ public class ProductName {
             return false;
         }
 
-        ProductName otherProductName = (ProductName) other;
+        OrderNumber otherOrderNumber = (OrderNumber) other;
 
-        return Objects.equals(value, otherProductName.value);
+        return Objects.equals(value, otherOrderNumber.value);
     }
 
     @Override

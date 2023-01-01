@@ -1,8 +1,11 @@
 package com.usktea.plainold.applications;
 
+import com.usktea.plainold.exceptions.CategoryNotFound;
 import com.usktea.plainold.exceptions.ProductNotFound;
+import com.usktea.plainold.models.Category;
 import com.usktea.plainold.models.CategoryId;
 import com.usktea.plainold.models.Product;
+import com.usktea.plainold.repositories.CategoryRepository;
 import com.usktea.plainold.repositories.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,11 +30,13 @@ import static org.mockito.Mockito.mock;
 class GetProductServiceTest {
     private GetProductService getProductService;
     private ProductRepository productRepository;
+    private CategoryRepository categoryRepository;
 
     @BeforeEach
     void setup() {
         productRepository = mock(ProductRepository.class);
-        getProductService = new GetProductService(productRepository);
+        categoryRepository = mock(CategoryRepository.class);
+        getProductService = new GetProductService(productRepository, categoryRepository);
     }
 
     @Test
@@ -41,7 +46,7 @@ class GetProductServiceTest {
         given(productRepository.findAll(nullable(Specification.class), any(Pageable.class)))
                 .willReturn(page);
 
-        Page<Product> products = getProductService.list(new CategoryId(1L), 1);
+        Page<Product> products = getProductService.list(new CategoryId(null), 1);
 
         assertThat(products).hasSize(1);
     }
@@ -53,9 +58,21 @@ class GetProductServiceTest {
         given(productRepository.findAll(any(Specification.class), any(Pageable.class)))
                 .willReturn(page);
 
+        given(categoryRepository.findById(1L))
+                .willReturn(Optional.of(Category.fake()));
+
         Page<Product> products = getProductService.list(new CategoryId(1L), 1);
 
         assertThat(products).hasSize(1);
+    }
+
+    @Test
+    void whenCategoryNotExists() {
+        given(categoryRepository.findById(9_999_999L))
+                .willThrow(CategoryNotFound.class);
+
+        assertThrows(CategoryNotFound.class,
+                () -> getProductService.list(new CategoryId(9_999_999L), 1));
     }
 
     @Test
