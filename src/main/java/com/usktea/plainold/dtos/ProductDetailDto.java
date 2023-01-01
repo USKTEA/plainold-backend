@@ -5,6 +5,7 @@ import com.usktea.plainold.models.Description;
 import com.usktea.plainold.models.Image;
 import com.usktea.plainold.models.Money;
 import com.usktea.plainold.models.ProductName;
+import com.usktea.plainold.models.ProductStatus;
 import com.usktea.plainold.models.Shipping;
 
 import java.time.LocalDateTime;
@@ -31,7 +32,7 @@ public class ProductDetailDto {
                             Image image,
                             Description description,
                             Shipping shipping,
-                            String status,
+                            ProductStatus status,
                             LocalDateTime createdAt,
                             LocalDateTime updatedAt) {
         this.id = id;
@@ -41,7 +42,7 @@ public class ProductDetailDto {
         this.image = image.toDto();
         this.description = description.toDto();
         this.shipping = shipping.toDto();
-        this.status = status;
+        this.status = status.value();
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }

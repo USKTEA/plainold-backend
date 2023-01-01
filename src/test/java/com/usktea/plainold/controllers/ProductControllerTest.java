@@ -1,6 +1,7 @@
 package com.usktea.plainold.controllers;
 
 import com.usktea.plainold.applications.GetProductService;
+import com.usktea.plainold.exceptions.CategoryNotFound;
 import com.usktea.plainold.exceptions.ProductNotFound;
 import com.usktea.plainold.models.CategoryId;
 import com.usktea.plainold.models.Product;
@@ -18,6 +19,7 @@ import java.util.List;
 
 import static org.hamcrest.core.StringContains.containsString;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -60,6 +62,17 @@ class ProductControllerTest {
                 .andExpect(content().string(
                         containsString("\"products\":[")
                 ));
+    }
+
+    @Test
+    void whenCategoryIsNotExists() throws Exception {
+        given(getProductService.list(eq(new CategoryId(9_999_999L)), any(Integer.class)))
+                .willThrow(CategoryNotFound.class);
+
+        Long id = 9_999_999L;
+
+        mockMvc.perform(MockMvcRequestBuilders.get(String.format("/products?categoryId=%d", id)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test

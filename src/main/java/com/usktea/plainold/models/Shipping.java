@@ -5,23 +5,26 @@ import com.usktea.plainold.dtos.ShippingDto;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.util.Objects;
 
 @Embeddable
 public class Shipping {
-    private String shippingMethod;
+    @Enumerated(EnumType.STRING)
+    private ShippingMethod shippingMethod;
 
-    @AttributeOverride(name ="amount", column = @Column(name = "shippingFee"))
+    @AttributeOverride(name = "amount", column = @Column(name = "shippingFee"))
     private Money shippingFee;
 
-    @AttributeOverride(name ="amount", column = @Column(name = "freeShippingAmount"))
+    @AttributeOverride(name = "amount", column = @Column(name = "freeShippingAmount"))
     private Money freeShippingAmount;
 
     public Shipping() {
     }
 
     public Shipping(ShippingMethod shippingMethod, Money shippingFee, Money freeShippingAmount) {
-        this.shippingMethod = shippingMethod.value();
+        this.shippingMethod = shippingMethod;
         this.shippingFee = shippingFee;
         this.freeShippingAmount = freeShippingAmount;
     }
@@ -54,8 +57,20 @@ public class Shipping {
 
     public ShippingDto toDto() {
         return new ShippingDto(
-                shippingMethod,
+                shippingMethod.value(),
                 shippingFee.amount(),
                 freeShippingAmount.amount());
+    }
+
+    public ShippingMethod getShippingMethod() {
+        return shippingMethod;
+    }
+
+    public Money getShippingFee() {
+        return shippingFee;
+    }
+
+    public Money getFreeShippingAmount() {
+        return freeShippingAmount;
     }
 }

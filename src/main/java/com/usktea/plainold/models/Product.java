@@ -3,6 +3,7 @@ package com.usktea.plainold.models;
 import com.usktea.plainold.dtos.ProductDetailDto;
 import com.usktea.plainold.dtos.ProductDto;
 import com.usktea.plainold.exceptions.InvalidProductPrice;
+import com.usktea.plainold.exceptions.ProductSoldOut;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -10,6 +11,8 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
@@ -23,6 +26,7 @@ public class Product {
     private Long id;
 
     @Embedded
+    @AttributeOverride(name = "value", column = @Column(name = "name"))
     private ProductName productName;
 
     @Embedded
@@ -41,7 +45,8 @@ public class Product {
     @Embedded
     private Shipping shipping;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private ProductStatus status;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -76,7 +81,29 @@ public class Product {
         this.image = image;
         this.description = description;
         this.shipping = shipping;
-        this.status = ProductStatus.ON_SALE.value();
+        this.status = ProductStatus.ON_SALE;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    public Product(long id,
+                   Money price,
+                   ProductName productName,
+                   CategoryId categoryId,
+                   Image image,
+                   Description description,
+                   Shipping shipping,
+                   ProductStatus status,
+                   LocalDateTime createdAt,
+                   LocalDateTime updatedAt) {
+        this.id = id;
+        setPrice(price);
+        this.productName = productName;
+        this.categoryId = categoryId;
+        this.image = image;
+        this.description = description;
+        this.shipping = shipping;
+        this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -103,6 +130,24 @@ public class Product {
                 ),
                 Description.fake("Good", "Very Good"),
                 Shipping.fake(ShippingMethod.Parcel),
+                LocalDateTime.now(),
+                LocalDateTime.now()
+        );
+    }
+
+    public static Product fake(ProductStatus productStatus) {
+        return new Product(
+                1L,
+                new Money(1_000L),
+                new ProductName("T-shirt"),
+                new CategoryId(1L),
+                Image.fake(
+                        new ThumbnailUrl("1"),
+                        Set.of(new ProductImageUrl("1"))
+                ),
+                Description.fake("Good", "Very Good"),
+                Shipping.fake(ShippingMethod.Parcel),
+                productStatus,
                 LocalDateTime.now(),
                 LocalDateTime.now()
         );
@@ -163,5 +208,11 @@ public class Product {
                 createdAt,
                 updatedAt
         );
+    }
+
+    public void checkIsSoldOut() {
+        if (status.equals(ProductStatus.SOLD_OUT)) {
+            throw new ProductSoldOut();
+        }
     }
 }

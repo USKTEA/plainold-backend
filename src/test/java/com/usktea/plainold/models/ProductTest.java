@@ -1,6 +1,7 @@
 package com.usktea.plainold.models;
 
 import com.usktea.plainold.exceptions.InvalidProductPrice;
+import com.usktea.plainold.exceptions.ProductSoldOut;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -9,7 +10,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ActiveProfiles("test")
 class ProductTest {
-//TODO 제대로 Product이 나오면 creation 테스트 작성
     @Test
     void equality() {
         Long id = 1L;
@@ -22,5 +22,12 @@ class ProductTest {
     @Test
     void whenPriceIsLowerThanZero() {
         assertThrows(InvalidProductPrice.class, () -> Product.fake(new Money(-1L)));
+    }
+
+    @Test
+    void productIsSoldOut() {
+        Product soldOut = Product.fake(ProductStatus.SOLD_OUT);
+
+        assertThrows(ProductSoldOut.class, () -> soldOut.checkIsSoldOut());
     }
 }
