@@ -1,12 +1,15 @@
 package com.usktea.plainold.models;
 
+import com.usktea.plainold.models.common.Name;
+import com.usktea.plainold.models.common.PhoneNumber;
+import com.usktea.plainold.models.order.Receiver;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
+@ActiveProfiles("test")
 class ReceiverTest {
-
     @Test
     void equality() {
         Name name = new Name("김뚜루");

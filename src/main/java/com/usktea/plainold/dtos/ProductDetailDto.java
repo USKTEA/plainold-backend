@@ -1,12 +1,15 @@
 package com.usktea.plainold.dtos;
 
-import com.usktea.plainold.models.CategoryId;
-import com.usktea.plainold.models.Description;
-import com.usktea.plainold.models.Image;
-import com.usktea.plainold.models.Money;
-import com.usktea.plainold.models.ProductName;
-import com.usktea.plainold.models.ProductStatus;
-import com.usktea.plainold.models.Shipping;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.usktea.plainold.models.category.CategoryId;
+import com.usktea.plainold.models.common.Money;
+import com.usktea.plainold.models.option.OptionData;
+import com.usktea.plainold.models.product.Description;
+import com.usktea.plainold.models.product.Image;
+import com.usktea.plainold.models.product.ProductId;
+import com.usktea.plainold.models.product.ProductName;
+import com.usktea.plainold.models.product.ProductStatus;
+import com.usktea.plainold.models.product.Shipping;
 
 import java.time.LocalDateTime;
 
@@ -22,10 +25,13 @@ public class ProductDetailDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private OptionDataDto optionData;
+
     public ProductDetailDto() {
     }
 
-    public ProductDetailDto(Long id,
+    public ProductDetailDto(ProductId id,
                             Money price,
                             ProductName productName,
                             CategoryId categoryId,
@@ -34,10 +40,12 @@ public class ProductDetailDto {
                             Shipping shipping,
                             ProductStatus status,
                             LocalDateTime createdAt,
-                            LocalDateTime updatedAt) {
-        this.id = id;
-        this.price = price.amount();
-        this.name = productName.value();
+                            LocalDateTime updatedAt,
+                            OptionData optionData
+    ) {
+        this.id = id.value();
+        this.price = price.getAmount();
+        this.name = productName.getValue();
         this.categoryId = categoryId.value();
         this.image = image.toDto();
         this.description = description.toDto();
@@ -45,6 +53,7 @@ public class ProductDetailDto {
         this.status = status.value();
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        setOptionData(optionData);
     }
 
     public Long getId() {
@@ -85,5 +94,17 @@ public class ProductDetailDto {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    public OptionDataDto getOptionData() {
+        return optionData;
+    }
+
+    private void setOptionData(OptionData optionData) {
+        if (optionData == null) {
+            return;
+        }
+
+        this.optionData = optionData.toDto();
     }
 }

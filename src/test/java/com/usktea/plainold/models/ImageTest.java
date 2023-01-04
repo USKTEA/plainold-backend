@@ -1,13 +1,17 @@
 package com.usktea.plainold.models;
 
+import com.usktea.plainold.models.product.Image;
+import com.usktea.plainold.models.product.ProductImageUrl;
+import com.usktea.plainold.models.product.ThumbnailUrl;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ActiveProfiles("test")
 class ImageTest {
-
     @Test
     void equality() {
         ThumbnailUrl thumbnailUrl = new ThumbnailUrl("http://thumbnailUrl.com");

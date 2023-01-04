@@ -1,9 +1,15 @@
 package com.usktea.plainold.models;
 
+import com.usktea.plainold.models.order.Address;
+import com.usktea.plainold.models.order.Address1;
+import com.usktea.plainold.models.order.Address2;
+import com.usktea.plainold.models.order.ZipCode;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+@ActiveProfiles("test")
 class AddressTest {
 
     @Test

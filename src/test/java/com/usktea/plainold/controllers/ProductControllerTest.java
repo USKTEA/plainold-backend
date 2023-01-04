@@ -1,10 +1,13 @@
 package com.usktea.plainold.controllers;
 
-import com.usktea.plainold.applications.GetProductService;
+import com.usktea.plainold.applications.GetProductDetailService;
+import com.usktea.plainold.applications.GetProductsService;
+import com.usktea.plainold.dtos.ProductDetail;
 import com.usktea.plainold.exceptions.CategoryNotFound;
 import com.usktea.plainold.exceptions.ProductNotFound;
-import com.usktea.plainold.models.CategoryId;
-import com.usktea.plainold.models.Product;
+import com.usktea.plainold.models.category.CategoryId;
+import com.usktea.plainold.models.product.Product;
+import com.usktea.plainold.models.product.ProductId;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -32,13 +35,18 @@ class ProductControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private GetProductService getProductService;
+    private GetProductsService getProductsService;
+
+    @MockBean
+    private GetProductDetailService getProductDetailService;
 
     @Test
     void listWithoutCategory() throws Exception {
-        Page<Product> page = new PageImpl<>(List.of(Product.fake(1L)));
+        ProductId productId = new ProductId(1L);
 
-        given(getProductService.list(any(CategoryId.class), any(Integer.class)))
+        Page<Product> page = new PageImpl<>(List.of(Product.fake(productId)));
+
+        given(getProductsService.list(any(CategoryId.class), any(Integer.class)))
                 .willReturn(page);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/products"))
@@ -50,9 +58,11 @@ class ProductControllerTest {
 
     @Test
     void listWithCategory() throws Exception {
-        Page<Product> page = new PageImpl<>(List.of(Product.fake(1L)));
+        ProductId productId = new ProductId(1L);
 
-        given(getProductService.list(any(CategoryId.class), any(Integer.class)))
+        Page<Product> page = new PageImpl<>(List.of(Product.fake(productId)));
+
+        given(getProductsService.list(any(CategoryId.class), any(Integer.class)))
                 .willReturn(page);
 
         Long id = 1L;
@@ -66,7 +76,7 @@ class ProductControllerTest {
 
     @Test
     void whenCategoryIsNotExists() throws Exception {
-        given(getProductService.list(eq(new CategoryId(9_999_999L)), any(Integer.class)))
+        given(getProductsService.list(eq(new CategoryId(9_999_999L)), any(Integer.class)))
                 .willThrow(CategoryNotFound.class);
 
         Long id = 9_999_999L;
@@ -77,11 +87,12 @@ class ProductControllerTest {
 
     @Test
     void whenFindProductSuccess() throws Exception {
-        Long id = 1L;
+        ProductId productId = new ProductId(1L);
 
-        given(getProductService.product(id)).willReturn(Product.fake(id));
+        given(getProductDetailService.detail(productId))
+                .willReturn(ProductDetail.fake(productId));
 
-        mockMvc.perform(MockMvcRequestBuilders.get(String.format("/products/%d", id)))
+        mockMvc.perform(MockMvcRequestBuilders.get(String.format("/products/%d", 1)))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                         containsString("\"id\":1")
@@ -90,12 +101,12 @@ class ProductControllerTest {
 
     @Test
     void whenFindProductFail() throws Exception {
-        Long id = 9_999_999L;
+        ProductId productId = new ProductId(9_999_999L);
 
-        given(getProductService.product(id))
+        given(getProductDetailService.detail(productId))
                 .willThrow(ProductNotFound.class);
 
-        mockMvc.perform(MockMvcRequestBuilders.get(String.format("/products/%d", id)))
+        mockMvc.perform(MockMvcRequestBuilders.get(String.format("/products/%d", 9999999)))
                 .andExpect(status().isBadRequest());
     }
 }

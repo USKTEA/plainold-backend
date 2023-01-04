@@ -1,13 +1,15 @@
 package com.usktea.plainold.models;
 
-import com.usktea.plainold.exceptions.IncorrectAddress1;
 import com.usktea.plainold.exceptions.IncorrectAddress2;
+import com.usktea.plainold.models.order.Address2;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@ActiveProfiles("test")
 class Address2Test {
 
     @Test

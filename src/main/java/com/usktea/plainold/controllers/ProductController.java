@@ -1,13 +1,16 @@
 package com.usktea.plainold.controllers;
 
-import com.usktea.plainold.applications.GetProductService;
+import com.usktea.plainold.applications.GetProductDetailService;
+import com.usktea.plainold.applications.GetProductsService;
 import com.usktea.plainold.dtos.PageDto;
+import com.usktea.plainold.dtos.ProductDetail;
 import com.usktea.plainold.dtos.ProductDetailDto;
 import com.usktea.plainold.dtos.ProductsDto;
 import com.usktea.plainold.exceptions.CategoryNotFound;
 import com.usktea.plainold.exceptions.ProductNotFound;
-import com.usktea.plainold.models.CategoryId;
-import com.usktea.plainold.models.Product;
+import com.usktea.plainold.models.category.CategoryId;
+import com.usktea.plainold.models.product.Product;
+import com.usktea.plainold.models.product.ProductId;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -23,10 +26,12 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("products")
 public class ProductController {
-    private final GetProductService getProductService;
+    private final GetProductsService getProductsService;
+    private GetProductDetailService getProductDetailService;
 
-    public ProductController(GetProductService getProductService) {
-        this.getProductService = getProductService;
+    public ProductController(GetProductsService getProductsService, GetProductDetailService getProductDetailService) {
+        this.getProductsService = getProductsService;
+        this.getProductDetailService = getProductDetailService;
     }
 
     @GetMapping
@@ -34,7 +39,7 @@ public class ProductController {
             @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false, defaultValue = "1") Integer page
     ) {
-        Page<Product> found = getProductService.list(new CategoryId(categoryId), page);
+        Page<Product> found = getProductsService.list(new CategoryId(categoryId), page);
 
         PageDto pageDto = new PageDto(page, found.getTotalPages());
 
@@ -53,9 +58,9 @@ public class ProductController {
     public ProductDetailDto product(
             @PathVariable Long id
     ) {
-        Product product = getProductService.product(id);
+        ProductDetail productDetail = getProductDetailService.detail(new ProductId(id));
 
-        return product.toDetailDto();
+        return productDetail.toDto();
     }
 
     @ExceptionHandler(ProductNotFound.class)

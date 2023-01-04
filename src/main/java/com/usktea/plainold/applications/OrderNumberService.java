@@ -1,7 +1,7 @@
 package com.usktea.plainold.applications;
 
-import com.usktea.plainold.models.OrderNumber;
-import com.usktea.plainold.models.UserName;
+import com.usktea.plainold.models.order.OrderNumber;
+import com.usktea.plainold.models.user.UserName;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
