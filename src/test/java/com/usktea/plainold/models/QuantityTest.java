@@ -1,14 +1,16 @@
 package com.usktea.plainold.models;
 
 import com.usktea.plainold.exceptions.IncorrectQuantity;
+import com.usktea.plainold.models.common.Quantity;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@ActiveProfiles("test")
 class QuantityTest {
-
     @Test
     void creation() {
         assertDoesNotThrow(() -> new Quantity(1L));

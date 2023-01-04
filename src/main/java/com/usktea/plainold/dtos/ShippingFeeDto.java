@@ -10,6 +10,10 @@ public class ShippingFeeDto {
         this.amount = amount;
     }
 
+    public static ShippingFeeDto fake() {
+        return new ShippingFeeDto(2_500L);
+    }
+
     public Long getAmount() {
         return amount;
     }

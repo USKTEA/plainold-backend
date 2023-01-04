@@ -1,8 +1,8 @@
 package com.usktea.plainold.dtos;
 
-import com.usktea.plainold.models.Money;
-import com.usktea.plainold.models.OrderNumber;
-import com.usktea.plainold.models.ShippingInformation;
+import com.usktea.plainold.models.common.Money;
+import com.usktea.plainold.models.order.OrderNumber;
+import com.usktea.plainold.models.order.ShippingInformation;
 
 public class OrderResultDto {
     private String orderNumber;
@@ -17,9 +17,9 @@ public class OrderResultDto {
                           Money cost,
                           ShippingInformation shippingInformation) {
         this.orderNumber = orderNumber.value();
-        this.cost = cost.amount();
-        this.receiver = shippingInformation.getReceiver().toDto();
-        this.shippingAddress = shippingInformation.getAddress().toDto();
+        this.cost = cost.getAmount();
+        this.receiver = shippingInformation.getReceiverDto();
+        this.shippingAddress = shippingInformation.getAddressDto();
     }
 
     public String getOrderNumber() {

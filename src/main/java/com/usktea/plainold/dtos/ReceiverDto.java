@@ -12,6 +12,10 @@ public class ReceiverDto {
         this.phoneNumber = phoneNumber;
     }
 
+    public static ReceiverDto fake() {
+        return new ReceiverDto("김뚜루", "010-1111-1111");
+    }
+
     public String getName() {
         return name;
     }

@@ -1,14 +1,8 @@
 package com.usktea.plainold.controllers;
 
 import com.usktea.plainold.applications.CreateOrderService;
-import com.usktea.plainold.models.Money;
-import com.usktea.plainold.models.Order;
-import com.usktea.plainold.models.OrderLine;
-import com.usktea.plainold.models.OrderNumber;
-import com.usktea.plainold.models.Orderer;
-import com.usktea.plainold.models.Payment;
-import com.usktea.plainold.models.ShippingInformation;
-import com.usktea.plainold.models.UserName;
+import com.usktea.plainold.models.order.Order;
+import com.usktea.plainold.models.order.OrderNumber;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import java.util.List;
 
 import static org.hamcrest.core.StringContains.containsString;
 import static org.mockito.ArgumentMatchers.any;
@@ -40,7 +32,7 @@ class OrderControllerTest {
     void setup() {
         OrderNumber orderNumber = new OrderNumber("tjrxo1234-202212311639");
 
-        given(createOrderService.create(any(), any(), any(), any(), any(), any(), any()))
+        given(createOrderService.placeOrder(any()))
                 .willReturn(Order.fake(orderNumber));
     }
 

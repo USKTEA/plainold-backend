@@ -1,12 +1,13 @@
 package com.usktea.plainold.models;
 
+import com.usktea.plainold.models.order.OrderStatus;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
+@ActiveProfiles("test")
 class OrderStatusTest {
-
     @Test
     void equality() {
         OrderStatus preparing1 = OrderStatus.PREPARING;

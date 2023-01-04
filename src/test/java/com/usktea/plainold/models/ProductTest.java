@@ -2,6 +2,10 @@ package com.usktea.plainold.models;
 
 import com.usktea.plainold.exceptions.InvalidProductPrice;
 import com.usktea.plainold.exceptions.ProductSoldOut;
+import com.usktea.plainold.models.common.Money;
+import com.usktea.plainold.models.product.Product;
+import com.usktea.plainold.models.product.ProductId;
+import com.usktea.plainold.models.product.ProductStatus;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -12,8 +16,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class ProductTest {
     @Test
     void equality() {
-        Long id = 1L;
-        Long otherId = 2L;
+        ProductId id = new ProductId(1L);
+        ProductId otherId = new ProductId(2L);
 
         assertThat(Product.fake(id)).isEqualTo(Product.fake(id));
         assertThat(Product.fake(id)).isNotEqualTo(Product.fake(otherId));

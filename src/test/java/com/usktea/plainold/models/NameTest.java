@@ -1,14 +1,16 @@
 package com.usktea.plainold.models;
 
 import com.usktea.plainold.exceptions.IncorrectName;
+import com.usktea.plainold.models.common.Name;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@ActiveProfiles("test")
 class NameTest {
-
     @Test
     void creation() {
         assertDoesNotThrow(() -> new Name("김뚜루"));

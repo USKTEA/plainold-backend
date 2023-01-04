@@ -1,11 +1,15 @@
 package com.usktea.plainold.models;
 
+import com.usktea.plainold.models.common.Name;
+import com.usktea.plainold.models.order.Payment;
+import com.usktea.plainold.models.order.PaymentMethod;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ActiveProfiles("test")
 class PaymentTest {
-
     @Test
     void equality() {
         PaymentMethod paymentMethod = PaymentMethod.CASH;

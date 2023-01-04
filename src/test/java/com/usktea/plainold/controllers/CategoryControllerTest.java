@@ -1,7 +1,7 @@
 package com.usktea.plainold.controllers;
 
-import com.usktea.plainold.models.Category;
 import com.usktea.plainold.applications.GetCategoryService;
+import com.usktea.plainold.models.category.Category;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

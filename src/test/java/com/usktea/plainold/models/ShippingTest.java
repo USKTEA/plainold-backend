@@ -1,13 +1,17 @@
 package com.usktea.plainold.models;
 
+import com.usktea.plainold.models.common.Money;
+import com.usktea.plainold.models.product.Shipping;
+import com.usktea.plainold.models.product.ShippingMethod;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
+@ActiveProfiles("test")
 class ShippingTest {
-
     @Test
     void equality() {
         ShippingMethod shippingMethod = ShippingMethod.Parcel;

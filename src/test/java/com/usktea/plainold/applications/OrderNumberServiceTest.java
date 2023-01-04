@@ -1,7 +1,7 @@
 package com.usktea.plainold.applications;
 
-import com.usktea.plainold.models.OrderNumber;
-import com.usktea.plainold.models.UserName;
+import com.usktea.plainold.models.order.OrderNumber;
+import com.usktea.plainold.models.user.UserName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -10,7 +10,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ActiveProfiles("test")
 class OrderNumberServiceTest {
-
     @Test
     void nextOrderNumber() {
         OrderNumberService orderNumberService = new OrderNumberService();

@@ -1,5 +1,6 @@
 package com.usktea.plainold.models;
 
+import com.usktea.plainold.models.common.Money;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 

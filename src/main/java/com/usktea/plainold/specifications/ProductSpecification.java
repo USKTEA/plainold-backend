@@ -1,7 +1,7 @@
 package com.usktea.plainold.specifications;
 
-import com.usktea.plainold.models.CategoryId;
-import com.usktea.plainold.models.Product;
+import com.usktea.plainold.models.category.CategoryId;
+import com.usktea.plainold.models.product.Product;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.CriteriaBuilder;

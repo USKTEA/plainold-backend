@@ -1,11 +1,17 @@
 package com.usktea.plainold.models;
 
+import com.usktea.plainold.models.common.Name;
+import com.usktea.plainold.models.order.Address;
+import com.usktea.plainold.models.order.Receiver;
+import com.usktea.plainold.models.order.ShippingInformation;
+import com.usktea.plainold.models.order.ZipCode;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ActiveProfiles("test")
 class ShippingInformationTest {
-
     @Test
     void equality() {
         Name name = new Name("김뚜루");

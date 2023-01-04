@@ -1,6 +1,6 @@
 package com.usktea.plainold.applications;
 
-import com.usktea.plainold.models.Category;
+import com.usktea.plainold.models.category.Category;
 import com.usktea.plainold.repositories.CategoryRepository;
 import org.springframework.stereotype.Service;
 

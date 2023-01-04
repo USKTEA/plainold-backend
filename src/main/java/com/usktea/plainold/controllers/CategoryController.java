@@ -2,7 +2,7 @@ package com.usktea.plainold.controllers;
 
 import com.usktea.plainold.applications.GetCategoryService;
 import com.usktea.plainold.dtos.CategoriesDto;
-import com.usktea.plainold.models.Category;
+import com.usktea.plainold.models.category.Category;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

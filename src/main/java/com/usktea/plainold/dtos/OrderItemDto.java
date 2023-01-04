@@ -13,6 +13,28 @@ public class OrderItemDto {
     public OrderItemDto() {
     }
 
+    public OrderItemDto(long id,
+                        long productId,
+                        long price,
+                        String name,
+                        String thumbnailUrl,
+                        long shippingFee,
+                        long quantity,
+                        long totalPrice) {
+        this.id = id;
+        this.productId = productId;
+        this.price = price;
+        this.name = name;
+        this.thumbnailUrl = thumbnailUrl;
+        this.shippingFee = shippingFee;
+        this.quantity = quantity;
+        this.totalPrice = totalPrice;
+    }
+
+    public static OrderItemDto fake() {
+        return new OrderItemDto(1L, 1L, 10_000L, "T-Shirt", "1", 2_500L, 1L, 12_500L);
+    }
+
     public Long getId() {
         return id;
     }

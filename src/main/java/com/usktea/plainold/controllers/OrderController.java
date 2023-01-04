@@ -1,16 +1,12 @@
 package com.usktea.plainold.controllers;
 
 import com.usktea.plainold.applications.CreateOrderService;
+import com.usktea.plainold.dtos.OrderRequest;
 import com.usktea.plainold.dtos.OrderRequestDto;
 import com.usktea.plainold.dtos.OrderResultDto;
 import com.usktea.plainold.exceptions.OrderNotCreated;
-import com.usktea.plainold.models.Money;
-import com.usktea.plainold.models.Order;
-import com.usktea.plainold.models.OrderLine;
-import com.usktea.plainold.models.Orderer;
-import com.usktea.plainold.models.Payment;
-import com.usktea.plainold.models.ShippingInformation;
-import com.usktea.plainold.models.UserName;
+import com.usktea.plainold.models.order.Order;
+import com.usktea.plainold.models.user.UserName;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,8 +17,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("orders")
@@ -42,25 +36,9 @@ public class OrderController {
         UserName userName = new UserName("tjrxo1234@gmail.com");
 
         try {
-            List<OrderLine> orderLines = orderRequestDto
-                    .getOrderItems()
-                    .stream()
-                    .map((orderItemDto -> OrderLine.of(orderItemDto)))
-                    .collect(Collectors.toList());
+            OrderRequest orderRequest = OrderRequest.of(userName, orderRequestDto);
 
-            Orderer orderer = Orderer.of(orderRequestDto.getOrderer());
-
-            ShippingInformation shippingInformation
-                    = ShippingInformation.of(orderRequestDto.getShippingInformation());
-
-            Payment payment = Payment.of(orderRequestDto.getPayment());
-
-            Money shippingFee = new Money(orderRequestDto.getShippingFee().getAmount());
-
-            Money cost = new Money(orderRequestDto.getCost().getAmount());
-
-            Order order = createOrderService.create(userName, orderLines, orderer,
-                    shippingInformation, payment, shippingFee, cost);
+            Order order = createOrderService.placeOrder(orderRequest);
 
             return order.toOrderResultDto();
         } catch (Exception exception) {
@@ -80,5 +58,3 @@ public class OrderController {
         return exception.getMessage();
     }
 }
-
-// TODO OrderRequestDto에 있는 모든 VO 유효성 검증해야함
