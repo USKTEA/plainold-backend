@@ -1,5 +1,6 @@
 package com.usktea.plainold.models.option;
 
+import com.usktea.plainold.exceptions.InvalidProductOption;
 import com.usktea.plainold.models.product.ProductId;
 
 import javax.persistence.ElementCollection;
@@ -8,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -83,5 +85,27 @@ public class Option {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public ProductId getProductId() {
+        return productId;
+    }
+
+    public void checkIsValid(Size size, String color) {
+        if (!sizes.contains(size.name()) || !hasColor(color)) {
+            throw new InvalidProductOption();
+        }
+    }
+
+    private boolean hasColor(String colorName) {
+        List<String> colorNames = colors.stream()
+                .map((color) -> color.getName())
+                .collect(Collectors.toList());
+
+        if (!colorNames.contains(colorName)) {
+            return false;
+        }
+
+        return true;
     }
 }

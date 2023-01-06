@@ -1,11 +1,11 @@
 package com.usktea.plainold.models.order;
 
 import com.usktea.plainold.dtos.OrderItemDto;
+import com.usktea.plainold.models.common.Money;
+import com.usktea.plainold.models.common.Quantity;
 import com.usktea.plainold.models.product.ProductId;
 import com.usktea.plainold.models.product.ProductName;
-import com.usktea.plainold.models.common.Quantity;
 import com.usktea.plainold.models.product.ThumbnailUrl;
-import com.usktea.plainold.models.common.Money;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
@@ -31,7 +31,25 @@ public class OrderLine {
     @AttributeOverride(name = "amount", column = @Column(name = "totalPrice"))
     private Money totalPrice;
 
+    private ItemOption itemOption;
+
     public OrderLine() {
+    }
+
+    public OrderLine(ProductId productId,
+                     Money price,
+                     ProductName productName,
+                     ThumbnailUrl thumbnailUrl,
+                     Quantity quantity,
+                     Money totalPrice,
+                     ItemOption itemOption) {
+        this.productId = productId;
+        this.price = price;
+        this.productName = productName;
+        this.thumbnailUrl = thumbnailUrl;
+        this.quantity = quantity;
+        this.totalPrice = totalPrice;
+        this.itemOption = itemOption;
     }
 
     public OrderLine(ProductId productId,
@@ -55,7 +73,8 @@ public class OrderLine {
                 new ProductName(orderItemDto.getName()),
                 new ThumbnailUrl(orderItemDto.getThumbnailUrl()),
                 new Quantity(orderItemDto.getQuantity()),
-                new Money(orderItemDto.getTotalPrice()));
+                new Money(orderItemDto.getTotalPrice()),
+                new ItemOption(orderItemDto.getOption()));
     }
 
     public static OrderLine fake(ProductId productId) {
@@ -85,16 +104,21 @@ public class OrderLine {
                 && Objects.equals(productName, otherOrderLine.productName)
                 && Objects.equals(thumbnailUrl, otherOrderLine.thumbnailUrl)
                 && Objects.equals(quantity, otherOrderLine.quantity)
-                && Objects.equals(totalPrice, otherOrderLine.totalPrice);
+                && Objects.equals(totalPrice, otherOrderLine.totalPrice)
+                && Objects.equals(itemOption, otherOrderLine.itemOption);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(productId, price, productName,
-                thumbnailUrl, quantity, totalPrice);
+                thumbnailUrl, quantity, totalPrice, itemOption);
     }
 
     public ProductId getProductId() {
         return productId;
+    }
+
+    public ItemOption getOption() {
+        return itemOption;
     }
 }

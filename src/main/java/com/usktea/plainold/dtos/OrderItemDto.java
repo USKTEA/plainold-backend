@@ -9,6 +9,7 @@ public class OrderItemDto {
     private Long shippingFee;
     private Long quantity;
     private Long totalPrice;
+    private OptionDto option;
 
     public OrderItemDto() {
     }
@@ -20,7 +21,9 @@ public class OrderItemDto {
                         String thumbnailUrl,
                         long shippingFee,
                         long quantity,
-                        long totalPrice) {
+                        long totalPrice,
+                        OptionDto option
+    ) {
         this.id = id;
         this.productId = productId;
         this.price = price;
@@ -29,10 +32,21 @@ public class OrderItemDto {
         this.shippingFee = shippingFee;
         this.quantity = quantity;
         this.totalPrice = totalPrice;
+        this.option = option;
     }
 
     public static OrderItemDto fake() {
-        return new OrderItemDto(1L, 1L, 10_000L, "T-Shirt", "1", 2_500L, 1L, 12_500L);
+        return new OrderItemDto(
+                1L, 1L, 10_000L, "T-Shirt", "1", 2_500L, 1L, 12_500L,
+                new OptionDto("XL", "Black")
+        );
+    }
+
+    public static OrderItemDto fake(OptionDto optionDto) {
+        return new OrderItemDto(
+                1L, 1L, 10_000L, "T-Shirt", "1", 2_500L, 1L, 12_500L,
+                optionDto
+        );
     }
 
     public Long getId() {
@@ -65,5 +79,9 @@ public class OrderItemDto {
 
     public Long getTotalPrice() {
         return totalPrice;
+    }
+
+    public OptionDto getOption() {
+        return option;
     }
 }

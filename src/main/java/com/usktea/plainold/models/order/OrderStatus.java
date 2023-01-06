@@ -1,7 +1,5 @@
 package com.usktea.plainold.models.order;
 
-import javax.persistence.Column;
-
 public enum OrderStatus {
     PAYMENT_WAITING("입금대기"),
     PREPARING("배송준비중"),
@@ -9,7 +7,6 @@ public enum OrderStatus {
     DELIVERING("배송중"),
     DELIVERY_COMPLETED("배송완료");
 
-    @Column(name = "orderStatus")
     private String status;
 
     OrderStatus() {
