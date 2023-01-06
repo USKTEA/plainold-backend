@@ -3,7 +3,8 @@ package com.usktea.plainold.models.option;
 public enum Size {
     M("M"),
     L("L"),
-    XL("XL");
+    XL("XL"),
+    NONE("");
 
     private String value;
 

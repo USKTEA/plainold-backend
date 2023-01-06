@@ -40,6 +40,13 @@ public class OrderRequest {
         );
     }
 
+    public static OrderRequest fake(List<OrderItemDto> orderItemDto) {
+        return new OrderRequest(
+                new UserName("tjrxo1234@gmail.com"),
+                OrderRequestDto.fake(orderItemDto)
+        );
+    }
+
     public UserName getUserName() {
         return userName;
     }

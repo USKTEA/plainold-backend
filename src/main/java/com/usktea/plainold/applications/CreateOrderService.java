@@ -2,17 +2,23 @@ package com.usktea.plainold.applications;
 
 import com.usktea.plainold.dtos.OrderRequest;
 import com.usktea.plainold.exceptions.ProductNotFound;
+import com.usktea.plainold.models.option.Option;
+import com.usktea.plainold.models.order.ItemOption;
 import com.usktea.plainold.models.order.Order;
 import com.usktea.plainold.models.order.OrderLine;
 import com.usktea.plainold.models.order.OrderNumber;
 import com.usktea.plainold.models.product.Product;
 import com.usktea.plainold.models.product.ProductId;
+import com.usktea.plainold.models.user.UserName;
+import com.usktea.plainold.repositories.OptionRepository;
 import com.usktea.plainold.repositories.OrderRepository;
 import com.usktea.plainold.repositories.ProductRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,21 +27,32 @@ public class CreateOrderService {
     private final OrderNumberService orderNumberService;
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
+    private final OptionRepository optionRepository;
 
     public CreateOrderService(OrderNumberService orderNumberService,
                               OrderRepository orderRepository,
-                              ProductRepository productRepository) {
+                              ProductRepository productRepository,
+                              OptionRepository optionRepository) {
         this.orderNumberService = orderNumberService;
         this.orderRepository = orderRepository;
         this.productRepository = productRepository;
+        this.optionRepository = optionRepository;
     }
 
     public Order placeOrder(OrderRequest orderRequest) {
         // TODO UserName 유효성 검사 필요
         // TODO 주문수량, 주문금액 같은지 비교
-        OrderNumber orderNumber = orderNumberService.nextOrderNumber(orderRequest.getUserName());
+        OrderNumber orderNumber = getNextOrderNumber(orderRequest.getUserName());
 
-        List<Product> products = findProducts(orderRequest.getOrderLines());
+        List<OrderLine> orderLines = orderRequest.getOrderLines();
+
+        List<ProductId> productIds = getProductIds(orderLines);
+
+        List<Option> options = getOptionsByProductId(productIds);
+
+        List<Product> products = getProductsByIds(productIds);
+
+        checkIsValidOption(options, orderLines);
 
         checkIsSoldOut(products);
 
@@ -46,10 +63,31 @@ public class CreateOrderService {
         return saved;
     }
 
-    private List<Product> findProducts(List<OrderLine> orderLines) {
-        List<ProductId> productIds = getProductIds(orderLines);
+    private OrderNumber getNextOrderNumber(UserName userName) {
+        return orderNumberService.nextOrderNumber(userName);
+    }
 
-        return getProductsByIds(productIds);
+    private List<Option> getOptionsByProductId(List<ProductId> productIds) {
+        return optionRepository.findAllByProductIdIn(productIds);
+    }
+
+    private void checkIsValidOption(List<Option> options, List<OrderLine> orderLines) {
+        Map<ProductId, Option> optionMap = options
+                .stream()
+                .collect(Collectors.toMap(Option::getProductId, Function.identity()));
+
+        orderLines.stream()
+                .forEach((orderLine -> {
+                    Option option = optionMap.get(orderLine.getProductId());
+
+                    if (option == null) {
+                        return;
+                    }
+
+                    ItemOption itemOption = orderLine.getOption();
+
+                    option.checkIsValid(itemOption.getSize(), itemOption.getColor());
+                }));
     }
 
     private List<ProductId> getProductIds(List<OrderLine> orderLines) {

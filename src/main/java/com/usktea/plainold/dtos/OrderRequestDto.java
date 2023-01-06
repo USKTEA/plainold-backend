@@ -1,10 +1,5 @@
 package com.usktea.plainold.dtos;
 
-import com.usktea.plainold.models.common.Money;
-import com.usktea.plainold.models.order.Orderer;
-import com.usktea.plainold.models.order.Payment;
-import com.usktea.plainold.models.order.ShippingInformation;
-
 import javax.validation.constraints.NotNull;
 import java.util.List;
 

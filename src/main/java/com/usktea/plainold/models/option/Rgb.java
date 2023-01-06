@@ -3,6 +3,7 @@ package com.usktea.plainold.models.option;
 import com.usktea.plainold.dtos.RgbDto;
 import com.usktea.plainold.exceptions.InvalidRgbValue;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.util.Objects;
 

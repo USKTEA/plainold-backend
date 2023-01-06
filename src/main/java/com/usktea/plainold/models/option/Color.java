@@ -30,6 +30,15 @@ public class Color {
         this.blue = blue;
     }
 
+    public static Color of(ColorDto color) {
+        return new Color(
+                color.getName(),
+                new Rgb(color.getRed()),
+                new Rgb(color.getGreen()),
+                new Rgb(color.getBlue())
+        );
+    }
+
     public String getName() {
         return name;
     }

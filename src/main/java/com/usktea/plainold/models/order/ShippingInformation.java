@@ -19,7 +19,7 @@ public class ShippingInformation {
     public ShippingInformation(Receiver receiver, Address address, String message) {
         this.receiver = receiver;
         this.address = address;
-        this.message = message;
+        setMessage(message);
     }
 
     public static ShippingInformation of(ShippingInformationDto shippingInformationDto) {
@@ -72,6 +72,16 @@ public class ShippingInformation {
 
     public String getMessage() {
         return message;
+    }
+
+    private void setMessage(String message) {
+        if (message == null) {
+            this.message = "";
+
+            return;
+        }
+
+        this.message = message;
     }
 
     public ReceiverDto getReceiverDto() {

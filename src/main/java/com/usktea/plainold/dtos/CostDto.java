@@ -1,5 +1,7 @@
 package com.usktea.plainold.dtos;
 
+import com.usktea.plainold.models.option.Size;
+
 public class CostDto {
     private Long amount;
 
