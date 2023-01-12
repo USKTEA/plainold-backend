@@ -4,7 +4,7 @@ public enum Size {
     M("M"),
     L("L"),
     XL("XL"),
-    NONE("");
+    FREE("");
 
     private String value;
 

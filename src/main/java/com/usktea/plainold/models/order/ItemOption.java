@@ -27,7 +27,7 @@ public class ItemOption {
 
     private void setOption(OptionDto option) {
         if (option == null) {
-            this.size = Size.NONE;
+            this.size = Size.FREE;
             this.color = "";
 
             return;

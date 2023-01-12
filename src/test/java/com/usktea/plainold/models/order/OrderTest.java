@@ -4,9 +4,7 @@ import com.usktea.plainold.dtos.OrderItemDto;
 import com.usktea.plainold.dtos.OrderRequest;
 import com.usktea.plainold.dtos.OrderRequestDto;
 import com.usktea.plainold.exceptions.EmptyOrderLines;
-import com.usktea.plainold.models.order.Order;
-import com.usktea.plainold.models.order.OrderNumber;
-import com.usktea.plainold.models.user.UserName;
+import com.usktea.plainold.models.user.Username;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -37,7 +35,7 @@ class OrderTest {
     @Test
     void whenOrderLinesIsEmpty() {
         OrderNumber orderNumber = new OrderNumber("tjrxo-202212312331");
-        UserName userName = new UserName("tjrxo1234@gmail.com");
+        Username userName = new Username("tjrxo1234@gmail.com");
         List<OrderItemDto> orderItems = List.of();
 
         assertThrows(EmptyOrderLines.class, () ->
