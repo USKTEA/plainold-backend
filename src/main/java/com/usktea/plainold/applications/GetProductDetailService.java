@@ -25,9 +25,9 @@ public class GetProductDetailService {
     }
 
     public ProductDetail detail(ProductId id) {
-        Product fake = Product.fake(id);
-
-        productRepository.save(fake);
+//        Product fake = Product.fake(id);
+//
+//        productRepository.save(fake);
 
         Product product = productRepository.findById(id)
                 .orElseThrow(ProductNotFound::new);

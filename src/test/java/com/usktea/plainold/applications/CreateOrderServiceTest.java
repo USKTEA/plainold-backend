@@ -6,12 +6,13 @@ import com.usktea.plainold.dtos.OrderRequest;
 import com.usktea.plainold.exceptions.InvalidProductOption;
 import com.usktea.plainold.exceptions.ProductNotFound;
 import com.usktea.plainold.exceptions.ProductSoldOut;
+import com.usktea.plainold.exceptions.UserNotExists;
 import com.usktea.plainold.models.option.Option;
-import com.usktea.plainold.models.order.ItemOption;
 import com.usktea.plainold.models.order.Order;
 import com.usktea.plainold.models.product.Product;
 import com.usktea.plainold.models.product.ProductId;
 import com.usktea.plainold.models.product.ProductStatus;
+import com.usktea.plainold.models.user.Username;
 import com.usktea.plainold.repositories.OptionRepository;
 import com.usktea.plainold.repositories.OrderRepository;
 import com.usktea.plainold.repositories.ProductRepository;
@@ -26,6 +27,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -33,6 +35,9 @@ import static org.mockito.Mockito.verify;
 class CreateOrderServiceTest {
     private CreateOrderService createOrderService;
     private OrderNumberService orderNumberService;
+
+    @MockBean
+    private FindUserService findUserService;
 
     @MockBean
     private OrderRepository orderRepository;
@@ -46,19 +51,22 @@ class CreateOrderServiceTest {
     @BeforeEach
     void setUp() {
         orderNumberService = new OrderNumberService();
+        findUserService = mock(FindUserService.class);
 
         orderRepository = mock(OrderRepository.class);
         productRepository = mock(ProductRepository.class);
         optionRepository = mock(OptionRepository.class);
 
         createOrderService = new CreateOrderService(
-                orderNumberService, orderRepository, productRepository, optionRepository
+                orderNumberService, findUserService,
+                orderRepository, productRepository, optionRepository
         );
     }
 
     @Test
     void whenCreateOrderSuccess() {
         ProductId productId = new ProductId(1L);
+        Username username = new Username("tjrxo1234@gmail.com");
 
         given(productRepository.findById(any()))
                 .willReturn(Optional.of(Product.fake(productId)));
@@ -71,6 +79,19 @@ class CreateOrderServiceTest {
                 .willReturn(order);
 
         verify(orderRepository).save(any());
+    }
+
+    @Test
+    void whenUserIsNotExists() {
+        ProductId productId = new ProductId(1L);
+        Username username = new Username("notExists@gmail.com");
+
+        doThrow(UserNotExists.class).when(findUserService).find(username);
+
+        OrderRequest orderRequest = OrderRequest.fake(username);
+
+        assertThrows(UserNotExists.class,
+                () -> createOrderService.placeOrder(orderRequest));
     }
 
     @Test

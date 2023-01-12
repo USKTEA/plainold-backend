@@ -1,7 +1,7 @@
 package com.usktea.plainold.applications;
 
 import com.usktea.plainold.models.order.OrderNumber;
-import com.usktea.plainold.models.user.UserName;
+import com.usktea.plainold.models.user.Username;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -13,7 +13,7 @@ class OrderNumberServiceTest {
     @Test
     void nextOrderNumber() {
         OrderNumberService orderNumberService = new OrderNumberService();
-        UserName userName = new UserName("tjrxo1234@gmail.com");
+        Username userName = new Username("tjrxo1234@gmail.com");
 
         OrderNumber orderNumber = orderNumberService.nextOrderNumber(userName);
 

@@ -8,10 +8,12 @@ import com.usktea.plainold.exceptions.ProductNotFound;
 import com.usktea.plainold.models.category.CategoryId;
 import com.usktea.plainold.models.product.Product;
 import com.usktea.plainold.models.product.ProductId;
+import com.usktea.plainold.utils.JwtUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.test.context.ActiveProfiles;
@@ -30,7 +32,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(ProductController.class)
 @ActiveProfiles("test")
 class ProductControllerTest {
-
     @Autowired
     private MockMvc mockMvc;
 

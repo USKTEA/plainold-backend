@@ -23,6 +23,6 @@ class ItemOptionTest {
         ItemOption itemOption = new ItemOption(null);
 
         assertThat(itemOption.getColor()).isEqualTo("");
-        assertThat(itemOption.getSize()).isEqualTo(Size.NONE);
+        assertThat(itemOption.getSize()).isEqualTo(Size.FREE);
     }
 }

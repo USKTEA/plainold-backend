@@ -1,7 +1,7 @@
 package com.usktea.plainold.applications;
 
 import com.usktea.plainold.models.order.OrderNumber;
-import com.usktea.plainold.models.user.UserName;
+import com.usktea.plainold.models.user.Username;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -10,7 +10,7 @@ import java.util.Date;
 
 @Service
 public class OrderNumberService {
-    public OrderNumber nextOrderNumber(UserName userName) {
+    public OrderNumber nextOrderNumber(Username userName) {
         if (userName == null) {
             throw new IllegalArgumentException("Invalid userName:" + userName);
         }
@@ -26,7 +26,7 @@ public class OrderNumberService {
         return date.format(current);
     }
 
-    private String userInfo(UserName userName) {
+    private String userInfo(Username userName) {
         return userName.beforeAt();
     }
 }

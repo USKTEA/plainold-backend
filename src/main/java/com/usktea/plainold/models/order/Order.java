@@ -3,7 +3,7 @@ package com.usktea.plainold.models.order;
 import com.usktea.plainold.dtos.OrderRequest;
 import com.usktea.plainold.dtos.OrderResultDto;
 import com.usktea.plainold.exceptions.EmptyOrderLines;
-import com.usktea.plainold.models.user.UserName;
+import com.usktea.plainold.models.user.Username;
 import com.usktea.plainold.models.common.Money;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -33,7 +33,7 @@ public class Order {
     private List<OrderLine> orderLines = new ArrayList<>();
 
     @Embedded
-    private UserName userName;
+    private Username userName;
 
     @Embedded
     private Orderer orderer;

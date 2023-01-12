@@ -3,15 +3,22 @@ package com.usktea.plainold.controllers;
 import com.usktea.plainold.applications.CreateOrderService;
 import com.usktea.plainold.models.order.Order;
 import com.usktea.plainold.models.order.OrderNumber;
+import com.usktea.plainold.models.user.Username;
+import com.usktea.plainold.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import javax.servlet.http.Cookie;
+
+import java.util.UUID;
 
 import static org.hamcrest.core.StringContains.containsString;
 import static org.mockito.ArgumentMatchers.any;
@@ -24,6 +31,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class OrderControllerTest {
     @Autowired
     private MockMvc mockMvc;
+
+    @SpyBean
+    private JwtUtil jwtUtil;
 
     @MockBean
     private CreateOrderService createOrderService;
@@ -38,7 +48,12 @@ class OrderControllerTest {
 
     @Test
     void whenAllOrderInformationComplete() throws Exception {
+        Username username = new Username("tjrxo1234@gmail.com");
+
+        String token = jwtUtil.encode(username.value());
+
         mockMvc.perform(MockMvcRequestBuilders.post("/orders")
+                        .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\n" +
                                 "  \"orderItems\": [\n" +

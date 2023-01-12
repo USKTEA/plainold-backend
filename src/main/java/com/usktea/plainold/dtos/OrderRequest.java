@@ -5,13 +5,13 @@ import com.usktea.plainold.models.order.OrderLine;
 import com.usktea.plainold.models.order.Orderer;
 import com.usktea.plainold.models.order.Payment;
 import com.usktea.plainold.models.order.ShippingInformation;
-import com.usktea.plainold.models.user.UserName;
+import com.usktea.plainold.models.user.Username;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class OrderRequest {
-    private UserName userName;
+    private Username userName;
     private List<OrderLine> orderLines;
     private Orderer orderer;
     private ShippingInformation shippingInformation;
@@ -19,7 +19,7 @@ public class OrderRequest {
     private Money shippingFee;
     private Money cost;
 
-    public OrderRequest(UserName userName, OrderRequestDto orderRequestDto) {
+    public OrderRequest(Username userName, OrderRequestDto orderRequestDto) {
         setUserName(userName);
         setOrderLines(orderRequestDto.getOrderItems());
         setOrderer(orderRequestDto.getOrderer());
@@ -29,29 +29,36 @@ public class OrderRequest {
         setCost(orderRequestDto.getCost());
     }
 
-    public static OrderRequest of(UserName userName, OrderRequestDto orderRequestDto) {
+    public static OrderRequest of(Username userName, OrderRequestDto orderRequestDto) {
         return new OrderRequest(userName, orderRequestDto);
     }
 
     public static OrderRequest fake() {
         return new OrderRequest(
-                new UserName("tjrxo1234@gmail.com"),
+                new Username("tjrxo1234@gmail.com"),
                 OrderRequestDto.fake()
         );
     }
 
     public static OrderRequest fake(List<OrderItemDto> orderItemDto) {
         return new OrderRequest(
-                new UserName("tjrxo1234@gmail.com"),
+                new Username("tjrxo1234@gmail.com"),
                 OrderRequestDto.fake(orderItemDto)
         );
     }
 
-    public UserName getUserName() {
+    public static OrderRequest fake(Username username) {
+        return new OrderRequest(
+                username,
+                OrderRequestDto.fake()
+        );
+    }
+
+    public Username getUserName() {
         return userName;
     }
 
-    private void setUserName(UserName userName) {
+    private void setUserName(Username userName) {
         this.userName = userName;
     }
 

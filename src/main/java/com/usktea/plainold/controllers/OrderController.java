@@ -6,11 +6,12 @@ import com.usktea.plainold.dtos.OrderRequestDto;
 import com.usktea.plainold.dtos.OrderResultDto;
 import com.usktea.plainold.exceptions.OrderNotCreated;
 import com.usktea.plainold.models.order.Order;
-import com.usktea.plainold.models.user.UserName;
+import com.usktea.plainold.models.user.Username;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -30,13 +31,11 @@ public class OrderController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public OrderResultDto create(
+            @RequestAttribute Username username,
             @Valid @RequestBody OrderRequestDto orderRequestDto
     ) {
-        //TODO 인터셉터에서 가져와야함
-        UserName userName = new UserName("tjrxo1234@gmail.com");
-
         try {
-            OrderRequest orderRequest = OrderRequest.of(userName, orderRequestDto);
+            OrderRequest orderRequest = OrderRequest.of(username, orderRequestDto);
 
             Order order = createOrderService.placeOrder(orderRequest);
 

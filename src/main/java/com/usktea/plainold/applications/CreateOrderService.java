@@ -9,7 +9,7 @@ import com.usktea.plainold.models.order.OrderLine;
 import com.usktea.plainold.models.order.OrderNumber;
 import com.usktea.plainold.models.product.Product;
 import com.usktea.plainold.models.product.ProductId;
-import com.usktea.plainold.models.user.UserName;
+import com.usktea.plainold.models.user.Username;
 import com.usktea.plainold.repositories.OptionRepository;
 import com.usktea.plainold.repositories.OrderRepository;
 import com.usktea.plainold.repositories.ProductRepository;
@@ -25,24 +25,30 @@ import java.util.stream.Collectors;
 @Transactional
 public class CreateOrderService {
     private final OrderNumberService orderNumberService;
+    private final FindUserService findUserService;
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final OptionRepository optionRepository;
 
     public CreateOrderService(OrderNumberService orderNumberService,
+                              FindUserService findUserService,
                               OrderRepository orderRepository,
                               ProductRepository productRepository,
                               OptionRepository optionRepository) {
         this.orderNumberService = orderNumberService;
+        this.findUserService = findUserService;
         this.orderRepository = orderRepository;
         this.productRepository = productRepository;
         this.optionRepository = optionRepository;
     }
 
     public Order placeOrder(OrderRequest orderRequest) {
-        // TODO UserName 유효성 검사 필요
         // TODO 주문수량, 주문금액 같은지 비교
-        OrderNumber orderNumber = getNextOrderNumber(orderRequest.getUserName());
+        Username username = orderRequest.getUserName();
+
+        findUserService.find(username);
+
+        OrderNumber orderNumber = getNextOrderNumber(username);
 
         List<OrderLine> orderLines = orderRequest.getOrderLines();
 
@@ -63,12 +69,30 @@ public class CreateOrderService {
         return saved;
     }
 
-    private OrderNumber getNextOrderNumber(UserName userName) {
+    private OrderNumber getNextOrderNumber(Username userName) {
         return orderNumberService.nextOrderNumber(userName);
     }
 
     private List<Option> getOptionsByProductId(List<ProductId> productIds) {
         return optionRepository.findAllByProductIdIn(productIds);
+    }
+
+    private List<ProductId> getProductIds(List<OrderLine> orderLines) {
+        return orderLines
+                .stream()
+                .map((orderLine -> orderLine.getProductId()))
+                .collect(Collectors.toList());
+    }
+
+    private List<Product> getProductsByIds(List<ProductId> productIds) {
+        return productIds.stream()
+                .map((productId) -> productRepository.findById(productId)
+                        .orElseThrow(ProductNotFound::new))
+                .collect(Collectors.toList());
+    }
+
+    private void checkIsSoldOut(List<Product> products) {
+        products.stream().forEach(Product::checkIsSoldOut);
     }
 
     private void checkIsValidOption(List<Option> options, List<OrderLine> orderLines) {
@@ -88,23 +112,5 @@ public class CreateOrderService {
 
                     option.checkIsValid(itemOption.getSize(), itemOption.getColor());
                 }));
-    }
-
-    private List<ProductId> getProductIds(List<OrderLine> orderLines) {
-        return orderLines
-                .stream()
-                .map((orderLine -> orderLine.getProductId()))
-                .collect(Collectors.toList());
-    }
-
-    private List<Product> getProductsByIds(List<ProductId> productIds) {
-        return productIds.stream()
-                .map((productId) -> productRepository.findById(productId)
-                        .orElseThrow(ProductNotFound::new))
-                .collect(Collectors.toList());
-    }
-
-    private void checkIsSoldOut(List<Product> products) {
-        products.stream().forEach(Product::checkIsSoldOut);
     }
 }
