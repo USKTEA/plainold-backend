@@ -2,7 +2,7 @@ package com.usktea.plainold.applications;
 
 import com.usktea.plainold.dtos.TokenDto;
 import com.usktea.plainold.exceptions.RefreshTokenNotFound;
-import com.usktea.plainold.models.RefreshToken;
+import com.usktea.plainold.models.token.Token;
 import com.usktea.plainold.models.user.Username;
 import com.usktea.plainold.repositories.RefreshTokenRepository;
 import com.usktea.plainold.utils.JwtUtil;
@@ -26,9 +26,9 @@ public class IssueTokenService {
         String accessToken = jwtUtil.encode(username.value());
         String refreshToken = jwtUtil.encode(UUID.randomUUID());
 
-        RefreshToken refreshTokenEntity = RefreshToken.of(username, refreshToken);
+        Token tokenEntity = Token.of(username, refreshToken);
 
-        refreshTokenRepository.save(refreshTokenEntity);
+        refreshTokenRepository.save(tokenEntity);
 
         return new TokenDto(accessToken, refreshToken);
     }
@@ -36,7 +36,7 @@ public class IssueTokenService {
     public TokenDto reissue(String token) {
         jwtUtil.decodeRefreshToken(token);
 
-        RefreshToken refreshToken = refreshTokenRepository.findByNumber(token)
+        Token refreshToken = refreshTokenRepository.findByNumber(token)
                 .orElseThrow(RefreshTokenNotFound::new);
 
         String accessToken = refreshToken.getNextAccessToken(jwtUtil);

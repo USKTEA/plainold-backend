@@ -21,6 +21,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         String authorization = request.getHeader("Authorization");
 
         if (authorization == null || !authorization.startsWith("Bearer ")) {
+            request.setAttribute("username", "guest");
+
             return true;
         }
 

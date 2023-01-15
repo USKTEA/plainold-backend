@@ -35,4 +35,13 @@ class QuantityTest {
         assertThat(quantity1).isEqualTo(quantity2);
         assertThat(quantity1).isNotEqualTo(quantity3);
     }
+
+    @Test
+    void add() {
+        Quantity one = new Quantity(1L);
+        Quantity two = new Quantity(2L);
+        Quantity three = new Quantity(3L);
+
+        assertThat(one.add(two)).isEqualTo(three);
+    }
 }

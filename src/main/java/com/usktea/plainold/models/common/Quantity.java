@@ -47,4 +47,8 @@ public class Quantity {
 
         this.amount = amount;
     }
+
+    public Quantity add(Quantity quantity) {
+        return new Quantity(this.amount + quantity.getAmount());
+    }
 }

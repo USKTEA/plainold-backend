@@ -1,6 +1,7 @@
 package com.usktea.plainold.models.order;
 
 import com.usktea.plainold.dtos.OrderItemDto;
+import com.usktea.plainold.models.common.ItemOption;
 import com.usktea.plainold.models.common.Money;
 import com.usktea.plainold.models.common.Quantity;
 import com.usktea.plainold.models.product.ProductId;

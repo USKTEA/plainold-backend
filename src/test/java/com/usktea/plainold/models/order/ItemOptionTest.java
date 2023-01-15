@@ -1,5 +1,6 @@
 package com.usktea.plainold.models.order;
 
+import com.usktea.plainold.models.common.ItemOption;
 import com.usktea.plainold.models.option.Size;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;

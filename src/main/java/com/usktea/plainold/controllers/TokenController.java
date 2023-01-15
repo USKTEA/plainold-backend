@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
@@ -51,7 +52,12 @@ public class TokenController {
 
     @ExceptionHandler(ReissueTokenFailed.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String invalidToken(Exception exception) {
+    public String invalidToken(Exception exception, HttpServletResponse response) {
+        Cookie cookie = new Cookie("refreshToken", null);
+        cookie.setMaxAge(0);;
+
+        response.addCookie(cookie);
+
         return exception.getMessage();
     }
 }

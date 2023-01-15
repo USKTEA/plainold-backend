@@ -11,7 +11,7 @@ import javax.transaction.Transactional;
 @Transactional
 @Service
 public class FindUserService {
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public FindUserService(UserRepository userRepository) {
         this.userRepository = userRepository;

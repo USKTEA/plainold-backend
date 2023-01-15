@@ -2,9 +2,7 @@ package com.usktea.plainold.applications;
 
 import com.usktea.plainold.dtos.TokenDto;
 import com.usktea.plainold.exceptions.RefreshTokenNotFound;
-import com.usktea.plainold.exceptions.ReissueTokenFailed;
-import com.usktea.plainold.exceptions.UserNotExists;
-import com.usktea.plainold.models.RefreshToken;
+import com.usktea.plainold.models.token.Token;
 import com.usktea.plainold.models.user.Username;
 import com.usktea.plainold.repositories.RefreshTokenRepository;
 import com.usktea.plainold.utils.JwtUtil;
@@ -44,7 +42,7 @@ class IssueTokenServiceTest {
         assertThat(tokenDto.getAccessToken()).contains(".");
         assertThat(tokenDto.getRefreshToken()).contains(".");
 
-        verify(refreshTokenRepository).save(any(RefreshToken.class));
+        verify(refreshTokenRepository).save(any(Token.class));
     }
 
     @Test
@@ -54,7 +52,7 @@ class IssueTokenServiceTest {
         String token = jwtUtil.encode(UUID.randomUUID());
 
         given(refreshTokenRepository.findByNumber(token))
-                .willReturn(Optional.of(RefreshToken.of(username, token)));
+                .willReturn(Optional.of(Token.of(username, token)));
 
         TokenDto newToken = issueTokenService.reissue(token);
 

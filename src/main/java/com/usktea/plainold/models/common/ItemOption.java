@@ -1,4 +1,4 @@
-package com.usktea.plainold.models.order;
+package com.usktea.plainold.models.common;
 
 import com.usktea.plainold.dtos.OptionDto;
 import com.usktea.plainold.models.option.Size;
@@ -6,6 +6,7 @@ import com.usktea.plainold.models.option.Size;
 import javax.persistence.Embeddable;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Transient;
 import java.util.Objects;
 
 @Embeddable
@@ -73,5 +74,10 @@ public class ItemOption {
     @Override
     public int hashCode() {
         return Objects.hash(size, color);
+    }
+
+    @Transient
+    public boolean isDefault() {
+        return size.isFree() && color.isBlank();
     }
 }

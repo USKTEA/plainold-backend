@@ -16,10 +16,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import javax.servlet.http.Cookie;
-
-import java.util.UUID;
-
 import static org.hamcrest.core.StringContains.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -55,43 +51,43 @@ class OrderControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/orders")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\n" +
-                                "  \"orderItems\": [\n" +
-                                "    {\n" +
-                                "      \"id\": 1,\n" +
-                                "      \"productId\": 1,\n" +
-                                "      \"price\": 10000,\n" +
-                                "      \"name\": \"T-Shirt\",\n" +
-                                "      \"thumbnailUrl\": \"1\",\n" +
-                                "      \"shippingFee\": 2500,\n" +
-                                "      \"freeShippingAmount\": 50000,\n" +
-                                "      \"quantity\": 1,\n" +
-                                "      \"totalPrice\": 10000\n" +
-                                "    }\n" +
-                                "  ],\n" +
-                                "  \"orderer\": {\n" +
-                                "    \"name\": \"김뚜루\",\n" +
-                                "    \"phoneNumber\": \"010-5237-2189\",\n" +
-                                "    \"email\": \"tjrxo1234@gmail.com\"\n" +
-                                "  },\n" +
-                                "  \"shippingInformation\": {\n" +
-                                "    \"receiver\": { \n" +
-                                "      \"name\": \"김뚜루\", \n" +
-                                "      \"phoneNumber\": \"010-5237-2189\"\n" +
-                                "    },\n" +
-                                "    \"address\": {\n" +
-                                "      \"zipCode\": \"623814\",\n" +
-                                "      \"address1\": \"서울시 성동구 상원12길 34\",\n" +
-                                "      \"address2\": \"에이원지식산업센터 612호\"\n" +
-                                "    },\n" +
-                                "    \"message\": \"빨리 와주세요\"\n" +
-                                "  },\n" +
-                                "  \"payment\": { \n" +
-                                "    \"method\": \"CASH\", \n" +
-                                "    \"payer\": \"김뚜루\"\n" +
-                                "  },\n" +
-                                "  \"shippingFee\": 2500,\n" +
-                                "  \"cost\": 12500\n" +
+                        .content("{" +
+                                "  \"orderItems\": [" +
+                                "    {" +
+                                "      \"id\": 1," +
+                                "      \"productId\": 1," +
+                                "      \"price\": 10000," +
+                                "      \"name\": \"T-Shirt\"," +
+                                "      \"thumbnailUrl\": \"1\"," +
+                                "      \"shippingFee\": 2500," +
+                                "      \"freeShippingAmount\": 50000," +
+                                "      \"quantity\": 1," +
+                                "      \"totalPrice\": 10000" +
+                                "    }" +
+                                "  ]," +
+                                "  \"orderer\": {" +
+                                "    \"name\": \"김뚜루\"," +
+                                "    \"phoneNumber\": \"010-5237-2189\"," +
+                                "    \"email\": \"tjrxo1234@gmail.com\"" +
+                                "  }," +
+                                "  \"shippingInformation\": {" +
+                                "    \"receiver\": { " +
+                                "      \"name\": \"김뚜루\", " +
+                                "      \"phoneNumber\": \"010-5237-2189\"" +
+                                "    }," +
+                                "    \"address\": {" +
+                                "      \"zipCode\": \"623814\"," +
+                                "      \"address1\": \"서울시 성동구 상원12길 34\"," +
+                                "      \"address2\": \"에이원지식산업센터 612호\"" +
+                                "    }," +
+                                "    \"message\": \"빨리 와주세요\"" +
+                                "  }," +
+                                "  \"payment\": { " +
+                                "    \"method\": \"CASH\", " +
+                                "    \"payer\": \"김뚜루\"" +
+                                "  }," +
+                                "  \"shippingFee\": 2500," +
+                                "  \"cost\": 12500" +
                                 "}"))
                 .andExpect(status().isCreated())
                 .andExpect(content().string(
@@ -103,38 +99,38 @@ class OrderControllerTest {
     void whenNotReceiveSumOfOrderRequestInformation() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/orders")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\n" +
-                                "  \"orderItems\": [\n" +
-                                "    {\n" +
-                                "      \"id\": 1,\n" +
-                                "      \"productId\": 1,\n" +
-                                "      \"price\": 10000,\n" +
-                                "      \"name\": \"T-Shirt\",\n" +
-                                "      \"thumbnailUrl\": \"1\",\n" +
-                                "      \"shippingFee\": 2500,\n" +
-                                "      \"freeShippingAmount\": 50000,\n" +
-                                "      \"quantity\": 1,\n" +
-                                "      \"totalPrice\": 10000\n" +
-                                "    }\n" +
-                                "  ],\n" +
-                                "  \"shippingInformation\": {\n" +
-                                "    \"receiver\": { \n" +
-                                "      \"name\": \"김뚜루\", \n" +
-                                "      \"phoneNumber\": \"010-5237-2189\"\n" +
-                                "    },\n" +
-                                "    \"address\": {\n" +
-                                "      \"zipCode\": \"623814\",\n" +
-                                "      \"address1\": \"서울시 성동구 상원12길 34\",\n" +
-                                "      \"address2\": \"에이원지식산업센터 612호\"\n" +
-                                "    },\n" +
-                                "    \"message\": \"빨리 와주세요\"\n" +
-                                "  },\n" +
-                                "  \"payment\": { \n" +
-                                "    \"method\": \"CASH\", \n" +
-                                "    \"payer\": \"김뚜루\"\n" +
-                                "  },\n" +
-                                "  \"shippingFee\": 2500,\n" +
-                                "  \"cost\": 12500\n" +
+                        .content("{" +
+                                "  \"orderItems\": [" +
+                                "    {" +
+                                "      \"id\": 1," +
+                                "      \"productId\": 1," +
+                                "      \"price\": 10000," +
+                                "      \"name\": \"T-Shirt\"," +
+                                "      \"thumbnailUrl\": \"1\"," +
+                                "      \"shippingFee\": 2500," +
+                                "      \"freeShippingAmount\": 50000," +
+                                "      \"quantity\": 1," +
+                                "      \"totalPrice\": 10000" +
+                                "    }" +
+                                "  ]," +
+                                "  \"shippingInformation\": {" +
+                                "    \"receiver\": { " +
+                                "      \"name\": \"김뚜루\", " +
+                                "      \"phoneNumber\": \"010-5237-2189\"" +
+                                "    }," +
+                                "    \"address\": {" +
+                                "      \"zipCode\": \"623814\"," +
+                                "      \"address1\": \"서울시 성동구 상원12길 34\"," +
+                                "      \"address2\": \"에이원지식산업센터 612호\"" +
+                                "    }," +
+                                "    \"message\": \"빨리 와주세요\"" +
+                                "  }," +
+                                "  \"payment\": { " +
+                                "    \"method\": \"CASH\", " +
+                                "    \"payer\": \"김뚜루\"" +
+                                "  }," +
+                                "  \"shippingFee\": 2500," +
+                                "  \"cost\": 12500" +
                                 "}"))
                 .andExpect(status().isBadRequest());
     }
