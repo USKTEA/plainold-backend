@@ -1,5 +1,7 @@
 package com.usktea.plainold.models.option;
 
+import java.util.Objects;
+
 public enum Size {
     M("M"),
     L("L"),
@@ -10,5 +12,9 @@ public enum Size {
 
     Size(String value) {
         this.value = value;
+    }
+
+    public boolean isFree() {
+        return Objects.equals(value, "");
     }
 }

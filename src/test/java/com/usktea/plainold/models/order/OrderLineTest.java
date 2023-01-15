@@ -2,8 +2,7 @@ package com.usktea.plainold.models.order;
 
 import com.usktea.plainold.models.common.Money;
 import com.usktea.plainold.models.common.Quantity;
-import com.usktea.plainold.models.order.ItemOption;
-import com.usktea.plainold.models.order.OrderLine;
+import com.usktea.plainold.models.common.ItemOption;
 import com.usktea.plainold.models.product.ProductId;
 import com.usktea.plainold.models.product.ProductName;
 import com.usktea.plainold.models.product.ThumbnailUrl;

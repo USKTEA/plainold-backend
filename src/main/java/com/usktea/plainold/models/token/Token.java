@@ -1,4 +1,4 @@
-package com.usktea.plainold.models;
+package com.usktea.plainold.models.token;
 
 import com.usktea.plainold.models.user.Username;
 import com.usktea.plainold.utils.JwtUtil;
@@ -10,22 +10,22 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Entity
-public class RefreshToken {
+public class Token {
     @Id
     @Embedded
     private Username username;
     private String number;
 
-    public RefreshToken() {
+    public Token() {
     }
 
-    public RefreshToken(Username username, String number) {
+    public Token(Username username, String number) {
         this.username = username;
         this.number = number;
     }
 
-    public static RefreshToken of(Username username, String number) {
-        return new RefreshToken(username, number);
+    public static Token of(Username username, String number) {
+        return new Token(username, number);
     }
 
     @Override
@@ -38,18 +38,14 @@ public class RefreshToken {
             return false;
         }
 
-        RefreshToken otherRefreshToken = (RefreshToken) object;
+        Token otherToken = (Token) object;
 
-        return Objects.equals(username, otherRefreshToken.username);
+        return Objects.equals(username, otherToken.username);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(username);
-    }
-
-    public void update(String newNumber) {
-        this.number = newNumber;
     }
 
     public Username username() {
@@ -58,10 +54,6 @@ public class RefreshToken {
 
     public String getNextAccessToken(JwtUtil jwtUtil) {
         return jwtUtil.encode(username.value());
-    }
-
-    public String getNextRefreshToken(JwtUtil jwtUtil) {
-        return jwtUtil.encode(UUID.randomUUID());
     }
 
     public String getNextVersion(JwtUtil jwtUtil) {

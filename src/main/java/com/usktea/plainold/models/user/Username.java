@@ -22,6 +22,12 @@ public class Username implements Serializable {
     }
 
     private void setValue(String value) {
+        if (Objects.equals(value, "guest")) {
+            this.value = value;
+
+            return;
+        }
+
         Pattern pattern = Pattern.compile("^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$");
 
         Matcher matcher = pattern.matcher(value);

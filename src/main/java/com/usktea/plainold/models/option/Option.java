@@ -49,6 +49,24 @@ public class Option {
         return option;
     }
 
+    public void checkIsValid(Size size, String color) {
+        if (!sizes.contains(size.name()) || !hasColor(color)) {
+            throw new InvalidProductOption();
+        }
+    }
+
+    private boolean hasColor(String colorName) {
+        List<String> colorNames = colors.stream()
+                .map((color) -> color.getName())
+                .collect(Collectors.toList());
+
+        if (!colorNames.contains(colorName)) {
+            return false;
+        }
+
+        return true;
+    }
+
     public void addOptions() {
         colors.add(new Color("Black", new Rgb(0), new Rgb(0), new Rgb(0)));
         colors.add(new Color("Gray", new Rgb(120), new Rgb(120), new Rgb(120)));
@@ -89,23 +107,5 @@ public class Option {
 
     public ProductId getProductId() {
         return productId;
-    }
-
-    public void checkIsValid(Size size, String color) {
-        if (!sizes.contains(size.name()) || !hasColor(color)) {
-            throw new InvalidProductOption();
-        }
-    }
-
-    private boolean hasColor(String colorName) {
-        List<String> colorNames = colors.stream()
-                .map((color) -> color.getName())
-                .collect(Collectors.toList());
-
-        if (!colorNames.contains(colorName)) {
-            return false;
-        }
-
-        return true;
     }
 }

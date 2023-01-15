@@ -2,8 +2,8 @@ package com.usktea.plainold.applications;
 
 import com.usktea.plainold.dtos.OrderRequest;
 import com.usktea.plainold.exceptions.ProductNotFound;
+import com.usktea.plainold.models.common.ItemOption;
 import com.usktea.plainold.models.option.Option;
-import com.usktea.plainold.models.order.ItemOption;
 import com.usktea.plainold.models.order.Order;
 import com.usktea.plainold.models.order.OrderLine;
 import com.usktea.plainold.models.order.OrderNumber;

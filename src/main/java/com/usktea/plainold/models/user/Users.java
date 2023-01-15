@@ -12,6 +12,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 public class Users {
@@ -64,5 +65,25 @@ public class Users {
         if (!passwordEncoder.matches(password.getValue(), this.password.getValue())) {
             throw new LoginFailed();
         }
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+
+        Users otherUsers = (Users) object;
+
+        return Objects.equals(username, otherUsers.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username);
     }
 }

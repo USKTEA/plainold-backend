@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @RequestMapping("products")
 public class ProductController {
     private final GetProductsService getProductsService;
-    private GetProductDetailService getProductDetailService;
+    private final GetProductDetailService getProductDetailService;
 
     public ProductController(GetProductsService getProductsService, GetProductDetailService getProductDetailService) {
         this.getProductsService = getProductsService;

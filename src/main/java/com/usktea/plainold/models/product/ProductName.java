@@ -1,6 +1,5 @@
 package com.usktea.plainold.models.product;
 
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.util.Objects;
 
