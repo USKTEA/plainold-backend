@@ -57,14 +57,15 @@ public class Users {
         this.password = Password.of(passwordEncoder.encode(password.getValue()));
     }
 
-    public Username username() {
-        return username;
-    }
 
     public void authenticate(Password password, PasswordEncoder passwordEncoder) {
         if (!passwordEncoder.matches(password.getValue(), this.password.getValue())) {
             throw new LoginFailed();
         }
+    }
+
+    public Username username() {
+        return username;
     }
 
     @Override
