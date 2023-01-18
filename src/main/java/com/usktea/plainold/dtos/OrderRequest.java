@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class OrderRequest {
-    private Username userName;
+    private Username username;
     private List<OrderLine> orderLines;
     private Orderer orderer;
     private ShippingInformation shippingInformation;
@@ -19,8 +19,8 @@ public class OrderRequest {
     private Money shippingFee;
     private Money cost;
 
-    public OrderRequest(Username userName, OrderRequestDto orderRequestDto) {
-        setUserName(userName);
+    public OrderRequest(Username username, OrderRequestDto orderRequestDto) {
+        setUsername(username);
         setOrderLines(orderRequestDto.getOrderItems());
         setOrderer(orderRequestDto.getOrderer());
         setShippingInformation(orderRequestDto.getShippingInformation());
@@ -54,12 +54,12 @@ public class OrderRequest {
         );
     }
 
-    public Username getUserName() {
-        return userName;
+    public Username getUsername() {
+        return username;
     }
 
-    private void setUserName(Username userName) {
-        this.userName = userName;
+    private void setUsername(Username username) {
+        this.username = username;
     }
 
     public List<OrderLine> getOrderLines() {

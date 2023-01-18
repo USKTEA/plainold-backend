@@ -16,14 +16,14 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 @ActiveProfiles("test")
-class FindUserServiceTest {
+class GetUserServiceTest {
     private UserRepository userRepository;
-    private FindUserService findUserService;
+    private GetUserService getUserService;
 
     @BeforeEach
     void setup() {
         userRepository = mock(UserRepository.class);
-        findUserService = new FindUserService(userRepository);
+        getUserService = new GetUserService(userRepository);
     }
 
     @Test
@@ -33,7 +33,7 @@ class FindUserServiceTest {
         given(userRepository.findByUsername(username))
                 .willReturn(Optional.of(Users.fake(username)));
 
-        assertDoesNotThrow(() -> findUserService.find(username));
+        assertDoesNotThrow(() -> getUserService.find(username));
     }
 
     @Test
@@ -44,6 +44,6 @@ class FindUserServiceTest {
                 .willReturn(Optional.empty());
 
         assertThrows(UserNotExists.class,
-                () -> findUserService.find(username));
+                () -> getUserService.find(username));
     }
 }

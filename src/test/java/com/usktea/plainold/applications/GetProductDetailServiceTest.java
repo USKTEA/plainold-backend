@@ -6,7 +6,6 @@ import com.usktea.plainold.models.option.Option;
 import com.usktea.plainold.models.product.Product;
 import com.usktea.plainold.models.product.ProductId;
 import com.usktea.plainold.repositories.OptionRepository;
-import com.usktea.plainold.repositories.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
@@ -20,23 +19,23 @@ import static org.mockito.Mockito.mock;
 
 @ActiveProfiles("test")
 class GetProductDetailServiceTest {
+    private GetProductService getProductService;
     private GetProductDetailService getProductDetailService;
-    private ProductRepository productRepository;
     private OptionRepository optionRepository;
 
     @BeforeEach
     void setup() {
-        productRepository = mock(ProductRepository.class);
+        getProductService = mock(GetProductService.class);
         optionRepository = mock(OptionRepository.class);
-        getProductDetailService = new GetProductDetailService(productRepository, optionRepository);
+        getProductDetailService = new GetProductDetailService(getProductService, optionRepository);
     }
 
     @Test
     void whenProductExits() {
         ProductId id = new ProductId(1L);
 
-        given(productRepository.findById(id))
-                .willReturn(Optional.of(Product.fake(id)));
+        given(getProductService.find(id))
+                .willReturn(Product.fake(id));
 
         given(optionRepository.findByProductId(id))
                 .willReturn(Optional.of(Option.fake(id)));
@@ -50,7 +49,7 @@ class GetProductDetailServiceTest {
     void whenProductNotExists() {
         ProductId id = new ProductId(9_999_999L);
 
-        given(productRepository.findById(id))
+        given(getProductService.find(id))
                 .willThrow(ProductNotFound.class);
 
         assertThrows(ProductNotFound.class,
@@ -61,8 +60,8 @@ class GetProductDetailServiceTest {
     void whenProductOptionExists() {
         ProductId id = new ProductId(1L);
 
-        given(productRepository.findById(id))
-                .willReturn(Optional.of(Product.fake(id)));
+        given(getProductService.find(id))
+                .willReturn(Product.fake(id));
 
         given(optionRepository.findByProductId(id))
                 .willReturn(Optional.of(Option.fake(id)));
@@ -76,8 +75,8 @@ class GetProductDetailServiceTest {
     void whenProductOptionNotExists() {
         ProductId id = new ProductId(1L);
 
-        given(productRepository.findById(id))
-                .willReturn(Optional.of(Product.fake(id)));
+        given(getProductService.find(id))
+                .willReturn(Product.fake(id));
 
         given(optionRepository.findByProductId(id))
                 .willReturn(Optional.empty());

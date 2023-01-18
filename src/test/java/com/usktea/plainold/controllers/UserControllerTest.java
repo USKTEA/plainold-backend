@@ -1,6 +1,6 @@
 package com.usktea.plainold.controllers;
 
-import com.usktea.plainold.applications.FindUserService;
+import com.usktea.plainold.applications.GetUserService;
 import com.usktea.plainold.exceptions.UserNotExists;
 import com.usktea.plainold.models.user.Username;
 import com.usktea.plainold.models.user.Users;
@@ -27,7 +27,7 @@ class UserControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private FindUserService findUserService;
+    private GetUserService getUserService;
 
     @SpyBean
     private JwtUtil jwtUtil;
@@ -38,7 +38,7 @@ class UserControllerTest {
 
         String token = jwtUtil.encode(username.value());
 
-        given(findUserService.find(username))
+        given(getUserService.find(username))
                 .willReturn(Users.fake(username));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/users/me")
@@ -55,7 +55,7 @@ class UserControllerTest {
 
         String token = jwtUtil.encode(username.value());
 
-        given(findUserService.find(username)).willThrow(UserNotExists.class);
+        given(getUserService.find(username)).willThrow(UserNotExists.class);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/users/me")
                         .header("Authorization", "Bearer " + token))

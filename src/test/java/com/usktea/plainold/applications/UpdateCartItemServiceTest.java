@@ -22,22 +22,22 @@ import static org.mockito.Mockito.mock;
 
 @ActiveProfiles("test")
 class UpdateCartItemServiceTest {
-    private FindUserService findUserService;
+    private GetUserService getUserService;
     private CartRepository cartRepository;
     private UpdateCartItemService updateCartItemService;
 
     @BeforeEach
     void setup() {
-        findUserService = mock(FindUserService.class);
+        getUserService = mock(GetUserService.class);
         cartRepository = mock(CartRepository.class);
-        updateCartItemService = new UpdateCartItemService(findUserService, cartRepository);
+        updateCartItemService = new UpdateCartItemService(getUserService, cartRepository);
     }
 
     @Test
     void whenUserNotExists() {
         Username username = new Username("notExists@gmail.com");
 
-        given(findUserService.find(username)).willThrow(UserNotExists.class);
+        given(getUserService.find(username)).willThrow(UserNotExists.class);
 
         ProductId productId = new ProductId(1L);
 
@@ -50,7 +50,7 @@ class UpdateCartItemServiceTest {
         Username username = new Username("tjrxo1234@gmail.com");
         ProductId productId = new ProductId(1L);
 
-        given(findUserService.find(username)).willReturn(Users.fake(username));
+        given(getUserService.find(username)).willReturn(Users.fake(username));
 
         Cart cart = Cart.fake(username);
 
@@ -71,7 +71,7 @@ class UpdateCartItemServiceTest {
         Username username = new Username("tjrxo1234@gmail.com");
         ProductId productId = new ProductId(1L);
 
-        given(findUserService.find(username)).willReturn(Users.fake(username));
+        given(getUserService.find(username)).willReturn(Users.fake(username));
 
         Cart cart = Cart.fake(username);
 

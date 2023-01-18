@@ -10,6 +10,7 @@ import com.usktea.plainold.models.user.Users;
 import com.usktea.plainold.repositories.CartRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,23 +20,24 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
+@ActiveProfiles("test")
 class AddCartItemServiceTest {
-    private FindUserService findUserService;
+    private GetUserService getUserService;
     private CartRepository cartRepository;
     private AddCartItemService addCartItemService;
 
     @BeforeEach
     void setup() {
-        findUserService = mock(FindUserService.class);
+        getUserService = mock(GetUserService.class);
         cartRepository = mock(CartRepository.class);
-        addCartItemService = new AddCartItemService(findUserService, cartRepository);
+        addCartItemService = new AddCartItemService(getUserService, cartRepository);
     }
 
     @Test
     void whenUserNotExists() {
         Username username = new Username("notExists@gmail.com");
 
-        given(findUserService.find(username)).willThrow(UserNotExists.class);
+        given(getUserService.find(username)).willThrow(UserNotExists.class);
 
         ProductId productId = new ProductId(1L);
 
@@ -47,7 +49,7 @@ class AddCartItemServiceTest {
     void whenCartNotExists() {
         Username username = new Username("notExists@gmail.com");
 
-        given(findUserService.find(username))
+        given(getUserService.find(username))
                 .willReturn(Users.fake(username));
 
         given(cartRepository.findByUsername(username))
@@ -63,7 +65,7 @@ class AddCartItemServiceTest {
     void whenAddItemSuccess() {
         Username username = new Username("notExists@gmail.com");
 
-        given(findUserService.find(username)).willReturn(Users.fake(username));
+        given(getUserService.find(username)).willReturn(Users.fake(username));
 
         given(cartRepository.findByUsername(username))
                 .willReturn(Optional.of(new Cart(username)));

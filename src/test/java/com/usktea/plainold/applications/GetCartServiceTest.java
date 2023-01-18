@@ -22,21 +22,21 @@ import static org.mockito.Mockito.mock;
 @ActiveProfiles("test")
 class GetCartServiceTest {
     private CartRepository cartRepository;
-    private FindUserService findUserService;
+    private GetUserService getUserService;
     private GetCartService getCartService;
 
     @BeforeEach
     void setup() {
-        findUserService = mock(FindUserService.class);
+        getUserService = mock(GetUserService.class);
         cartRepository = mock(CartRepository.class);
-        getCartService = new GetCartService(findUserService, cartRepository);
+        getCartService = new GetCartService(getUserService, cartRepository);
     }
 
     @Test
     void whenUserIsNotExists() {
         Username username = new Username("notExists@gmail.com");
 
-        given(findUserService.find(username))
+        given(getUserService.find(username))
                 .willThrow(UserNotExists.class);
 
         assertThrows(UserNotExists.class, () -> getCartService.cart(username));
@@ -46,7 +46,7 @@ class GetCartServiceTest {
     void whenCartNotExists() {
         Username username = new Username("notExists@gmail.com");
 
-        given(findUserService.find(username))
+        given(getUserService.find(username))
                 .willReturn(Users.fake(username));
 
         given(cartRepository.findByUsername(username))
@@ -58,7 +58,7 @@ class GetCartServiceTest {
     void whenCartExists() {
         Username username = new Username("notExists@gmail.com");
 
-        given(findUserService.find(username))
+        given(getUserService.find(username))
                 .willReturn(Users.fake(username));
 
         given(cartRepository.findByUsername(username))

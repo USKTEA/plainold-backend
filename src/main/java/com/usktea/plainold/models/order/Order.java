@@ -33,7 +33,7 @@ public class Order {
     private List<OrderLine> orderLines = new ArrayList<>();
 
     @Embedded
-    private Username userName;
+    private Username username;
 
     @Embedded
     private Orderer orderer;
@@ -67,7 +67,7 @@ public class Order {
     public Order(OrderNumber orderNumber, OrderRequest orderRequest) {
         setOrderLines(orderRequest.getOrderLines());
         this.orderNumber = orderNumber;
-        this.userName = orderRequest.getUserName();
+        this.username = orderRequest.getUsername();
         this.orderer = orderRequest.getOrderer();
         this.shippingInformation = orderRequest.getShippingInformation();
         this.payment = orderRequest.getPayment();
@@ -112,5 +112,9 @@ public class Order {
 
     public OrderResultDto toOrderResultDto() {
         return new OrderResultDto(orderNumber, cost, shippingInformation);
+    }
+
+    public OrderNumber orderNumber() {
+        return orderNumber;
     }
 }

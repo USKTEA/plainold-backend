@@ -22,15 +22,15 @@ import static org.mockito.Mockito.mock;
 
 @ActiveProfiles("test")
 class DeleteCartItemServiceTest {
-    private FindUserService findUserService;
+    private GetUserService getUserService;
     private CartRepository cartRepository;
     private DeleteCartItemService deleteCartItemService;
 
     @BeforeEach
     void setup() {
-        findUserService = mock(FindUserService.class);
+        getUserService = mock(GetUserService.class);
         cartRepository = mock(CartRepository.class);
-        deleteCartItemService = new DeleteCartItemService(findUserService, cartRepository);
+        deleteCartItemService = new DeleteCartItemService(getUserService, cartRepository);
     }
 
     @Test
@@ -41,7 +41,7 @@ class DeleteCartItemServiceTest {
 
         Cart cart = Cart.fake(username);
 
-        given(findUserService.find(username)).willReturn(Users.fake(username));
+        given(getUserService.find(username)).willReturn(Users.fake(username));
 
         given(cartRepository.findByUsername(username))
                 .willReturn(Optional.of(cart));
@@ -61,7 +61,7 @@ class DeleteCartItemServiceTest {
         ProductId productId = new ProductId(1L);
         List<Item> items = List.of(Item.fake(productId));
 
-        given(findUserService.find(username)).willThrow(UserNotExists.class);
+        given(getUserService.find(username)).willThrow(UserNotExists.class);
 
         assertThrows(UserNotExists.class,
                 () -> deleteCartItemService.delete(username, items));
@@ -75,7 +75,7 @@ class DeleteCartItemServiceTest {
 
         Cart cart = Cart.fake(username);
 
-        given(findUserService.find(username)).willReturn(Users.fake(username));
+        given(getUserService.find(username)).willReturn(Users.fake(username));
 
         given(cartRepository.findByUsername(username))
                 .willReturn(Optional.of(cart));

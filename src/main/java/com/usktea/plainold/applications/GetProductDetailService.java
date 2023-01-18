@@ -3,12 +3,10 @@ package com.usktea.plainold.applications;
 import com.usktea.plainold.builders.ProductDetailBuilder;
 import com.usktea.plainold.builders.ProductDetailDirector;
 import com.usktea.plainold.dtos.ProductDetail;
-import com.usktea.plainold.exceptions.ProductNotFound;
 import com.usktea.plainold.models.option.Option;
 import com.usktea.plainold.models.product.Product;
 import com.usktea.plainold.models.product.ProductId;
 import com.usktea.plainold.repositories.OptionRepository;
-import com.usktea.plainold.repositories.ProductRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -16,11 +14,11 @@ import javax.transaction.Transactional;
 @Transactional
 @Service
 public class GetProductDetailService {
-    private final ProductRepository productRepository;
+    private final GetProductService getProductService;
     private final OptionRepository optionRepository;
 
-    public GetProductDetailService(ProductRepository productRepository, OptionRepository optionRepository) {
-        this.productRepository = productRepository;
+    public GetProductDetailService(GetProductService getProductService, OptionRepository optionRepository) {
+        this.getProductService = getProductService;
         this.optionRepository = optionRepository;
     }
 
@@ -29,8 +27,7 @@ public class GetProductDetailService {
 //
 //        productRepository.save(fake);
 
-        Product product = productRepository.findById(id)
-                .orElseThrow(ProductNotFound::new);
+        Product product = getProductService.find(id);
 
         Option option = optionRepository.findByProductId(id)
                 .orElse(null);

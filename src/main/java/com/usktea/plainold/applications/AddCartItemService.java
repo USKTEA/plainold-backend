@@ -14,16 +14,16 @@ import java.util.List;
 @Service
 @Transactional
 public class AddCartItemService {
-    private final FindUserService findUserService;
+    private final GetUserService getUserService;
     private final CartRepository cartRepository;
 
-    public AddCartItemService(FindUserService findUserService, CartRepository cartRepository) {
-        this.findUserService = findUserService;
+    public AddCartItemService(GetUserService getUserService, CartRepository cartRepository) {
+        this.getUserService = getUserService;
         this.cartRepository = cartRepository;
     }
 
     public int addItem(Username username, List<Item> items) {
-        Users user = findUserService.find(username);
+        Users user = getUserService.find(username);
 
         Cart cart = cartRepository.findByUsername(user.username())
                 .orElseThrow(CartNotExists::new);

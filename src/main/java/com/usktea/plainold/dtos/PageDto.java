@@ -1,19 +1,19 @@
 package com.usktea.plainold.dtos;
 
 public class PageDto {
-    private Integer page;
+    private Integer current;
     private Integer total;
 
     public PageDto() {
     }
 
-    public PageDto(Integer page, Integer total) {
-        this.page = page;
+    public PageDto(Integer current, Integer total) {
+        this.current = current;
         this.total = total;
     }
 
-    public Integer getPage() {
-        return page;
+    public Integer getCurrent() {
+        return current;
     }
 
     public Integer getTotal() {
