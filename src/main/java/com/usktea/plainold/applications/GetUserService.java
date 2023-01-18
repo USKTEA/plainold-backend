@@ -10,10 +10,10 @@ import javax.transaction.Transactional;
 
 @Transactional
 @Service
-public class FindUserService {
+public class GetUserService {
     private final UserRepository userRepository;
 
-    public FindUserService(UserRepository userRepository) {
+    public GetUserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

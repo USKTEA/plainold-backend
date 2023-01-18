@@ -37,7 +37,7 @@ class CreateOrderServiceTest {
     private OrderNumberService orderNumberService;
 
     @MockBean
-    private FindUserService findUserService;
+    private GetUserService getUserService;
 
     @MockBean
     private OrderRepository orderRepository;
@@ -51,14 +51,14 @@ class CreateOrderServiceTest {
     @BeforeEach
     void setUp() {
         orderNumberService = new OrderNumberService();
-        findUserService = mock(FindUserService.class);
+        getUserService = mock(GetUserService.class);
 
         orderRepository = mock(OrderRepository.class);
         productRepository = mock(ProductRepository.class);
         optionRepository = mock(OptionRepository.class);
 
         createOrderService = new CreateOrderService(
-                orderNumberService, findUserService,
+                orderNumberService, getUserService,
                 orderRepository, productRepository, optionRepository
         );
     }
@@ -86,7 +86,7 @@ class CreateOrderServiceTest {
         ProductId productId = new ProductId(1L);
         Username username = new Username("notExists@gmail.com");
 
-        doThrow(UserNotExists.class).when(findUserService).find(username);
+        doThrow(UserNotExists.class).when(getUserService).find(username);
 
         OrderRequest orderRequest = OrderRequest.fake(username);
 

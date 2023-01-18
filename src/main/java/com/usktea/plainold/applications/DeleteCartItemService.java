@@ -15,16 +15,16 @@ import java.util.List;
 @Service
 @Transactional
 public class DeleteCartItemService {
-    private FindUserService findUserService;
+    private GetUserService getUserService;
     private CartRepository cartRepository;
 
-    public DeleteCartItemService(FindUserService findUserService, CartRepository cartRepository) {
-        this.findUserService = findUserService;
+    public DeleteCartItemService(GetUserService getUserService, CartRepository cartRepository) {
+        this.getUserService = getUserService;
         this.cartRepository = cartRepository;
     }
 
     public List<ProductId> delete(Username username, List<Item> items) {
-        Users user = findUserService.find(username);
+        Users user = getUserService.find(username);
 
         Cart cart = cartRepository.findByUsername(user.username())
                 .orElseThrow(CartItemNotExists::new);

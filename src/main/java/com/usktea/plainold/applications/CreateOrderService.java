@@ -25,18 +25,18 @@ import java.util.stream.Collectors;
 @Transactional
 public class CreateOrderService {
     private final OrderNumberService orderNumberService;
-    private final FindUserService findUserService;
+    private final GetUserService getUserService;
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final OptionRepository optionRepository;
 
     public CreateOrderService(OrderNumberService orderNumberService,
-                              FindUserService findUserService,
+                              GetUserService getUserService,
                               OrderRepository orderRepository,
                               ProductRepository productRepository,
                               OptionRepository optionRepository) {
         this.orderNumberService = orderNumberService;
-        this.findUserService = findUserService;
+        this.getUserService = getUserService;
         this.orderRepository = orderRepository;
         this.productRepository = productRepository;
         this.optionRepository = optionRepository;
@@ -44,9 +44,9 @@ public class CreateOrderService {
 
     public Order placeOrder(OrderRequest orderRequest) {
         // TODO 주문수량, 주문금액 같은지 비교
-        Username username = orderRequest.getUserName();
+        Username username = orderRequest.getUsername();
 
-        findUserService.find(username);
+        getUserService.find(username);
 
         OrderNumber orderNumber = getNextOrderNumber(username);
 

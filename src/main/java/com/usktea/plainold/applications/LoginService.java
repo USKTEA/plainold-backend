@@ -13,21 +13,21 @@ import javax.transaction.Transactional;
 @Transactional
 @Service
 public class LoginService {
-    private final FindUserService findUserService;
+    private final GetUserService getUserService;
     private final IssueTokenService issueTokenService;
     private final PasswordEncoder passwordEncoder;
 
-    public LoginService(FindUserService findUserService,
+    public LoginService(GetUserService getUserService,
                         IssueTokenService issueTokenService,
                         PasswordEncoder passwordEncoder) {
-        this.findUserService = findUserService;
+        this.getUserService = getUserService;
         this.issueTokenService = issueTokenService;
         this.passwordEncoder = passwordEncoder;
     }
 
     public TokenDto login(Username username, Password password) {
         try {
-            Users user = findUserService.find(username);
+            Users user = getUserService.find(username);
 
             user.authenticate(password, passwordEncoder);
 

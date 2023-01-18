@@ -2,10 +2,12 @@ package com.usktea.plainold.backdoor;
 
 import com.usktea.plainold.models.option.Option;
 import com.usktea.plainold.models.product.ProductId;
+import com.usktea.plainold.models.review.Review;
 import com.usktea.plainold.models.user.Password;
 import com.usktea.plainold.models.user.Username;
 import com.usktea.plainold.models.user.Users;
 import com.usktea.plainold.repositories.OptionRepository;
+import com.usktea.plainold.repositories.ReviewRepository;
 import com.usktea.plainold.repositories.UserRepository;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,10 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class BackdoorController {
     private OptionRepository optionRepository;
     private UserRepository userRepository;
+    private ReviewRepository reviewRepository;
 
-    public BackdoorController(OptionRepository optionRepository, UserRepository userRepository) {
+    public BackdoorController(OptionRepository optionRepository, UserRepository userRepository, ReviewRepository reviewRepository) {
         this.optionRepository = optionRepository;
         this.userRepository = userRepository;
+        this.reviewRepository = reviewRepository;
     }
 
     @GetMapping("/option")
@@ -45,6 +49,16 @@ public class BackdoorController {
         user.changePassword(new Password("Password1234!"), passwordEncoder);
 
         userRepository.save(user);
+
+        return "ok";
+    }
+
+    @GetMapping("/reviews")
+    public String reviews() {
+        ProductId productId = new ProductId(1L);
+        Review review = Review.fake(productId);
+
+        reviewRepository.save(review);
 
         return "ok";
     }

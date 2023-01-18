@@ -2,6 +2,7 @@ package com.usktea.plainold.models.user;
 
 import com.usktea.plainold.exceptions.LoginFailed;
 import com.usktea.plainold.models.common.Name;
+import com.usktea.plainold.models.review.Nickname;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.AttributeOverride;
@@ -25,7 +26,7 @@ public class Users {
 
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "nickname"))
-    private Name nickname;
+    private Nickname nickname;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -40,7 +41,7 @@ public class Users {
     public Users() {
     }
 
-    public Users(Username username, Name nickname, Role role, UserStatus userStatus) {
+    public Users(Username username, Nickname nickname, Role role, UserStatus userStatus) {
         this.username = username;
         this.nickname = nickname;
         this.role = role;
@@ -50,7 +51,7 @@ public class Users {
     }
 
     public static Users fake(Username username) {
-        return new Users(username, new Name("김뚜루"), Role.MEMBER, UserStatus.ACTIVE);
+        return new Users(username, new Nickname("김뚜루"), Role.MEMBER, UserStatus.ACTIVE);
     }
 
     public void changePassword(Password password, PasswordEncoder passwordEncoder) {
@@ -86,5 +87,9 @@ public class Users {
     @Override
     public int hashCode() {
         return Objects.hash(username);
+    }
+
+    public Nickname nickname() {
+        return nickname;
     }
 }

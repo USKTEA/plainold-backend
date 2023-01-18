@@ -1,6 +1,6 @@
 package com.usktea.plainold.controllers;
 
-import com.usktea.plainold.applications.FindUserService;
+import com.usktea.plainold.applications.GetUserService;
 import com.usktea.plainold.dtos.UserInformationDto;
 import com.usktea.plainold.exceptions.UserNotExists;
 import com.usktea.plainold.models.user.Username;
@@ -16,16 +16,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("users")
 public class UserController {
-    private final FindUserService findUserService;
+    private final GetUserService getUserService;
 
-    public UserController(FindUserService findUserService) {
-        this.findUserService = findUserService;
+    public UserController(GetUserService getUserService) {
+        this.getUserService = getUserService;
     }
 
     @GetMapping("me")
     public UserInformationDto user(
             @RequestAttribute Username username) {
-        Users user = findUserService.find(username);
+        Users user = getUserService.find(username);
 
         return new UserInformationDto(user.username());
     }
