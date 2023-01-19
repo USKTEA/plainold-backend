@@ -1,11 +1,13 @@
 package com.usktea.plainold.controllers;
 
 import com.usktea.plainold.applications.CreateReviewService;
+import com.usktea.plainold.applications.DeleteReviewService;
 import com.usktea.plainold.applications.EditReviewService;
 import com.usktea.plainold.applications.GetReviewsService;
 import com.usktea.plainold.dtos.CreateReviewRequest;
 import com.usktea.plainold.dtos.CreateReviewRequestDto;
 import com.usktea.plainold.dtos.CreateReviewResultDto;
+import com.usktea.plainold.dtos.DeleteReviewResultDto;
 import com.usktea.plainold.dtos.EditReviewRequest;
 import com.usktea.plainold.dtos.EditReviewRequestDto;
 import com.usktea.plainold.dtos.EditReviewResultDto;
@@ -13,19 +15,20 @@ import com.usktea.plainold.dtos.PageDto;
 import com.usktea.plainold.dtos.ReviewDto;
 import com.usktea.plainold.dtos.ReviewsDto;
 import com.usktea.plainold.exceptions.CreateReviewFailed;
+import com.usktea.plainold.exceptions.DeleteReviewFailed;
 import com.usktea.plainold.exceptions.EditReviewFailed;
-import com.usktea.plainold.exceptions.InvalidRate;
 import com.usktea.plainold.exceptions.ProductNotFound;
 import com.usktea.plainold.exceptions.ReviewerNotMatch;
-import com.usktea.plainold.exceptions.UserNotExists;
 import com.usktea.plainold.models.product.ProductId;
 import com.usktea.plainold.models.review.Review;
 import com.usktea.plainold.models.user.Username;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,13 +47,16 @@ public class ReviewController {
     private final GetReviewsService getReviewsService;
     private final CreateReviewService createReviewService;
     private final EditReviewService editReviewService;
+    private final DeleteReviewService deleteReviewService;
 
     public ReviewController(GetReviewsService getReviewsService,
                             CreateReviewService createReviewService,
-                            EditReviewService editReviewService) {
+                            EditReviewService editReviewService,
+                            DeleteReviewService deleteReviewService) {
         this.getReviewsService = getReviewsService;
         this.createReviewService = createReviewService;
         this.editReviewService = editReviewService;
+        this.deleteReviewService = deleteReviewService;
     }
 
     @GetMapping
@@ -105,15 +111,36 @@ public class ReviewController {
         }
     }
 
-    @ExceptionHandler(EditReviewFailed.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String editReviewFail(Exception exception) {
-        return exception.getMessage();
+    @DeleteMapping("{id}")
+    public DeleteReviewResultDto delete(
+            @RequestAttribute Username username,
+            @PathVariable Long id) {
+        try {
+            Review deleted = deleteReviewService.delete(username, id);
+
+            return new DeleteReviewResultDto(deleted.id());
+        } catch (ReviewerNotMatch reviewerNotMatch) {
+            throw reviewerNotMatch;
+        } catch (Exception exception) {
+            throw new DeleteReviewFailed(exception.getMessage());
+        }
     }
 
     @ExceptionHandler(ReviewerNotMatch.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public String reviewNotMatch(Exception exception) {
+        return exception.getMessage();
+    }
+
+    @ExceptionHandler(DeleteReviewFailed.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String deleteReviewFail(Exception exception) {
+        return exception.getMessage();
+    }
+
+    @ExceptionHandler(EditReviewFailed.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String editReviewFail(Exception exception) {
         return exception.getMessage();
     }
 

@@ -1,9 +1,9 @@
 package com.usktea.plainold.controllers;
 
 import com.usktea.plainold.applications.CreateReviewService;
+import com.usktea.plainold.applications.DeleteReviewService;
 import com.usktea.plainold.applications.EditReviewService;
 import com.usktea.plainold.applications.GetReviewsService;
-import com.usktea.plainold.dtos.EditReviewRequest;
 import com.usktea.plainold.exceptions.ProductNotFound;
 import com.usktea.plainold.exceptions.ReviewNotFound;
 import com.usktea.plainold.exceptions.ReviewerNotMatch;
@@ -47,6 +47,9 @@ class ReviewControllerTest {
 
     @MockBean
     private EditReviewService editReviewService;
+
+    @MockBean
+    private DeleteReviewService deleteReviewService;
 
     @SpyBean
     private JwtUtil jwtUtil;
@@ -96,7 +99,7 @@ class ReviewControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
                                 "\"orderNumber\": \"tjrxo1234-202301151058\", " +
-                                "\"productId\":"+ productId.value() +", "+
+                                "\"productId\":" + productId.value() + ", " +
                                 "\"rate\": 5, " +
                                 "\"comment\":\"매우 좋은 상품\"" +
                                 "}"))
@@ -155,7 +158,7 @@ class ReviewControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
                                 "\"orderNumber\": \"tjrxo1234-202301151058\", " +
-                                "\"productId\":"+ productId.value() + "," +
+                                "\"productId\":" + productId.value() + "," +
                                 "\"rate\": 5, " +
                                 "\"comment\":\"매우 좋은 상품\"" +
                                 "}"))
@@ -207,13 +210,13 @@ class ReviewControllerTest {
         String token = jwtUtil.encode(username.value());
 
         mockMvc.perform(MockMvcRequestBuilders.patch("/reviews")
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{" +
-                        "\"id\":" +
-                        "\"rate\": 5, " +
-                        "\"comment\": \"아주 좋은 상품\"" +
-                        "}"))
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"id\":" +
+                                "\"rate\": 5, " +
+                                "\"comment\": \"아주 좋은 상품\"" +
+                                "}"))
                 .andExpect(status().isBadRequest());
     }
 
@@ -288,5 +291,64 @@ class ReviewControllerTest {
                                 "\"comment\":\"내 마음대로 바꾼다\"" +
                                 "}"))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void deleteReviewSuccess() throws Exception {
+        Username username = new Username("tjrxo1234@gmail.com");
+        String token = jwtUtil.encode(username.value());
+        Long id = 1L;
+
+        given(deleteReviewService.delete(username, id))
+                .willReturn(Review.fake(username));
+
+        mockMvc.perform(MockMvcRequestBuilders.delete(String.format("/reviews/%d", id))
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        containsString("\"reviewId\"")
+                ));
+    }
+
+    @Test
+    void whenDeleteReviewUserNotExists() throws Exception {
+        Username username = new Username("notExists@gmail.com");
+        String token = jwtUtil.encode(username.value());
+        Long id = 1L;
+
+        given(deleteReviewService.delete(username, id))
+                .willThrow(UserNotExists.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete(String.format("/reviews/%d", id))
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenDeleteReviewReviewNotExists() throws Exception {
+        Username username = new Username("tjrxo1234@gmail.com");
+        String token = jwtUtil.encode(username.value());
+        Long id = 9_999_999L;
+
+        given(deleteReviewService.delete(username, id))
+                .willThrow(ReviewNotFound.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete(String.format("/reviews/%d", id))
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenDeleteReviewUsernameNotMatch() throws Exception {
+        Username username = new Username("someoneOther@gmail.com");
+        String token = jwtUtil.encode(username.value());
+        Long id = 1L;
+
+        given(deleteReviewService.delete(username, id))
+                .willThrow(ReviewerNotMatch.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete(String.format("/reviews/%d", id))
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isUnauthorized());
     }
 }
