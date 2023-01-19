@@ -1,7 +1,6 @@
 package com.usktea.plainold.models.user;
 
 import com.usktea.plainold.exceptions.LoginFailed;
-import com.usktea.plainold.models.common.Name;
 import com.usktea.plainold.models.review.Nickname;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -69,6 +68,10 @@ public class Users {
         return username;
     }
 
+    public Nickname nickname() {
+        return nickname;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) {
@@ -87,9 +90,5 @@ public class Users {
     @Override
     public int hashCode() {
         return Objects.hash(username);
-    }
-
-    public Nickname nickname() {
-        return nickname;
     }
 }

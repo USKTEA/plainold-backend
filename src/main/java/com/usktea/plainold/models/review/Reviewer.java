@@ -25,6 +25,10 @@ public class Reviewer {
         return new Reviewer(username, new Nickname(name));
     }
 
+    public static Reviewer fake(Username username) {
+        return new Reviewer(username, new Nickname("닉네임입니다"));
+    }
+
     public Username getUsername() {
         return username;
     }

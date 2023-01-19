@@ -47,15 +47,27 @@ public class GetOrderCanWriteReviewService {
         List<Review> reviews = getReviews(orders, product.id());
 
         checkHasOrders(orders);
-        checkIfAlreadyWrote(reviews, orders);
 
-        return orders.get(0);
+        Order canWriteReview = filterAlreadyWrote(reviews, orders);
+
+        return canWriteReview;
     }
 
-    private void checkIfAlreadyWrote(List<Review> reviews, List<Order> orders) {
+    private Order filterAlreadyWrote(List<Review> reviews, List<Order> orders) {
         if (reviews.size() == orders.size()) {
             throw new OrderCanWriteReviewNotFound();
         }
+
+        List<OrderNumber> orderNumbers = reviews.stream()
+                .map(Review::orderNumber)
+                .collect(Collectors.toList());
+
+        return orders.stream()
+                .filter((order -> order.checkHasSameOrder(orderNumbers)))
+                .collect(Collectors.toList())
+                .stream()
+                .findFirst()
+                .orElseThrow(OrderCanWriteReviewNotFound::new);
     }
 
     private void checkHasOrders(List<Order> orders) {

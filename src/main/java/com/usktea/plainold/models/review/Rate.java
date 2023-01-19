@@ -49,4 +49,8 @@ public class Rate {
     public int hashCode() {
         return Objects.hash(value);
     }
+
+    public Rate change(Rate rate) {
+        return new Rate(rate.getValue());
+    }
 }

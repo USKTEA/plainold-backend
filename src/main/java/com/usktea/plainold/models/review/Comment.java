@@ -39,4 +39,8 @@ public class Comment {
     public int hashCode() {
         return Objects.hash(value);
     }
+
+    public Comment change(Comment comment) {
+        return new Comment(comment.getValue());
+    }
 }
