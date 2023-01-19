@@ -20,6 +20,7 @@ import java.util.List;
 
 @Service
 @Transactional
+@SuppressWarnings("unchecked")
 public class CreateReviewService {
     private final GetUserService getUserService;
     private final GetProductService getProductService;
