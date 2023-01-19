@@ -1,22 +1,31 @@
 package com.usktea.plainold.controllers;
 
 import com.usktea.plainold.applications.CreateReviewService;
+import com.usktea.plainold.applications.EditReviewService;
 import com.usktea.plainold.applications.GetReviewsService;
 import com.usktea.plainold.dtos.CreateReviewRequest;
 import com.usktea.plainold.dtos.CreateReviewRequestDto;
 import com.usktea.plainold.dtos.CreateReviewResultDto;
+import com.usktea.plainold.dtos.EditReviewRequest;
+import com.usktea.plainold.dtos.EditReviewRequestDto;
+import com.usktea.plainold.dtos.EditReviewResultDto;
 import com.usktea.plainold.dtos.PageDto;
+import com.usktea.plainold.dtos.ReviewDto;
 import com.usktea.plainold.dtos.ReviewsDto;
 import com.usktea.plainold.exceptions.CreateReviewFailed;
+import com.usktea.plainold.exceptions.EditReviewFailed;
+import com.usktea.plainold.exceptions.InvalidRate;
 import com.usktea.plainold.exceptions.ProductNotFound;
+import com.usktea.plainold.exceptions.ReviewerNotMatch;
+import com.usktea.plainold.exceptions.UserNotExists;
 import com.usktea.plainold.models.product.ProductId;
 import com.usktea.plainold.models.review.Review;
-import com.usktea.plainold.dtos.ReviewDto;
 import com.usktea.plainold.models.user.Username;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,10 +43,14 @@ import java.util.stream.Collectors;
 public class ReviewController {
     private final GetReviewsService getReviewsService;
     private final CreateReviewService createReviewService;
+    private final EditReviewService editReviewService;
 
-    public ReviewController(GetReviewsService getReviewsService, CreateReviewService createReviewService) {
+    public ReviewController(GetReviewsService getReviewsService,
+                            CreateReviewService createReviewService,
+                            EditReviewService editReviewService) {
         this.getReviewsService = getReviewsService;
         this.createReviewService = createReviewService;
+        this.editReviewService = editReviewService;
     }
 
     @GetMapping
@@ -59,7 +72,7 @@ public class ReviewController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    private CreateReviewResultDto create(
+    public CreateReviewResultDto create(
             @RequestAttribute Username username,
             @Valid @RequestBody CreateReviewRequestDto createReviewRequestDto
     ) {
@@ -72,6 +85,36 @@ public class ReviewController {
         } catch (Exception exception) {
             throw new CreateReviewFailed(exception);
         }
+    }
+
+    @PatchMapping
+    public EditReviewResultDto edit(
+            @RequestAttribute Username username,
+            @Valid @RequestBody EditReviewRequestDto editReviewRequestDto
+    ) {
+        try {
+            EditReviewRequest editReviewRequest = EditReviewRequest.of(editReviewRequestDto);
+
+            Review edited = editReviewService.edit(username, editReviewRequest);
+
+            return new EditReviewResultDto(edited.id());
+        } catch (ReviewerNotMatch reviewerNotMatch) {
+            throw reviewerNotMatch;
+        } catch (Exception exception) {
+            throw new EditReviewFailed(exception.getMessage());
+        }
+    }
+
+    @ExceptionHandler(EditReviewFailed.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String editReviewFail(Exception exception) {
+        return exception.getMessage();
+    }
+
+    @ExceptionHandler(ReviewerNotMatch.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public String reviewNotMatch(Exception exception) {
+        return exception.getMessage();
     }
 
     @ExceptionHandler(CreateReviewFailed.class)

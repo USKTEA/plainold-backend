@@ -1,8 +1,10 @@
 package com.usktea.plainold.models.review;
 
 import com.usktea.plainold.dtos.ReviewDto;
+import com.usktea.plainold.exceptions.ReviewerNotMatch;
 import com.usktea.plainold.models.order.OrderNumber;
 import com.usktea.plainold.models.product.ProductId;
+import com.usktea.plainold.models.user.Username;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.Embedded;
@@ -101,6 +103,19 @@ public class Review {
         );
     }
 
+    public static Review fake(Username username) {
+        return new Review(
+                1L,
+                new ProductId(1L),
+                new OrderNumber("tjrxo1234-202301061131"),
+                Reviewer.fake(username),
+                new Rate(5),
+                new Comment("좋은 상품입니다"),
+                new ReviewImageUrl("1"),
+                LocalDateTime.now()
+        );
+    }
+
     @Override
     public boolean equals(Object other) {
         if (this == other) {
@@ -151,5 +166,28 @@ public class Review {
 
     public Long id() {
         return id;
+    }
+
+    public OrderNumber orderNumber() {
+        return orderNumber;
+    }
+
+    public Comment comment() {
+        return comment;
+    }
+
+    public Rate rate() {
+        return rate;
+    }
+
+    public void checkUserIsItsReviewer(Username username) {
+        if (!Objects.equals(reviewer.getUsername(), username)) {
+            throw new ReviewerNotMatch();
+        }
+    }
+
+    public void modify(Rate rate, Comment comment) {
+        this.rate = this.rate.change(rate);
+        this.comment = this.comment.change(comment);
     }
 }

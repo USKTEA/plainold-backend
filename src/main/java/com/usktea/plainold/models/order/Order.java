@@ -117,4 +117,12 @@ public class Order {
     public OrderNumber orderNumber() {
         return orderNumber;
     }
+
+    public boolean checkHasSameOrder(List<OrderNumber> orderNumbers) {
+        if (orderNumbers.contains(this.orderNumber)) {
+            return false;
+        }
+
+        return true;
+    }
 }

@@ -1,8 +1,12 @@
 package com.usktea.plainold.controllers;
 
 import com.usktea.plainold.applications.CreateReviewService;
+import com.usktea.plainold.applications.EditReviewService;
 import com.usktea.plainold.applications.GetReviewsService;
+import com.usktea.plainold.dtos.EditReviewRequest;
 import com.usktea.plainold.exceptions.ProductNotFound;
+import com.usktea.plainold.exceptions.ReviewNotFound;
+import com.usktea.plainold.exceptions.ReviewerNotMatch;
 import com.usktea.plainold.exceptions.UserNotExists;
 import com.usktea.plainold.models.product.ProductId;
 import com.usktea.plainold.models.review.Review;
@@ -40,6 +44,9 @@ class ReviewControllerTest {
 
     @MockBean
     private CreateReviewService createReviewService;
+
+    @MockBean
+    private EditReviewService editReviewService;
 
     @SpyBean
     private JwtUtil jwtUtil;
@@ -156,6 +163,28 @@ class ReviewControllerTest {
     }
 
     @Test
+    void whenPatchReviewSuccess() throws Exception {
+        Username username = new Username("tjrxo1234@gamil.com");
+        String token = jwtUtil.encode(username.value());
+
+        given(editReviewService.edit(any(), any()))
+                .willReturn(Review.fake(username));
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/reviews")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"id\": \"1\", " +
+                                "\"rate\": 5," +
+                                "\"comment\":\"아주 좋은 상품\"" +
+                                "}"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        containsString("\"reviewId\"")
+                ));
+    }
+
+    @Test
     void whenCreateReviewRateIsNotValid() throws Exception {
         Username username = new Username("tjrxo1234@gmail.com");
         String token = jwtUtil.encode(username.value());
@@ -168,6 +197,95 @@ class ReviewControllerTest {
                                 "\"productId\": 1," +
                                 "\"rate\": 6, " +
                                 "\"comment\":\"매우 좋은 상품\"" +
+                                "}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenSomeOfPatchReviewInformationNotExists() throws Exception {
+        Username username = new Username("tjrxo1234@gmail.com");
+        String token = jwtUtil.encode(username.value());
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/reviews")
+                .header("Authorization", "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{" +
+                        "\"id\":" +
+                        "\"rate\": 5, " +
+                        "\"comment\": \"아주 좋은 상품\"" +
+                        "}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenPatchReviewUserNotExists() throws Exception {
+        Username username = new Username("notExists@gamil.com");
+        String token = jwtUtil.encode(username.value());
+
+        given(editReviewService.edit(any(), any()))
+                .willThrow(UserNotExists.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/reviews")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"id\": \"1\", " +
+                                "\"rate\": 5," +
+                                "\"comment\":\"매우 좋은 상품\"" +
+                                "}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenPatchReviewRateIsInvalid() throws Exception {
+        Username username = new Username("notExists@gamil.com");
+        String token = jwtUtil.encode(username.value());
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/reviews")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"id\": \"1\", " +
+                                "\"rate\": -7," +
+                                "\"comment\":\"매우 좋은 상품\"" +
+                                "}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenPatchNotHisOwnReview() throws Exception {
+        Username username = new Username("someoneElse@gamil.com");
+        String token = jwtUtil.encode(username.value());
+
+        given(editReviewService.edit(any(), any()))
+                .willThrow(ReviewerNotMatch.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/reviews")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"id\": \"1\", " +
+                                "\"rate\": 5," +
+                                "\"comment\":\"내 마음대로 바꾼다\"" +
+                                "}"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void whenPatchReviewReviewNotFound() throws Exception {
+        Username username = new Username("tjrxo1234@gamil.com");
+        String token = jwtUtil.encode(username.value());
+
+        given(editReviewService.edit(any(), any()))
+                .willThrow(ReviewNotFound.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/reviews")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"id\": \"9999999\", " +
+                                "\"rate\": 5," +
+                                "\"comment\":\"내 마음대로 바꾼다\"" +
                                 "}"))
                 .andExpect(status().isBadRequest());
     }
