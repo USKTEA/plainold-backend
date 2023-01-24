@@ -41,10 +41,12 @@ class ReviewTest {
 
         Rate newRate = new Rate(1);
         Comment newComment = new Comment("새로운 내용");
+        ImageUrl imageUrl = new ImageUrl();
 
-        review.modify(newRate, newComment);
+        review.modify(newRate, newComment, imageUrl);
 
         assertThat(review.comment()).isEqualTo(newComment);
         assertThat(review.rate()).isEqualTo(newRate);
+        assertThat(review.imageUrl()).isEqualTo(imageUrl);
     }
 }

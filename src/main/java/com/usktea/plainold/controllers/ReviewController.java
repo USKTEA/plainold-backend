@@ -62,9 +62,10 @@ public class ReviewController {
     @GetMapping
     public ReviewsDto list(
             @RequestParam(required = false) Long productId,
+            @RequestParam Boolean photoReviews,
             @RequestParam(required = false, defaultValue = "1") Integer pageNumber
     ) {
-        Page<Review> reviews = getReviewsService.getReviews(new ProductId(productId), pageNumber);
+        Page<Review> reviews = getReviewsService.getReviews(new ProductId(productId), photoReviews, pageNumber);
         List<ReviewDto> reviewDtos = reviews
                 .getContent()
                 .stream()
@@ -84,7 +85,6 @@ public class ReviewController {
     ) {
         try {
             CreateReviewRequest createReviewRequest = CreateReviewRequest.of(createReviewRequestDto);
-
             Review review = createReviewService.create(username, createReviewRequest);
 
             return new CreateReviewResultDto(review.id());

@@ -28,7 +28,7 @@ public class EditReviewService {
 
         review.checkUserIsItsReviewer(user.username());
 
-        review.modify(editReviewRequest.rate(), editReviewRequest.comment());
+        review.modify(editReviewRequest.rate(), editReviewRequest.comment(), editReviewRequest.imageUrl());
 
         return review;
     }

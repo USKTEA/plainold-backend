@@ -50,4 +50,22 @@ public class ReviewSpecification {
             }
         };
     }
+
+    public static Specification<Review> equalProductId(ProductId productId) {
+        return new Specification<Review>() {
+            @Override
+            public Predicate toPredicate(Root<Review> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                return criteriaBuilder.equal(root.get("productId"), productId);
+            }
+        };
+    }
+
+    public static Specification<Review> imageUrlNotNull() {
+        return new Specification<Review>() {
+            @Override
+            public Predicate toPredicate(Root<Review> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                return criteriaBuilder.isNotNull(root.get("imageUrl"));
+            }
+        };
+    }
 }

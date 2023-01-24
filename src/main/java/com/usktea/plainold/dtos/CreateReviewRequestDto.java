@@ -1,5 +1,7 @@
 package com.usktea.plainold.dtos;
 
+import com.sun.istack.Nullable;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -15,6 +17,9 @@ public class CreateReviewRequestDto {
 
     @NotBlank
     private String comment;
+
+    @Nullable
+    private String imageUrl;
 
     public CreateReviewRequestDto() {
     }
@@ -33,5 +38,9 @@ public class CreateReviewRequestDto {
 
     public String getComment() {
         return comment;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
     }
 }

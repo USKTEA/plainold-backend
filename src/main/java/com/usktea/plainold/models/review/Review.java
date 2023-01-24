@@ -39,7 +39,7 @@ public class Review {
     private Comment comment;
 
     @Embedded
-    private ReviewImageUrl reviewImageUrl;
+    private ImageUrl imageUrl;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -53,7 +53,7 @@ public class Review {
                   Reviewer reviewer,
                   Rate rate,
                   Comment comment,
-                  ReviewImageUrl reviewImageUrl,
+                  ImageUrl imageUrl,
                   LocalDateTime createdAt) {
         this.id = id;
         this.productId = productId;
@@ -61,7 +61,7 @@ public class Review {
         this.reviewer = reviewer;
         this.rate = rate;
         this.comment = comment;
-        this.reviewImageUrl = reviewImageUrl;
+        this.imageUrl = imageUrl;
         this.createdAt = createdAt;
     }
 
@@ -69,12 +69,15 @@ public class Review {
                   OrderNumber orderNumber,
                   Reviewer reviewer,
                   Rate rate,
-                  Comment comment) {
+                  Comment comment,
+                  ImageUrl imageUrl
+    ) {
         this.productId = productId;
         this.orderNumber = orderNumber;
         this.reviewer = reviewer;
         this.rate = rate;
         this.comment = comment;
+        this.imageUrl = imageUrl;
     }
 
     public static Review fake(ProductId productId) {
@@ -85,7 +88,7 @@ public class Review {
                 Reviewer.fake("김뚜루"),
                 new Rate(5),
                 new Comment("좋은 상품입니다"),
-                new ReviewImageUrl("1"),
+                new ImageUrl("1"),
                 LocalDateTime.now()
         );
     }
@@ -98,7 +101,7 @@ public class Review {
                 Reviewer.fake("김뚜루"),
                 new Rate(5),
                 new Comment("좋은 상품입니다"),
-                new ReviewImageUrl("1"),
+                new ImageUrl("1"),
                 LocalDateTime.now()
         );
     }
@@ -111,7 +114,7 @@ public class Review {
                 Reviewer.fake(username),
                 new Rate(5),
                 new Comment("좋은 상품입니다"),
-                new ReviewImageUrl("1"),
+                new ImageUrl("1"),
                 LocalDateTime.now()
         );
     }
@@ -137,7 +140,7 @@ public class Review {
     }
 
     public ReviewDto toDto() {
-        if (Objects.isNull(reviewImageUrl)) {
+        if (Objects.isNull(imageUrl)) {
             return new ReviewDto(
                     id,
                     productId.value(),
@@ -153,8 +156,22 @@ public class Review {
                 reviewer.toDto(),
                 rate.getValue(),
                 comment.getValue(),
-                reviewImageUrl.getValue(),
+                imageUrl.getValue(),
                 format(createdAt));
+    }
+
+    public void checkUserIsItsReviewer(Username username) {
+        if (!Objects.equals(reviewer.getUsername(), username)) {
+            throw new ReviewerNotMatch();
+        }
+    }
+
+    public void modify(Rate rate, Comment comment, ImageUrl imageUrl) {
+        this.rate = rate;
+        this.comment = comment;
+        this.imageUrl = imageUrl;
+
+        System.out.println(imageUrl.getValue());
     }
 
     private String format(LocalDateTime time) {
@@ -180,14 +197,7 @@ public class Review {
         return rate;
     }
 
-    public void checkUserIsItsReviewer(Username username) {
-        if (!Objects.equals(reviewer.getUsername(), username)) {
-            throw new ReviewerNotMatch();
-        }
-    }
-
-    public void modify(Rate rate, Comment comment) {
-        this.rate = this.rate.change(rate);
-        this.comment = this.comment.change(comment);
+    public ImageUrl imageUrl() {
+        return imageUrl;
     }
 }

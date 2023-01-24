@@ -31,3 +31,7 @@ hs_err_pid*
 
 # Ignore Gradle build output directory
 build
+
+**/application.properties
+application-credentials.yml
+application.yml
