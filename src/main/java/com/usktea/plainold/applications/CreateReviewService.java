@@ -51,13 +51,13 @@ public class CreateReviewService {
             throw new ReviewAlreadyWritten();
         }
 
-        // 이미지 추가하는 작업해야함
         Review review = new Review(
                 product.id(),
                 order.orderNumber(),
                 new Reviewer(username, user.nickname()),
                 createReviewRequest.rate(),
-                createReviewRequest.comment()
+                createReviewRequest.comment(),
+                createReviewRequest.imageUrl()
         );
 
         Review saved = reviewRepository.save(review);

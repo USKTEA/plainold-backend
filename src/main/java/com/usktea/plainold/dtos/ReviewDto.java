@@ -10,7 +10,7 @@ public class ReviewDto {
     private String comment;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String reviewImageUrl;
+    private String imageUrl;
     private String createdAt;
 
     public ReviewDto() {
@@ -21,14 +21,14 @@ public class ReviewDto {
                      ReviewerDto reviewer,
                      Integer rate,
                      String comment,
-                     String reviewImageUrl,
+                     String imageUrl,
                      String createdAt) {
         this.id = id;
         this.productId = productId;
         this.reviewer = reviewer;
         this.rate = rate;
         this.comment = comment;
-        this.reviewImageUrl = reviewImageUrl;
+        this.imageUrl = imageUrl;
         this.createdAt = createdAt;
     }
 
@@ -66,8 +66,8 @@ public class ReviewDto {
         return comment;
     }
 
-    public String getReviewImageUrl() {
-        return reviewImageUrl;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
     public String getCreatedAt() {

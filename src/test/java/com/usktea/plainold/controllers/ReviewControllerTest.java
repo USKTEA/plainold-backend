@@ -57,14 +57,16 @@ class ReviewControllerTest {
     @Test
     void getReviewsSuccess() throws Exception {
         ProductId productId = new ProductId(1L);
+        Boolean photoReviews = false;
         Integer pageNumber = 1;
 
         Page<Review> page = new PageImpl<>(List.of(Review.fake(productId)));
 
-        given(getReviewsService.getReviews(productId, pageNumber))
+        given(getReviewsService.getReviews(productId, photoReviews, pageNumber))
                 .willReturn(page);
 
-        mockMvc.perform(MockMvcRequestBuilders.get(String.format("/reviews?productId=%d", productId.value())))
+        mockMvc.perform(MockMvcRequestBuilders.get(
+                String.format("/reviews?productId=%d&photoReviews=%s&page=%d", productId.value(), photoReviews, pageNumber)))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                         containsString("\"reviews\"")
@@ -75,14 +77,15 @@ class ReviewControllerTest {
     void getReviewsFail() throws Exception {
         ProductId productId = new ProductId(1L);
         Integer pageNumber = 1;
+        Boolean photoReviews = true;
 
-        given(getReviewsService.getReviews(productId, pageNumber))
+        given(getReviewsService.getReviews(productId, photoReviews, pageNumber))
                 .willThrow(ProductNotFound.class);
 
-        mockMvc.perform(MockMvcRequestBuilders.get(String.format("/reviews?productId=%d", productId.value())))
+        mockMvc.perform(MockMvcRequestBuilders.get(
+                String.format("/reviews?productId=%d&photoReviews=%s&page=%d", productId.value(), photoReviews, pageNumber)))
                 .andExpect(status().isBadRequest());
     }
-
 
     @Test
     void createReviewSuccess() throws Exception {
