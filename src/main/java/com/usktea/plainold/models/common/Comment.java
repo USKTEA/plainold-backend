@@ -1,4 +1,4 @@
-package com.usktea.plainold.models.review;
+package com.usktea.plainold.models.common;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
