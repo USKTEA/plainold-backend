@@ -2,7 +2,7 @@ package com.usktea.plainold.dtos;
 
 import com.usktea.plainold.models.order.OrderNumber;
 import com.usktea.plainold.models.product.ProductId;
-import com.usktea.plainold.models.review.Comment;
+import com.usktea.plainold.models.common.Comment;
 import com.usktea.plainold.models.review.Rate;
 import com.usktea.plainold.models.review.ImageUrl;
 

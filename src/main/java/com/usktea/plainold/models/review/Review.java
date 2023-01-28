@@ -2,6 +2,7 @@ package com.usktea.plainold.models.review;
 
 import com.usktea.plainold.dtos.ReviewDto;
 import com.usktea.plainold.exceptions.ReviewerNotMatch;
+import com.usktea.plainold.models.common.Comment;
 import com.usktea.plainold.models.order.OrderNumber;
 import com.usktea.plainold.models.product.ProductId;
 import com.usktea.plainold.models.user.Username;
@@ -119,6 +120,19 @@ public class Review {
         );
     }
 
+    public static Review fake(Long reviewId) {
+        return new Review(
+                reviewId,
+                new ProductId(1L),
+                new OrderNumber("tjrxo1234-202301061131"),
+                Reviewer.fake("tjrxo1234@gmail.com"),
+                new Rate(5),
+                new Comment("좋은 상품입니다"),
+                new ImageUrl("1"),
+                LocalDateTime.now()
+        );
+    }
+
     @Override
     public boolean equals(Object other) {
         if (this == other) {
@@ -170,8 +184,6 @@ public class Review {
         this.rate = rate;
         this.comment = comment;
         this.imageUrl = imageUrl;
-
-        System.out.println(imageUrl.getValue());
     }
 
     private String format(LocalDateTime time) {

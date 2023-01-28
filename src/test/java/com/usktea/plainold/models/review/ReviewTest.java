@@ -1,6 +1,7 @@
 package com.usktea.plainold.models.review;
 
 import com.usktea.plainold.exceptions.ReviewerNotMatch;
+import com.usktea.plainold.models.common.Comment;
 import com.usktea.plainold.models.product.ProductId;
 import com.usktea.plainold.models.user.Username;
 import org.junit.jupiter.api.Test;

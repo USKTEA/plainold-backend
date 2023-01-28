@@ -41,14 +41,17 @@ public class BackdoorController {
         return "ok";
     }
 
-    @GetMapping("/user")
+    @GetMapping("/users")
     public String user() {
         PasswordEncoder passwordEncoder = new Argon2PasswordEncoder();
-        Users user = Users.fake(new Username("tjrxo1234@gmail.com"));
+        Users user1 = Users.fake(new Username("tjrxo1234@gmail.com"));
+        Users user2 = Users.fake(new Username("rlatjrxo1234@gmail.com"));
 
-        user.changePassword(new Password("Password1234!"), passwordEncoder);
+        user1.changePassword(new Password("Password1234!"), passwordEncoder);
+        user2.changePassword(new Password("Password1234!"), passwordEncoder);
 
-        userRepository.save(user);
+        userRepository.save(user1);
+        userRepository.save(user2);
 
         return "ok";
     }
