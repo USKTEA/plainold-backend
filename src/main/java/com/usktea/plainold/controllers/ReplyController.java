@@ -102,9 +102,9 @@ public class ReplyController {
         try {
             EditReplyRequest editReplyRequest = EditReplyRequest.of(editReplyRequestDto);
 
-            Long id = editReplyService.edit(username, editReplyRequest);
+            Long editedId = editReplyService.edit(username, editReplyRequest);
 
-            return new EditReplyResultDto(id);
+            return new EditReplyResultDto(editedId);
         } catch (ReplierNotMatch replierNotMatch) {
             throw new ReplierNotMatch();
         } catch (Exception exception) {
