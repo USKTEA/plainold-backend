@@ -91,4 +91,8 @@ public class Users {
     public int hashCode() {
         return Objects.hash(username);
     }
+
+    public Role role() {
+        return role;
+    }
 }

@@ -12,7 +12,6 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 
 public class ReplySpecification {
-
     public static Specification<Reply> withReviewIds(List<Long> reviewIds, Sort sort) {
         return new Specification<Reply>() {
             @Override
@@ -25,9 +24,16 @@ public class ReplySpecification {
                     query.orderBy(criteriaBuilder.asc(root.get("createdAt")));
                 }
 
-                Predicate statusPredicate = criteriaBuilder.equal(root.get("status"), Status.ACTIVE);
+                return root.get("reviewId").in(reviewIds);
+            }
+        };
+    }
 
-                return criteriaBuilder.and(root.get("reviewId").in(reviewIds), statusPredicate);
+    public static Specification<Reply> withStatus(Status status) {
+        return new Specification<Reply>() {
+            @Override
+            public Predicate toPredicate(Root<Reply> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                return criteriaBuilder.equal(root.get("status"), status);
             }
         };
     }

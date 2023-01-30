@@ -114,7 +114,8 @@ public class ReviewController {
     @DeleteMapping("{id}")
     public DeleteReviewResultDto delete(
             @RequestAttribute Username username,
-            @PathVariable Long id) {
+            @PathVariable Long id
+    ) {
         try {
             Review deleted = deleteReviewService.delete(username, id);
 
