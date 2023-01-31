@@ -18,7 +18,7 @@ import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.mock;
 
 @ActiveProfiles("test")
-class FileFileServiceTest {
+class FileUploadServiceTest {
     private GetUserService getUserService;
     private FileService fileService;
     private FileUploadService fileUploadService;
@@ -62,7 +62,7 @@ class FileFileServiceTest {
 
     @Test
     void whenFileUploadSuccess() {
-        Username username = new Username("notExists@gmail.com");
+        Username username = new Username("tjrxo1234@gmail.com");
 
         MockMultipartFile file = new MockMultipartFile(
                 "file", "image.png", MediaType.IMAGE_PNG_VALUE, "image".getBytes());

@@ -1,4 +1,4 @@
-package com.usktea.plainold.controllers;
+package com.usktea.plainold.applications;
 
 import com.usktea.plainold.models.cart.Cart;
 import com.usktea.plainold.models.user.Username;

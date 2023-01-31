@@ -1,6 +1,8 @@
 package com.usktea.plainold.models.inquiry;
 
+import com.usktea.plainold.dtos.CreateInquiryRequest;
 import com.usktea.plainold.models.product.ProductId;
+import com.usktea.plainold.models.review.Nickname;
 import com.usktea.plainold.models.user.Role;
 import com.usktea.plainold.models.user.Username;
 import org.hibernate.annotations.CreationTimestamp;
@@ -68,6 +70,20 @@ public class Inquiry {
         this.createdAt = createdAt;
     }
 
+    public Inquiry(ProductId productId,
+                   Status status,
+                   InquiryType type,
+                   Title title,
+                   Content content,
+                   Querist querist) {
+        this.productId = productId;
+        this.status = status;
+        this.type = type;
+        this.title = title;
+        this.content = content;
+        this.querist = querist;
+    }
+
     public static Inquiry fake(ProductId productId) {
         return new Inquiry(
                 1L,
@@ -91,6 +107,20 @@ public class Inquiry {
                 new Content("어떻게 입으면 좋을까요"),
                 querist,
                 LocalDateTime.now()
+        );
+    }
+
+    public static Inquiry of(ProductId productId,
+                             CreateInquiryRequest createInquiryRequest,
+                             Username username,
+                             Nickname nickname) {
+        return new Inquiry(
+                productId,
+                Status.PENDING,
+                createInquiryRequest.type(),
+                createInquiryRequest.title(),
+                createInquiryRequest.content(),
+                new Querist(username, nickname)
         );
     }
 
@@ -141,5 +171,9 @@ public class Inquiry {
         ZonedDateTime koreaZonedDateTime = time.atZone(ZoneId.of("Asia/Seoul"));
 
         return formatter.format(koreaZonedDateTime);
+    }
+
+    public Long id() {
+        return id;
     }
 }
