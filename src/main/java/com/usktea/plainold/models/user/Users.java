@@ -53,10 +53,13 @@ public class Users {
         return new Users(username, new Nickname("김뚜루"), Role.MEMBER, UserStatus.ACTIVE);
     }
 
+    public static Users fake(Username username, Role role) {
+        return new Users(username, new Nickname("손님"), role, UserStatus.ACTIVE);
+    }
+
     public void changePassword(Password password, PasswordEncoder passwordEncoder) {
         this.password = Password.of(passwordEncoder.encode(password.getValue()));
     }
-
 
     public void authenticate(Password password, PasswordEncoder passwordEncoder) {
         if (!passwordEncoder.matches(password.getValue(), this.password.getValue())) {
@@ -94,5 +97,9 @@ public class Users {
 
     public Role role() {
         return role;
+    }
+
+    public boolean isGuest() {
+        return Objects.equals(this.role, Role.GUEST);
     }
 }
