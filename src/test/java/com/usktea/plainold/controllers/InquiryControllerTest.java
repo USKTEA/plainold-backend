@@ -1,15 +1,22 @@
 package com.usktea.plainold.controllers;
 
-import com.usktea.plainold.applications.CreateInquiryService;
-import com.usktea.plainold.applications.GetInquiryService;
+import com.usktea.plainold.applications.inquiry.EditInquiryService;
+import com.usktea.plainold.applications.inquiry.CreateInquiryService;
+import com.usktea.plainold.applications.inquiry.GetInquiryService;
 import com.usktea.plainold.dtos.CreateInquiryRequest;
+import com.usktea.plainold.dtos.EditInquiryRequest;
 import com.usktea.plainold.dtos.GetInquiriesRequestDto;
 import com.usktea.plainold.exceptions.GuestIsNotAuthorized;
+import com.usktea.plainold.exceptions.InquiryCannotBeEdited;
+import com.usktea.plainold.exceptions.InquiryNotExists;
+import com.usktea.plainold.exceptions.NotHaveEditInquiryAuthority;
 import com.usktea.plainold.exceptions.ProductNotFound;
 import com.usktea.plainold.exceptions.UserNotExists;
 import com.usktea.plainold.models.inquiry.InquiryView;
 import com.usktea.plainold.models.product.ProductId;
+import com.usktea.plainold.models.user.Role;
 import com.usktea.plainold.models.user.Username;
+import com.usktea.plainold.models.user.Users;
 import com.usktea.plainold.utils.JwtUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +50,9 @@ class InquiryControllerTest {
 
     @MockBean
     private CreateInquiryService createInquiryService;
+
+    @MockBean
+    private EditInquiryService editInquiryService;
 
     @SpyBean
     private JwtUtil jwtUtil;
@@ -182,7 +192,7 @@ class InquiryControllerTest {
     @Test
     void whenCreateInquirySomeOfInformationNotExists() throws Exception {
         Username username = new Username("tjrxo1234@gmail.com");
-        ProductId productId = new ProductId(9_999_999L);
+        ProductId productId = new ProductId(1L);
 
         String token = jwtUtil.encode(username.value());
 
@@ -196,5 +206,150 @@ class InquiryControllerTest {
                                 "\"content\": \"이렇게 입으면 될까요\"" +
                                 "}"))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenEditInquiryUserNotExists() throws Exception {
+        Username username = new Username("notExists@gmail.com");
+        String token = jwtUtil.encode(username.value());
+        Long id = 1L;
+
+        given(editInquiryService.edit(eq(username), any(EditInquiryRequest.class)))
+                .willThrow(UserNotExists.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/inquiries")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"id\":" + id + ", " +
+                                "\"title\": \"제목을 이렇게 수정\", " +
+                                "\"content\": \"내용을 이렇게 수정\"" +
+                                "}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenOtherUserTryToEditInquiry() throws Exception {
+        Username otherUsername = new Username("otherUser@gmail.com");
+        String token = jwtUtil.encode(otherUsername.value());
+        Long id = 1L;
+
+        given(editInquiryService.edit(eq(otherUsername), any(EditInquiryRequest.class)))
+                .willThrow(NotHaveEditInquiryAuthority.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/inquiries")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"id\":" + id + ", " +
+                                "\"title\": \"제목을 이렇게 수정\", " +
+                                "\"content\": \"내용을 이렇게 수정\"" +
+                                "}"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void whenTryToEditNotExistsInquiry() throws Exception {
+        Username username = new Username("tjrxo1234@gmail.com");
+        String token = jwtUtil.encode(username.value());
+        Long id = 9_999_999L;
+
+        given(editInquiryService.edit(eq(username), any(EditInquiryRequest.class)))
+                .willThrow(InquiryNotExists.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/inquiries")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"id\":" + id + ", " +
+                                "\"title\": \"제목을 이렇게 수정\", " +
+                                "\"content\": \"내용을 이렇게 수정\"" +
+                                "}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenSomeOfRequestDataNotExists() throws Exception {
+        Username username = new Username("tjrxo1234@gmail.com");
+        String token = jwtUtil.encode(username.value());
+        Long id = 1L;
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/inquiries")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"id\":" + id + ", " +
+                                "\"title\": \"\", " +
+                                "\"content\": \"내용을 이렇게 수정\"" +
+                                "}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenInquiryCannotBeEdited() throws Exception {
+        Username username = new Username("tjrxo1234@gmail.com");
+        String token = jwtUtil.encode(username.value());
+        Long id = 1L;
+
+        given(editInquiryService.edit(eq(username), any(EditInquiryRequest.class)))
+                .willThrow(InquiryCannotBeEdited.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/inquiries")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"id\":" + id + ", " +
+                                "\"title\": \"제목을 이렇게 수정\", " +
+                                "\"content\": \"내용을 이렇게 수정\"" +
+                                "}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenEditInquirySuccess() throws Exception {
+        Username username = new Username("tjrxo1234@gmail.com");
+        String token = jwtUtil.encode(username.value());
+        Long id = 1L;
+
+        given(editInquiryService.edit(eq(username), any(EditInquiryRequest.class)))
+                .willReturn(id);
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/inquiries")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"id\":" + id + ", " +
+                                "\"title\": \"제목을 이렇게 수정\", " +
+                                "\"content\": \"내용을 이렇게 수정\"" +
+                                "}"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        containsString("\"id\"")
+                ));
+    }
+
+    @Test
+    void whenAdminEditInquiry() throws Exception {
+        Users admin = Users.fake(Role.ADMIN);
+        Username adminName = admin.username();
+
+        String token = jwtUtil.encode(adminName.value());
+        Long id = 1L;
+
+        given(editInquiryService.edit(eq(adminName), any(EditInquiryRequest.class)))
+                .willReturn(id);
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/inquiries")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"id\":" + id + ", " +
+                                "\"title\": \"제목을 이렇게 수정\", " +
+                                "\"content\": \"내용을 이렇게 수정\"" +
+                                "}"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        containsString("\"id\"")
+                ));
     }
 }

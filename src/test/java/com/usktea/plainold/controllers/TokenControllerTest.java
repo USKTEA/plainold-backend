@@ -1,7 +1,7 @@
 package com.usktea.plainold.controllers;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
-import com.usktea.plainold.applications.IssueTokenService;
+import com.usktea.plainold.applications.token.IssueTokenService;
 import com.usktea.plainold.dtos.TokenDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
 package com.usktea.plainold.controllers;
 
-import com.usktea.plainold.applications.GetUserService;
+import com.usktea.plainold.applications.user.GetUserService;
 import com.usktea.plainold.dtos.UserInformationDto;
 import com.usktea.plainold.exceptions.UserNotExists;
 import com.usktea.plainold.models.user.Username;
@@ -27,7 +27,7 @@ public class UserController {
             @RequestAttribute Username username) {
         Users user = getUserService.find(username);
 
-        return new UserInformationDto(user.username());
+        return new UserInformationDto(user.username(), user.role());
     }
 
     @ExceptionHandler(UserNotExists.class)

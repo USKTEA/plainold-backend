@@ -1,7 +1,7 @@
 package com.usktea.plainold.controllers;
 
-import com.usktea.plainold.applications.CreateOrderService;
-import com.usktea.plainold.applications.GetOrderCanWriteReviewService;
+import com.usktea.plainold.applications.order.CreateOrderService;
+import com.usktea.plainold.applications.order.GetOrderCanWriteReviewService;
 import com.usktea.plainold.dtos.OrderNumberDto;
 import com.usktea.plainold.dtos.OrderRequest;
 import com.usktea.plainold.dtos.OrderRequestDto;

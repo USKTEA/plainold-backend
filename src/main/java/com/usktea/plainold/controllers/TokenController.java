@@ -1,6 +1,6 @@
 package com.usktea.plainold.controllers;
 
-import com.usktea.plainold.applications.IssueTokenService;
+import com.usktea.plainold.applications.token.IssueTokenService;
 import com.usktea.plainold.dtos.ReissuedTokenDto;
 import com.usktea.plainold.dtos.TokenDto;
 import com.usktea.plainold.exceptions.ReissueTokenFailed;

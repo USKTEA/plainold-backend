@@ -14,58 +14,42 @@ import java.util.List;
 
 public class ReviewSpecification {
     public static Specification<Review> equal(List<OrderNumber> orderNumbers, ProductId productId) {
-        return new Specification<Review>() {
-            @Override
-            public Predicate toPredicate(Root<Review> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                List<Predicate> predicates = new ArrayList<>();
+        return (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
 
-                if (orderNumbers != null) {
-                    predicates.add(root.get("orderNumber").in(orderNumbers));
-                }
-
-                if (productId != null) {
-                    predicates.add(criteriaBuilder.equal(root.get("productId"), productId));
-                }
-
-                return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+            if (orderNumbers != null) {
+                predicates.add(root.get("orderNumber").in(orderNumbers));
             }
+
+            if (productId != null) {
+                predicates.add(criteriaBuilder.equal(root.get("productId"), productId));
+            }
+
+            return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
         };
     }
 
     public static Specification<Review> equal(OrderNumber orderNumber, ProductId productId) {
-        return new Specification<Review>() {
-            @Override
-            public Predicate toPredicate(Root<Review> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                List<Predicate> predicates = new ArrayList<>();
+        return (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
 
-                if (orderNumber != null) {
-                    predicates.add(criteriaBuilder.equal(root.get("orderNumber"), orderNumber));
-                }
-
-                if (productId != null) {
-                    predicates.add(criteriaBuilder.equal(root.get("productId"), productId));
-                }
-
-                return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+            if (orderNumber != null) {
+                predicates.add(criteriaBuilder.equal(root.get("orderNumber"), orderNumber));
             }
+
+            if (productId != null) {
+                predicates.add(criteriaBuilder.equal(root.get("productId"), productId));
+            }
+
+            return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
         };
     }
 
     public static Specification<Review> equalProductId(ProductId productId) {
-        return new Specification<Review>() {
-            @Override
-            public Predicate toPredicate(Root<Review> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                return criteriaBuilder.equal(root.get("productId"), productId);
-            }
-        };
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("productId"), productId);
     }
 
     public static Specification<Review> imageUrlNotNull() {
-        return new Specification<Review>() {
-            @Override
-            public Predicate toPredicate(Root<Review> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                return criteriaBuilder.isNotNull(root.get("imageUrl"));
-            }
-        };
+        return (root, query, criteriaBuilder) -> criteriaBuilder.isNotNull(root.get("imageUrl"));
     }
 }

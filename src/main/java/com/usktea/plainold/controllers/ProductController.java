@@ -1,7 +1,7 @@
 package com.usktea.plainold.controllers;
 
-import com.usktea.plainold.applications.GetProductDetailService;
-import com.usktea.plainold.applications.GetProductsService;
+import com.usktea.plainold.applications.product.GetProductDetailService;
+import com.usktea.plainold.applications.product.GetProductsService;
 import com.usktea.plainold.dtos.PageDto;
 import com.usktea.plainold.dtos.ProductDetail;
 import com.usktea.plainold.dtos.ProductDetailDto;
@@ -41,7 +41,7 @@ public class ProductController {
     ) {
         Page<Product> found = getProductsService.list(new CategoryId(categoryId), page);
 
-        PageDto pageDto = new PageDto(page, found.getTotalPages());
+        PageDto pageDto = new PageDto(page, found.getTotalPages(), found.getTotalElements());
 
         ProductsDto products = new ProductsDto(
                 found.stream()

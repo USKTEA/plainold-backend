@@ -1,6 +1,6 @@
 package com.usktea.plainold.controllers;
 
-import com.usktea.plainold.applications.LoginService;
+import com.usktea.plainold.applications.login.LoginService;
 import com.usktea.plainold.dtos.LoginRequestDto;
 import com.usktea.plainold.dtos.LoginResultDto;
 import com.usktea.plainold.dtos.TokenDto;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 

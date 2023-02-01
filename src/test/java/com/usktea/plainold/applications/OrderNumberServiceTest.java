@@ -1,5 +1,6 @@
 package com.usktea.plainold.applications;
 
+import com.usktea.plainold.applications.order.OrderNumberService;
 import com.usktea.plainold.models.order.OrderNumber;
 import com.usktea.plainold.models.user.Username;
 import org.junit.jupiter.api.Test;

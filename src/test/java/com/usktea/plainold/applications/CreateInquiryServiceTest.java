@@ -1,5 +1,8 @@
 package com.usktea.plainold.applications;
 
+import com.usktea.plainold.applications.inquiry.CreateInquiryService;
+import com.usktea.plainold.applications.product.GetProductService;
+import com.usktea.plainold.applications.user.GetUserService;
 import com.usktea.plainold.dtos.CreateInquiryRequest;
 import com.usktea.plainold.exceptions.GuestIsNotAuthorized;
 import com.usktea.plainold.exceptions.ProductNotFound;

@@ -1,5 +1,6 @@
 package com.usktea.plainold.applications;
 
+import com.usktea.plainold.applications.product.GetProductService;
 import com.usktea.plainold.exceptions.ProductNotFound;
 import com.usktea.plainold.models.product.Product;
 import com.usktea.plainold.models.product.ProductId;

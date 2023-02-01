@@ -17,16 +17,13 @@ public class OrderSpecification {
             Username username,
             OrderStatus status
     ) {
-        return new Specification<Order>() {
-            @Override
-            public Predicate toPredicate(Root<Order> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                List<Predicate> predicates = new ArrayList<>();
+        return (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
 
-                predicates.add(criteriaBuilder.equal(root.get("username"), username));
-                predicates.add(criteriaBuilder.equal(root.get("status"), status));
+            predicates.add(criteriaBuilder.equal(root.get("username"), username));
+            predicates.add(criteriaBuilder.equal(root.get("status"), status));
 
-                return criteriaBuilder.and(predicates.toArray((new Predicate[predicates.size()])));
-            }
+            return criteriaBuilder.and(predicates.toArray((new Predicate[predicates.size()])));
         };
     }
 }

@@ -1,5 +1,6 @@
 package com.usktea.plainold.applications;
 
+import com.usktea.plainold.applications.user.GetUserService;
 import com.usktea.plainold.exceptions.UserNotExists;
 import com.usktea.plainold.models.user.Username;
 import com.usktea.plainold.models.user.Users;

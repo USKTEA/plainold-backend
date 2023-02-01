@@ -1,6 +1,6 @@
 package com.usktea.plainold.controllers;
 
-import com.usktea.plainold.applications.CreateCartService;
+import com.usktea.plainold.applications.cart.CreateCartService;
 import com.usktea.plainold.models.user.Username;
 import com.usktea.plainold.repositories.CartRepository;
 import org.junit.jupiter.api.BeforeEach;

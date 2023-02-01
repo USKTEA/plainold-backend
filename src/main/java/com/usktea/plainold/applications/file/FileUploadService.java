@@ -1,7 +1,7 @@
 package com.usktea.plainold.applications.file;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.usktea.plainold.applications.GetUserService;
+import com.usktea.plainold.applications.user.GetUserService;
 import com.usktea.plainold.models.user.Username;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

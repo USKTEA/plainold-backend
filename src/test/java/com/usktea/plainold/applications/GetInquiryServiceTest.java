@@ -1,5 +1,7 @@
 package com.usktea.plainold.applications;
 
+import com.usktea.plainold.applications.inquiry.GetInquiryService;
+import com.usktea.plainold.applications.user.GetUserService;
 import com.usktea.plainold.dtos.GetInquiriesRequestDto;
 import com.usktea.plainold.exceptions.ProductNotFound;
 import com.usktea.plainold.exceptions.UserNotExists;
