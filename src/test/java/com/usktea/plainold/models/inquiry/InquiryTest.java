@@ -1,6 +1,7 @@
 package com.usktea.plainold.models.inquiry;
 
 import com.usktea.plainold.exceptions.InquiryCannotBeEdited;
+import com.usktea.plainold.exceptions.NotHaveDeleteInquiryAuthority;
 import com.usktea.plainold.exceptions.NotHaveEditInquiryAuthority;
 import com.usktea.plainold.models.user.Role;
 import com.usktea.plainold.models.user.Username;
@@ -117,5 +118,46 @@ class InquiryTest {
 
         assertThat(inquiry.title()).isEqualTo(title);
         assertThat(inquiry.content()).isEqualTo(content);
+    }
+
+    @Test
+    void whenDeleteSuccess() {
+        Username username = new Username("tjrxo1234@gmail.com");
+
+        Users user = Users.fake(username);
+
+        Inquiry inquiry = Inquiry.fake(Status.PENDING, username);
+
+        assertThat(inquiry.status()).isEqualTo(Status.PENDING);
+
+        inquiry.delete(user.username(), user.role());
+
+        assertThat(inquiry.status()).isEqualTo(Status.DELETED);
+    }
+
+    @Test
+    void whenDeleteFailed() {
+        Username username = new Username("tjrxo1234@gmail.com");
+        Username otherUser = new Username("otherUser@gmail.com");
+
+        Users user = Users.fake(otherUser);
+
+        Inquiry inquiry = Inquiry.fake(Status.PENDING, username);
+
+        assertThrows(NotHaveDeleteInquiryAuthority.class,
+                () -> inquiry.delete(user.username(), user.role()));
+    }
+
+    @Test
+    void whenAdminDeleteInquiry() {
+        Username username = new Username("tjrxo1234@gmail.com");
+
+        Users admin = Users.fake(Role.ADMIN);
+
+        Inquiry inquiry = Inquiry.fake(Status.PENDING, username);
+
+        inquiry.delete(admin.username(), admin.role());
+
+        assertThat(inquiry.status()).isEqualTo(Status.DELETED);
     }
 }

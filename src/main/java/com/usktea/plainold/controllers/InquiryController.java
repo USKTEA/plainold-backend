@@ -1,11 +1,13 @@
 package com.usktea.plainold.controllers;
 
-import com.usktea.plainold.applications.inquiry.EditInquiryService;
+import com.usktea.plainold.applications.inquiry.DeleteInquiryService;
 import com.usktea.plainold.applications.inquiry.CreateInquiryService;
+import com.usktea.plainold.applications.inquiry.EditInquiryService;
 import com.usktea.plainold.applications.inquiry.GetInquiryService;
 import com.usktea.plainold.dtos.CreateInquiryRequest;
 import com.usktea.plainold.dtos.CreateInquiryRequestDto;
 import com.usktea.plainold.dtos.CreateInquiryResultDto;
+import com.usktea.plainold.dtos.DeleteInquiryResultDto;
 import com.usktea.plainold.dtos.EditInquiryRequest;
 import com.usktea.plainold.dtos.EditInquiryRequestDto;
 import com.usktea.plainold.dtos.EditInquiryResultDto;
@@ -14,8 +16,10 @@ import com.usktea.plainold.dtos.GetInquiriesResultDto;
 import com.usktea.plainold.dtos.InquiryViewDto;
 import com.usktea.plainold.dtos.PageDto;
 import com.usktea.plainold.exceptions.CreateInquiryFailed;
+import com.usktea.plainold.exceptions.DeleteInquiryFailed;
 import com.usktea.plainold.exceptions.EditInquiryFailed;
 import com.usktea.plainold.exceptions.GuestIsNotAuthorized;
+import com.usktea.plainold.exceptions.NotHaveDeleteInquiryAuthority;
 import com.usktea.plainold.exceptions.NotHaveEditInquiryAuthority;
 import com.usktea.plainold.exceptions.ProductNotFound;
 import com.usktea.plainold.models.inquiry.InquiryView;
@@ -23,9 +27,11 @@ import com.usktea.plainold.models.product.ProductId;
 import com.usktea.plainold.models.user.Username;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,13 +51,16 @@ public class InquiryController {
     private final GetInquiryService getInquiryService;
     private final CreateInquiryService createInquiryService;
     private final EditInquiryService editInquiryService;
+    private final DeleteInquiryService deleteInquiryService;
 
     public InquiryController(GetInquiryService getInquiryService,
                              CreateInquiryService createInquiryService,
-                             EditInquiryService editInquiryService) {
+                             EditInquiryService editInquiryService,
+                             DeleteInquiryService deleteInquiryService) {
         this.getInquiryService = getInquiryService;
         this.createInquiryService = createInquiryService;
         this.editInquiryService = editInquiryService;
+        this.deleteInquiryService = deleteInquiryService;
     }
 
     @GetMapping
@@ -119,6 +128,22 @@ public class InquiryController {
         }
     }
 
+    @DeleteMapping("{id}")
+    public DeleteInquiryResultDto delete(
+            @RequestAttribute Username username,
+            @PathVariable Long id
+    ) {
+        try {
+            Long deleted = deleteInquiryService.delete(username, id);
+
+            return new DeleteInquiryResultDto(deleted);
+        } catch (NotHaveDeleteInquiryAuthority notHaveDeleteInquiryAuthority) {
+            throw new NotHaveDeleteInquiryAuthority();
+        } catch (Exception exception) {
+            throw new DeleteInquiryFailed(exception.getMessage());
+        }
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String incompleteCreateRequest() {
@@ -137,6 +162,12 @@ public class InquiryController {
         return exception.getMessage();
     }
 
+    @ExceptionHandler(NotHaveDeleteInquiryAuthority.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public String notHaveDeleteAuthority(Exception exception) {
+        return exception.getMessage();
+    }
+
     @ExceptionHandler(CreateInquiryFailed.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String createdInquiryFail(Exception exception) {
@@ -146,6 +177,12 @@ public class InquiryController {
     @ExceptionHandler(EditInquiryFailed.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String editInquiryFail(Exception exception) {
+        return exception.getMessage();
+    }
+
+    @ExceptionHandler(DeleteInquiryFailed.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String deleteInquiryFail(Exception exception) {
         return exception.getMessage();
     }
 
