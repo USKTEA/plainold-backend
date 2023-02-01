@@ -1,5 +1,6 @@
 package com.usktea.plainold.applications;
 
+import com.usktea.plainold.applications.product.GetProductsService;
 import com.usktea.plainold.exceptions.CategoryNotFound;
 import com.usktea.plainold.models.category.Category;
 import com.usktea.plainold.models.category.CategoryId;

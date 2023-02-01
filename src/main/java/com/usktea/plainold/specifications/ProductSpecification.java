@@ -13,11 +13,6 @@ public class ProductSpecification {
     public static Specification<Product> equalCategoryId(
             CategoryId categoryId
     ) {
-        return new Specification<Product>() {
-            @Override
-            public Predicate toPredicate(Root<Product> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                return criteriaBuilder.equal(root.get("categoryId"), categoryId);
-            }
-        };
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("categoryId"), categoryId);
     }
 }

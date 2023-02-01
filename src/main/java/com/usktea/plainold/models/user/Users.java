@@ -50,11 +50,27 @@ public class Users {
     }
 
     public static Users fake(Username username) {
-        return new Users(username, new Nickname("김뚜루"), Role.MEMBER, UserStatus.ACTIVE);
+        return new Users(
+                username,
+                new Nickname("김뚜루"),
+                Role.MEMBER,
+                UserStatus.ACTIVE);
     }
 
     public static Users fake(Username username, Role role) {
-        return new Users(username, new Nickname("손님"), role, UserStatus.ACTIVE);
+        return new Users(
+                username,
+                new Nickname("손님"),
+                role,
+                UserStatus.ACTIVE);
+    }
+
+    public static Users fake(Role role) {
+        return new Users(
+                new Username("admin@admin.com"),
+                new Nickname("관리자"),
+                role,
+                UserStatus.ACTIVE);
     }
 
     public void changePassword(Password password, PasswordEncoder passwordEncoder) {

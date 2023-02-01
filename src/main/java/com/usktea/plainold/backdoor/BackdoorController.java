@@ -4,6 +4,7 @@ import com.usktea.plainold.models.option.Option;
 import com.usktea.plainold.models.product.ProductId;
 import com.usktea.plainold.models.review.Review;
 import com.usktea.plainold.models.user.Password;
+import com.usktea.plainold.models.user.Role;
 import com.usktea.plainold.models.user.Username;
 import com.usktea.plainold.models.user.Users;
 import com.usktea.plainold.repositories.OptionRepository;
@@ -46,12 +47,15 @@ public class BackdoorController {
         PasswordEncoder passwordEncoder = new Argon2PasswordEncoder();
         Users user1 = Users.fake(new Username("tjrxo1234@gmail.com"));
         Users user2 = Users.fake(new Username("rlatjrxo1234@gmail.com"));
+        Users admin = Users.fake(Role.ADMIN);
 
         user1.changePassword(new Password("Password1234!"), passwordEncoder);
         user2.changePassword(new Password("Password1234!"), passwordEncoder);
+        admin.changePassword(new Password("Password1234!"), passwordEncoder);
 
         userRepository.save(user1);
         userRepository.save(user2);
+        userRepository.save(admin);
 
         return "ok";
     }

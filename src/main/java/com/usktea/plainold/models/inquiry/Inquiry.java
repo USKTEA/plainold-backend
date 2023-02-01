@@ -1,6 +1,8 @@
 package com.usktea.plainold.models.inquiry;
 
 import com.usktea.plainold.dtos.CreateInquiryRequest;
+import com.usktea.plainold.exceptions.InquiryCannotBeEdited;
+import com.usktea.plainold.exceptions.NotHaveEditInquiryAuthority;
 import com.usktea.plainold.models.product.ProductId;
 import com.usktea.plainold.models.review.Nickname;
 import com.usktea.plainold.models.user.Role;
@@ -110,6 +112,19 @@ public class Inquiry {
         );
     }
 
+    public static Inquiry fake(Status status, Username username) {
+        return new Inquiry(
+                1L,
+                new ProductId(1L),
+                status,
+                InquiryType.PUBLIC,
+                new Title("사이즈 문의"),
+                new Content("어떻게 입으면 좋을까요"),
+                Querist.fake(username),
+                LocalDateTime.now()
+        );
+    }
+
     public static Inquiry of(ProductId productId,
                              CreateInquiryRequest createInquiryRequest,
                              Username username,
@@ -150,6 +165,35 @@ public class Inquiry {
         );
     }
 
+    public void edit(Username username, Role role, Title title, Content content) {
+        if (!checkUserEditAuthority(username, role)) {
+            throw new NotHaveEditInquiryAuthority();
+        }
+
+        if (!checkInquiryCanBeEdited()) {
+            throw new InquiryCannotBeEdited();
+        }
+
+        this.title = title;
+        this.content = content;
+    }
+
+    private boolean checkInquiryCanBeEdited() {
+        return Objects.equals(this.status, Status.PENDING);
+    }
+
+    private boolean checkUserEditAuthority(Username username, Role role) {
+        if (role.isAdmin()) {
+            return true;
+        }
+
+        if (this.querist.isSameUser(username)) {
+            return true;
+        }
+
+        return false;
+    }
+
     private boolean checkUserAuthority(Username username, Role role) {
         if (Objects.equals(this.type, InquiryType.PUBLIC)) {
             return true;
@@ -175,5 +219,13 @@ public class Inquiry {
 
     public Long id() {
         return id;
+    }
+
+    public Title title() {
+        return title;
+    }
+
+    public Content content() {
+        return content;
     }
 }

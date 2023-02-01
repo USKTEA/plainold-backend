@@ -1,5 +1,7 @@
 package com.usktea.plainold.applications;
 
+import com.usktea.plainold.applications.cart.UpdateCartItemService;
+import com.usktea.plainold.applications.user.GetUserService;
 import com.usktea.plainold.exceptions.CartItemNotExists;
 import com.usktea.plainold.exceptions.UserNotExists;
 import com.usktea.plainold.models.cart.Cart;

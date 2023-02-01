@@ -1,6 +1,6 @@
 package com.usktea.plainold.controllers;
 
-import com.usktea.plainold.applications.LoginService;
+import com.usktea.plainold.applications.login.LoginService;
 import com.usktea.plainold.dtos.TokenDto;
 import com.usktea.plainold.exceptions.LoginFailed;
 import com.usktea.plainold.models.user.Password;

@@ -1,10 +1,10 @@
 package com.usktea.plainold.controllers;
 
-import com.usktea.plainold.applications.AddCartItemService;
-import com.usktea.plainold.applications.CreateCartService;
-import com.usktea.plainold.applications.DeleteCartItemService;
-import com.usktea.plainold.applications.GetCartService;
-import com.usktea.plainold.applications.UpdateCartItemService;
+import com.usktea.plainold.applications.cart.AddCartItemService;
+import com.usktea.plainold.applications.cart.CreateCartService;
+import com.usktea.plainold.applications.cart.DeleteCartItemService;
+import com.usktea.plainold.applications.cart.GetCartService;
+import com.usktea.plainold.applications.cart.UpdateCartItemService;
 import com.usktea.plainold.dtos.AddItemToCartRequestDto;
 import com.usktea.plainold.dtos.AddItemToCartResultDto;
 import com.usktea.plainold.dtos.DeleteCartItemRequestDto;

@@ -1,5 +1,6 @@
 package com.usktea.plainold.applications;
 
+import com.usktea.plainold.applications.category.GetCategoryService;
 import com.usktea.plainold.models.category.Category;
 import com.usktea.plainold.repositories.CategoryRepository;
 import org.junit.jupiter.api.BeforeEach;

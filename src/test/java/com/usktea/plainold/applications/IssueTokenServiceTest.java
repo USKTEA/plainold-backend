@@ -1,5 +1,6 @@
 package com.usktea.plainold.applications;
 
+import com.usktea.plainold.applications.token.IssueTokenService;
 import com.usktea.plainold.dtos.TokenDto;
 import com.usktea.plainold.exceptions.RefreshTokenNotFound;
 import com.usktea.plainold.models.token.Token;

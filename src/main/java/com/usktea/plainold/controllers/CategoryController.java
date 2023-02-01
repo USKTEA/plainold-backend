@@ -1,6 +1,6 @@
 package com.usktea.plainold.controllers;
 
-import com.usktea.plainold.applications.GetCategoryService;
+import com.usktea.plainold.applications.category.GetCategoryService;
 import com.usktea.plainold.dtos.CategoriesDto;
 import com.usktea.plainold.models.category.Category;
 import org.springframework.web.bind.annotation.GetMapping;

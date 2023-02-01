@@ -13,28 +13,20 @@ import javax.persistence.criteria.Root;
 
 public class InquirySpecification {
     public static Specification<Inquiry> equalProductId(ProductId productId, Sort sort) {
-        return new Specification<Inquiry>() {
-            @Override
-            public Predicate toPredicate(Root<Inquiry> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                if (productId == null) {
-                    return null;
-                }
-
-                if (sort != null) {
-                    query.orderBy(criteriaBuilder.desc(root.get("createdAt")));
-                }
-
-                return criteriaBuilder.equal(root.get("productId"), productId);
+        return (root, query, criteriaBuilder) -> {
+            if (productId == null) {
+                return null;
             }
+
+            if (sort != null) {
+                query.orderBy(criteriaBuilder.desc(root.get("createdAt")));
+            }
+
+            return criteriaBuilder.equal(root.get("productId"), productId);
         };
     }
 
     public static Specification<Inquiry> notDeleted() {
-        return new Specification<Inquiry>() {
-            @Override
-            public Predicate toPredicate(Root<Inquiry> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                return criteriaBuilder.notEqual(root.get("status"), Status.DELETED);
-            }
-        };
+        return (root, query, criteriaBuilder) -> criteriaBuilder.notEqual(root.get("status"), Status.DELETED);
     }
 }

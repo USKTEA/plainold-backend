@@ -1,9 +1,9 @@
 package com.usktea.plainold.controllers;
 
-import com.usktea.plainold.applications.CreateReviewService;
-import com.usktea.plainold.applications.DeleteReviewService;
-import com.usktea.plainold.applications.EditReviewService;
-import com.usktea.plainold.applications.GetReviewsService;
+import com.usktea.plainold.applications.review.CreateReviewService;
+import com.usktea.plainold.applications.review.DeleteReviewService;
+import com.usktea.plainold.applications.review.EditReviewService;
+import com.usktea.plainold.applications.review.GetReviewsService;
 import com.usktea.plainold.exceptions.ProductNotFound;
 import com.usktea.plainold.exceptions.ReviewNotFound;
 import com.usktea.plainold.exceptions.ReviewerNotMatch;

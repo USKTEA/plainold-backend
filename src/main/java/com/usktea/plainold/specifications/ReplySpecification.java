@@ -13,28 +13,20 @@ import java.util.List;
 
 public class ReplySpecification {
     public static Specification<Reply> withReviewIds(List<Long> reviewIds, Sort sort) {
-        return new Specification<Reply>() {
-            @Override
-            public Predicate toPredicate(Root<Reply> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                if (reviewIds == null || reviewIds.isEmpty()) {
-                    return null;
-                }
-
-                if (sort != null) {
-                    query.orderBy(criteriaBuilder.asc(root.get("createdAt")));
-                }
-
-                return root.get("reviewId").in(reviewIds);
+        return (root, query, criteriaBuilder) -> {
+            if (reviewIds == null || reviewIds.isEmpty()) {
+                return null;
             }
+
+            if (sort != null) {
+                query.orderBy(criteriaBuilder.asc(root.get("createdAt")));
+            }
+
+            return root.get("reviewId").in(reviewIds);
         };
     }
 
     public static Specification<Reply> withStatus(Status status) {
-        return new Specification<Reply>() {
-            @Override
-            public Predicate toPredicate(Root<Reply> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                return criteriaBuilder.equal(root.get("status"), status);
-            }
-        };
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("status"), status);
     }
 }

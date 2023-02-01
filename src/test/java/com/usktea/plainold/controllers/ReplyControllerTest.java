@@ -1,9 +1,9 @@
 package com.usktea.plainold.controllers;
 
-import com.usktea.plainold.applications.CreateReplyService;
-import com.usktea.plainold.applications.DeleteReplyService;
-import com.usktea.plainold.applications.EditReplyService;
-import com.usktea.plainold.applications.GetReplyService;
+import com.usktea.plainold.applications.reply.CreateReplyService;
+import com.usktea.plainold.applications.reply.DeleteReplyService;
+import com.usktea.plainold.applications.reply.EditReplyService;
+import com.usktea.plainold.applications.reply.GetReplyService;
 import com.usktea.plainold.dtos.EditReplyRequest;
 import com.usktea.plainold.exceptions.ReplierNotMatch;
 import com.usktea.plainold.exceptions.ReplyNotExists;
