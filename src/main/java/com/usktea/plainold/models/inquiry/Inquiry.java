@@ -2,6 +2,7 @@ package com.usktea.plainold.models.inquiry;
 
 import com.usktea.plainold.dtos.CreateInquiryRequest;
 import com.usktea.plainold.exceptions.InquiryCannotBeEdited;
+import com.usktea.plainold.exceptions.NotHaveDeleteInquiryAuthority;
 import com.usktea.plainold.exceptions.NotHaveEditInquiryAuthority;
 import com.usktea.plainold.models.product.ProductId;
 import com.usktea.plainold.models.review.Nickname;
@@ -140,14 +141,14 @@ public class Inquiry {
     }
 
     public InquiryView toView(Username username, Role role) {
-        if (!checkUserAuthority(username, role)) {
+        if (Objects.equals(this.type, InquiryType.PUBLIC) || checkUserAuthority(username, role)) {
             return new InquiryView(
                     id,
                     productId.value(),
                     status.name(),
                     type.name(),
-                    SECRET_TITLE,
-                    SECRET_CONTENT,
+                    title.value(),
+                    content.value(),
                     querist.toDto(),
                     format(createdAt)
             );
@@ -158,15 +159,15 @@ public class Inquiry {
                 productId.value(),
                 status.name(),
                 type.name(),
-                title.value(),
-                content.value(),
+                SECRET_TITLE,
+                SECRET_CONTENT,
                 querist.toDto(),
                 format(createdAt)
         );
     }
 
     public void edit(Username username, Role role, Title title, Content content) {
-        if (!checkUserEditAuthority(username, role)) {
+        if (!checkUserAuthority(username, role)) {
             throw new NotHaveEditInquiryAuthority();
         }
 
@@ -178,27 +179,19 @@ public class Inquiry {
         this.content = content;
     }
 
+    public void delete(Username username, Role role) {
+        if (!checkUserAuthority(username, role)) {
+            throw new NotHaveDeleteInquiryAuthority();
+        }
+
+        this.status = Status.DELETED;
+    }
+
     private boolean checkInquiryCanBeEdited() {
         return Objects.equals(this.status, Status.PENDING);
     }
 
-    private boolean checkUserEditAuthority(Username username, Role role) {
-        if (role.isAdmin()) {
-            return true;
-        }
-
-        if (this.querist.isSameUser(username)) {
-            return true;
-        }
-
-        return false;
-    }
-
     private boolean checkUserAuthority(Username username, Role role) {
-        if (Objects.equals(this.type, InquiryType.PUBLIC)) {
-            return true;
-        }
-
         if (role.isAdmin()) {
             return true;
         }
@@ -227,5 +220,9 @@ public class Inquiry {
 
     public Content content() {
         return content;
+    }
+
+    public Status status() {
+        return status;
     }
 }

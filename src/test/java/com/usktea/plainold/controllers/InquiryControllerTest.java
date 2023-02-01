@@ -1,7 +1,8 @@
 package com.usktea.plainold.controllers;
 
-import com.usktea.plainold.applications.inquiry.EditInquiryService;
+import com.usktea.plainold.applications.inquiry.DeleteInquiryService;
 import com.usktea.plainold.applications.inquiry.CreateInquiryService;
+import com.usktea.plainold.applications.inquiry.EditInquiryService;
 import com.usktea.plainold.applications.inquiry.GetInquiryService;
 import com.usktea.plainold.dtos.CreateInquiryRequest;
 import com.usktea.plainold.dtos.EditInquiryRequest;
@@ -9,6 +10,7 @@ import com.usktea.plainold.dtos.GetInquiriesRequestDto;
 import com.usktea.plainold.exceptions.GuestIsNotAuthorized;
 import com.usktea.plainold.exceptions.InquiryCannotBeEdited;
 import com.usktea.plainold.exceptions.InquiryNotExists;
+import com.usktea.plainold.exceptions.NotHaveDeleteInquiryAuthority;
 import com.usktea.plainold.exceptions.NotHaveEditInquiryAuthority;
 import com.usktea.plainold.exceptions.ProductNotFound;
 import com.usktea.plainold.exceptions.UserNotExists;
@@ -53,6 +55,9 @@ class InquiryControllerTest {
 
     @MockBean
     private EditInquiryService editInquiryService;
+
+    @MockBean
+    private DeleteInquiryService deleteInquiryService;
 
     @SpyBean
     private JwtUtil jwtUtil;
@@ -347,6 +352,80 @@ class InquiryControllerTest {
                                 "\"title\": \"제목을 이렇게 수정\", " +
                                 "\"content\": \"내용을 이렇게 수정\"" +
                                 "}"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        containsString("\"id\"")
+                ));
+    }
+
+    @Test
+    void whenDeleteInquiryUserNotExist() throws Exception {
+        Username username = new Username("notExists@gmail.com");
+        String token = jwtUtil.encode(username.value());
+        Long id = 1L;
+
+        given(deleteInquiryService.delete(username, id)).willThrow(UserNotExists.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete(String.format("/inquiries/%d", id))
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenTryToDeleteNotExistsInquiry() throws Exception {
+        Username username = new Username("tjrxo1234@gmail.com");
+        String token = jwtUtil.encode(username.value());
+        Long id = 9_999_999L;
+
+        given(deleteInquiryService.delete(username, id)).willThrow(InquiryNotExists.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete(String.format("/inquiries/%d", id))
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenUserTryToDeleteNotHisOwnInquiry() throws Exception {
+        Username otherUser = new Username("otherUser@gmail.com");
+        String token = jwtUtil.encode(otherUser.value());
+        Long id = 1L;
+
+        given(deleteInquiryService.delete(otherUser, id))
+                .willThrow(NotHaveDeleteInquiryAuthority.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete(String.format("/inquiries/%d", id))
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void whenAdminDeleteInquiry() throws Exception {
+        Users admin = Users.fake(Role.ADMIN);
+        Username adminName = admin.username();
+        Long id = 1L;
+        String token = jwtUtil.encode(adminName.value());
+
+        given(deleteInquiryService.delete(adminName, id)).willReturn(id);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete(String.format("/inquiries/%d", id))
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        containsString("\"id\"")
+                ));
+    }
+
+    @Test
+    void whenDeleteInquirySuccess() throws Exception {
+        Username username = new Username("tjrxo1234@gmail.com");
+        String token = jwtUtil.encode(username.value());
+        Long id = 1L;
+
+        given(deleteInquiryService.delete(username, id))
+                .willReturn(id);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete(String.format("/inquiries/%d", id))
+                        .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
                         containsString("\"id\"")
