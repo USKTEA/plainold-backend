@@ -5,7 +5,7 @@ import com.usktea.plainold.exceptions.InquiryCannotBeEdited;
 import com.usktea.plainold.exceptions.NotHaveDeleteInquiryAuthority;
 import com.usktea.plainold.exceptions.NotHaveEditInquiryAuthority;
 import com.usktea.plainold.models.product.ProductId;
-import com.usktea.plainold.models.review.Nickname;
+import com.usktea.plainold.models.user.Nickname;
 import com.usktea.plainold.models.user.Role;
 import com.usktea.plainold.models.user.Username;
 import org.hibernate.annotations.CreationTimestamp;
@@ -224,5 +224,9 @@ public class Inquiry {
 
     public Status status() {
         return status;
+    }
+
+    public boolean isDeleted() {
+        return Objects.equals(this.status, Status.DELETED);
     }
 }

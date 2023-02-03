@@ -1,23 +1,19 @@
-package com.usktea.plainold.models.review;
+package com.usktea.plainold.models.answer;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.util.Objects;
 
 @Embeddable
-public class Nickname {
-    @Column(name = "nickname")
+public class Content {
+    @Column(name = "content")
     private String value;
 
-    public Nickname() {
+    public Content() {
     }
 
-    public Nickname(String value) {
+    public Content(String value) {
         this.value = value;
-    }
-
-    public String value() {
-        return value;
     }
 
     @Override
@@ -30,13 +26,17 @@ public class Nickname {
             return false;
         }
 
-        Nickname otherNickname = (Nickname) object;
+        Content otherContent = (Content) object;
 
-        return Objects.equals(value, otherNickname.value);
+        return Objects.equals(value, otherContent.value);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(value);
+    }
+
+    public String getValue() {
+        return value;
     }
 }

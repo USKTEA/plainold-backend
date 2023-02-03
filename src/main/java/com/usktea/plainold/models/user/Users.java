@@ -1,7 +1,6 @@
 package com.usktea.plainold.models.user;
 
 import com.usktea.plainold.exceptions.LoginFailed;
-import com.usktea.plainold.models.review.Nickname;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.AttributeOverride;
@@ -117,5 +116,9 @@ public class Users {
 
     public boolean isGuest() {
         return Objects.equals(this.role, Role.GUEST);
+    }
+
+    public boolean isAdmin() {
+        return Objects.equals(this.role, Role.ADMIN);
     }
 }

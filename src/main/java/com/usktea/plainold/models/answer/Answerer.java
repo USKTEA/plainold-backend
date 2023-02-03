@@ -1,6 +1,6 @@
-package com.usktea.plainold.models.inquiry;
+package com.usktea.plainold.models.answer;
 
-import com.usktea.plainold.dtos.QueristDto;
+import com.usktea.plainold.dtos.AnswererDto;
 import com.usktea.plainold.models.user.Nickname;
 import com.usktea.plainold.models.user.Username;
 
@@ -8,23 +8,31 @@ import javax.persistence.Embeddable;
 import java.util.Objects;
 
 @Embeddable
-public class Querist {
+public class Answerer {
     private Username username;
     private Nickname nickname;
 
-    public Querist() {
+    public Answerer() {
     }
 
-    public Querist(Username username, Nickname nickname) {
+    public Answerer(Username username, Nickname nickname) {
         this.username = username;
         this.nickname = nickname;
     }
 
-    public static Querist fake(Username username) {
-        return new Querist(
+    public static Answerer fake(Username username) {
+        return new Answerer(
                 username,
-                new Nickname("김뚜루")
+                new Nickname("닉네임")
         );
+    }
+
+    public Username getUsername() {
+        return username;
+    }
+
+    public Nickname getNickname() {
+        return nickname;
     }
 
     @Override
@@ -37,10 +45,10 @@ public class Querist {
             return false;
         }
 
-        Querist otherQuerist = (Querist) object;
+        Answerer otherAnswerer = (Answerer) object;
 
-        return Objects.equals(username, otherQuerist.username)
-                && Objects.equals(nickname, otherQuerist.nickname);
+        return Objects.equals(username, otherAnswerer.username)
+                && Objects.equals(nickname, otherAnswerer.nickname);
     }
 
     @Override
@@ -48,14 +56,10 @@ public class Querist {
         return Objects.hash(username, nickname);
     }
 
-    public QueristDto toDto() {
-        return new QueristDto(
+    public AnswererDto toDto() {
+        return new AnswererDto(
                 username.value(),
                 nickname.value()
         );
-    }
-
-    public boolean isSameUser(Username username) {
-        return Objects.equals(this.username, username);
     }
 }

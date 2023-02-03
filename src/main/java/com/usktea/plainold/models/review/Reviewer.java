@@ -1,6 +1,7 @@
 package com.usktea.plainold.models.review;
 
 import com.usktea.plainold.dtos.ReviewerDto;
+import com.usktea.plainold.models.user.Nickname;
 import com.usktea.plainold.models.user.Username;
 
 import javax.persistence.Embeddable;
