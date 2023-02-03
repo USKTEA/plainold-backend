@@ -1,5 +1,6 @@
 package com.usktea.plainold.models.review;
 
+import com.usktea.plainold.models.user.Nickname;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 

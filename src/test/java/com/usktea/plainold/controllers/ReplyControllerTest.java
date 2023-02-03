@@ -81,10 +81,7 @@ class ReplyControllerTest {
                 .willReturn(List.of());
 
         mockMvc.perform(MockMvcRequestBuilders.get(String.format("/replies?reviewIds=%d,%d", reviewId1, reviewId2)))
-                .andExpect(status().isNoContent())
-                .andExpect(content().string(
-                        containsString("\"replies\"")
-                ));
+                .andExpect(status().isNoContent());
     }
 
     @Test

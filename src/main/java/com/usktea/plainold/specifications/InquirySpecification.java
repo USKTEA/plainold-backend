@@ -6,11 +6,6 @@ import com.usktea.plainold.models.product.ProductId;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
 public class InquirySpecification {
     public static Specification<Inquiry> equalProductId(ProductId productId, Sort sort) {
         return (root, query, criteriaBuilder) -> {

@@ -1,12 +1,11 @@
 package com.usktea.plainold.models.reply;
 
-import com.usktea.plainold.models.review.Nickname;
+import com.usktea.plainold.models.user.Nickname;
 import com.usktea.plainold.models.user.Username;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
 class ReplierTest {

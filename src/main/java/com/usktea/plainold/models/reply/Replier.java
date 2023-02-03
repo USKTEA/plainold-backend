@@ -1,7 +1,7 @@
 package com.usktea.plainold.models.reply;
 
 import com.usktea.plainold.dtos.ReplierDto;
-import com.usktea.plainold.models.review.Nickname;
+import com.usktea.plainold.models.user.Nickname;
 import com.usktea.plainold.models.user.Username;
 
 import javax.persistence.Embeddable;
