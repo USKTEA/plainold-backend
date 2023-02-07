@@ -9,6 +9,7 @@ import com.usktea.plainold.exceptions.NotHaveCreateAnswerAuthority;
 import com.usktea.plainold.models.answer.Answer;
 import com.usktea.plainold.models.inquiry.Inquiry;
 import com.usktea.plainold.models.inquiry.Status;
+import com.usktea.plainold.models.order.OrderStatus;
 import com.usktea.plainold.models.user.Role;
 import com.usktea.plainold.models.user.Username;
 import com.usktea.plainold.models.user.Users;

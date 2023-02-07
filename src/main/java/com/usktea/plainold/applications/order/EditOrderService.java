@@ -1,4 +1,4 @@
-package com.usktea.plainold.applications;
+package com.usktea.plainold.applications.order;
 
 import com.usktea.plainold.applications.order.GetOrderService;
 import com.usktea.plainold.applications.user.GetUserService;

@@ -1,13 +1,16 @@
 package com.usktea.plainold.controllers;
 
-import com.usktea.plainold.applications.EditOrderService;
+import com.usktea.plainold.applications.order.CancelOrderService;
+import com.usktea.plainold.applications.order.EditOrderService;
 import com.usktea.plainold.applications.order.CreateOrderService;
 import com.usktea.plainold.applications.order.GetOrderCanWriteReviewService;
 import com.usktea.plainold.applications.order.GetOrderDetailService;
 import com.usktea.plainold.applications.order.GetUserOrderService;
+import com.usktea.plainold.dtos.CancelOrderRequestDto;
+import com.usktea.plainold.dtos.CancelOrderResultDto;
 import com.usktea.plainold.dtos.EditOrderRequest;
-import com.usktea.plainold.dtos.EditOrderRequestDto;
-import com.usktea.plainold.dtos.EditOrderResultDto;
+import com.usktea.plainold.dtos.EditShippingInformationRequestDto;
+import com.usktea.plainold.dtos.EditShippingInformationResultDto;
 import com.usktea.plainold.dtos.GetOrderDetailResultDto;
 import com.usktea.plainold.dtos.GetUserOrderResultDto;
 import com.usktea.plainold.dtos.OrderDetailDto;
@@ -15,10 +18,10 @@ import com.usktea.plainold.dtos.OrderNumberDto;
 import com.usktea.plainold.dtos.OrderRequest;
 import com.usktea.plainold.dtos.OrderRequestDto;
 import com.usktea.plainold.dtos.OrderResultDto;
+import com.usktea.plainold.exceptions.CancelOrderFailed;
 import com.usktea.plainold.exceptions.EditOrderFailed;
 import com.usktea.plainold.exceptions.NotHaveAuthorityToGetOrders;
 import com.usktea.plainold.exceptions.OrderCanWriteReviewNotFound;
-import com.usktea.plainold.exceptions.OrderCannotBeEdited;
 import com.usktea.plainold.exceptions.OrderNotBelongToUser;
 import com.usktea.plainold.exceptions.OrderNotCreated;
 import com.usktea.plainold.exceptions.ProductNotFound;
@@ -28,7 +31,6 @@ import com.usktea.plainold.models.order.OrderNumber;
 import com.usktea.plainold.models.product.ProductId;
 import com.usktea.plainold.models.user.Username;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -54,17 +56,20 @@ public class OrderController {
     private final GetUserOrderService getUserOrderService;
     private final GetOrderDetailService getOrderDetailService;
     private final EditOrderService editOrderService;
+    private final CancelOrderService cancelOrderService;
 
     public OrderController(CreateOrderService createOrderService,
                            GetOrderCanWriteReviewService getOrderCanWriteReviewService,
                            GetUserOrderService getUserOrderService,
                            GetOrderDetailService getOrderDetailService,
-                           EditOrderService editOrderService) {
+                           EditOrderService editOrderService,
+                           CancelOrderService cancelOrderService) {
         this.createOrderService = createOrderService;
         this.getOrderCanWriteReviewService = getOrderCanWriteReviewService;
         this.getUserOrderService = getUserOrderService;
         this.getOrderDetailService = getOrderDetailService;
         this.editOrderService = editOrderService;
+        this.cancelOrderService = cancelOrderService;
     }
 
     @PostMapping
@@ -125,17 +130,17 @@ public class OrderController {
         return new GetOrderDetailResultDto(orderDetail);
     }
 
-    @PatchMapping
-    public EditOrderResultDto edit(
+    @PatchMapping("shippingInformation")
+    public EditShippingInformationResultDto editShippingInformation(
             @RequestAttribute Username username,
-            @Valid @RequestBody EditOrderRequestDto editOrderRequestDto
+            @Valid @RequestBody EditShippingInformationRequestDto editShippingInformationRequestDto
     ) {
         try {
-            EditOrderRequest editOrderRequest = EditOrderRequest.of(editOrderRequestDto);
+            EditOrderRequest editOrderRequest = EditOrderRequest.of(editShippingInformationRequestDto);
 
             OrderNumber orderNumber = editOrderService.edit(username, editOrderRequest);
 
-            return new EditOrderResultDto(orderNumber.value());
+            return new EditShippingInformationResultDto(orderNumber.value());
         } catch (OrderNotBelongToUser orderNotBelongToUser) {
             throw orderNotBelongToUser;
         } catch (Exception exception) {
@@ -143,10 +148,28 @@ public class OrderController {
         }
     }
 
+    @PatchMapping("orderStatus")
+    public CancelOrderResultDto cancel(
+            @RequestAttribute Username username,
+            @Valid @RequestBody CancelOrderRequestDto cancelOrderRequestDto
+    ) {
+        try {
+            OrderNumber orderNumber = new OrderNumber(cancelOrderRequestDto.getOrderNumber());
+
+            OrderNumber canceled = cancelOrderService.cancel(username, orderNumber);
+
+            return new CancelOrderResultDto(canceled.value());
+        } catch (OrderNotBelongToUser orderNotBelongToUser) {
+            throw orderNotBelongToUser;
+        } catch (Exception exception) {
+            throw new CancelOrderFailed(exception.getMessage());
+        }
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String missingRequestInformation() {
-        return "누락된 주문내용이 있습니다";
+    public String invalidRequestInformation() {
+        return "잘못된 요청내용이 있습니다";
     }
 
     @ExceptionHandler(OrderNotCreated.class)
@@ -170,6 +193,12 @@ public class OrderController {
     @ExceptionHandler(EditOrderFailed.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String editOrderFail(Exception exception) {
+        return exception.getMessage();
+    }
+
+    @ExceptionHandler(CancelOrderFailed.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String cancelOrderFail(Exception exception) {
         return exception.getMessage();
     }
 

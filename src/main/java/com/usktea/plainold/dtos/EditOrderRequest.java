@@ -22,12 +22,12 @@ public class EditOrderRequest {
         this.message = message;
     }
 
-    public static EditOrderRequest of(EditOrderRequestDto editOrderRequestDto) {
+    public static EditOrderRequest of(EditShippingInformationRequestDto editShippingInformationRequestDto) {
         return new EditOrderRequest(
-                new OrderNumber(editOrderRequestDto.getOrderNumber()),
-                Receiver.of(editOrderRequestDto.getReceiver()),
-                Address.of(editOrderRequestDto.getAddress()),
-                editOrderRequestDto.getMessage()
+                new OrderNumber(editShippingInformationRequestDto.getOrderNumber()),
+                Receiver.of(editShippingInformationRequestDto.getReceiver()),
+                Address.of(editShippingInformationRequestDto.getAddress()),
+                editShippingInformationRequestDto.getMessage()
         );
     }
 

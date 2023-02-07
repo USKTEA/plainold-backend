@@ -168,6 +168,12 @@ public class Order {
         );
     }
 
+    public void markCancel(Username username) {
+        authenticate(username);
+
+        this.status = OrderStatus.CANCELED;
+    }
+
     private void ensureEditable() {
         if (!Objects.equals(this.status, OrderStatus.PAYMENT_WAITING)
                 && !Objects.equals(this.status, OrderStatus.PREPARING)) {

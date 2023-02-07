@@ -5,7 +5,7 @@ import com.sun.istack.Nullable;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-public class EditOrderRequestDto {
+public class EditShippingInformationRequestDto {
     @NotBlank
     private String orderNumber;
 
@@ -18,7 +18,7 @@ public class EditOrderRequestDto {
     @Nullable
     private String message;
 
-    public EditOrderRequestDto() {
+    public EditShippingInformationRequestDto() {
     }
 
     public String getOrderNumber() {
