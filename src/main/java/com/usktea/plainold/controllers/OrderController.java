@@ -1,22 +1,38 @@
 package com.usktea.plainold.controllers;
 
+import com.usktea.plainold.applications.EditOrderService;
 import com.usktea.plainold.applications.order.CreateOrderService;
 import com.usktea.plainold.applications.order.GetOrderCanWriteReviewService;
+import com.usktea.plainold.applications.order.GetOrderDetailService;
+import com.usktea.plainold.applications.order.GetUserOrderService;
+import com.usktea.plainold.dtos.EditOrderRequest;
+import com.usktea.plainold.dtos.EditOrderRequestDto;
+import com.usktea.plainold.dtos.EditOrderResultDto;
+import com.usktea.plainold.dtos.GetOrderDetailResultDto;
+import com.usktea.plainold.dtos.GetUserOrderResultDto;
+import com.usktea.plainold.dtos.OrderDetailDto;
 import com.usktea.plainold.dtos.OrderNumberDto;
 import com.usktea.plainold.dtos.OrderRequest;
 import com.usktea.plainold.dtos.OrderRequestDto;
 import com.usktea.plainold.dtos.OrderResultDto;
+import com.usktea.plainold.exceptions.EditOrderFailed;
+import com.usktea.plainold.exceptions.NotHaveAuthorityToGetOrders;
 import com.usktea.plainold.exceptions.OrderCanWriteReviewNotFound;
+import com.usktea.plainold.exceptions.OrderCannotBeEdited;
+import com.usktea.plainold.exceptions.OrderNotBelongToUser;
 import com.usktea.plainold.exceptions.OrderNotCreated;
 import com.usktea.plainold.exceptions.ProductNotFound;
 import com.usktea.plainold.exceptions.UserNotExists;
 import com.usktea.plainold.models.order.Order;
+import com.usktea.plainold.models.order.OrderNumber;
 import com.usktea.plainold.models.product.ProductId;
 import com.usktea.plainold.models.user.Username;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,18 +41,30 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("orders")
 public class OrderController {
     private final CreateOrderService createOrderService;
     private final GetOrderCanWriteReviewService getOrderCanWriteReviewService;
+    private final GetUserOrderService getUserOrderService;
+    private final GetOrderDetailService getOrderDetailService;
+    private final EditOrderService editOrderService;
 
     public OrderController(CreateOrderService createOrderService,
-                           GetOrderCanWriteReviewService getOrderCanWriteReviewService) {
+                           GetOrderCanWriteReviewService getOrderCanWriteReviewService,
+                           GetUserOrderService getUserOrderService,
+                           GetOrderDetailService getOrderDetailService,
+                           EditOrderService editOrderService) {
         this.createOrderService = createOrderService;
         this.getOrderCanWriteReviewService = getOrderCanWriteReviewService;
+        this.getUserOrderService = getUserOrderService;
+        this.getOrderDetailService = getOrderDetailService;
+        this.editOrderService = editOrderService;
     }
 
     @PostMapping
@@ -66,7 +94,56 @@ public class OrderController {
         return new OrderNumberDto(order.orderNumber());
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @GetMapping("me")
+    public GetUserOrderResultDto userOrders(
+            @RequestAttribute Username username,
+            HttpServletResponse response
+    ) {
+        try {
+            List<Order> orders = getUserOrderService.orders(username);
+
+            if (orders.isEmpty()) {
+                response.setStatus(204);
+            }
+
+            return new GetUserOrderResultDto(orders.stream()
+                    .map(Order::toSummaryDto)
+                    .collect(Collectors.toList()));
+        } catch (Exception exception) {
+            throw new NotHaveAuthorityToGetOrders();
+        }
+    }
+
+    @GetMapping("{orderNumber}")
+    public GetOrderDetailResultDto detail(
+            @RequestAttribute Username username,
+            @PathVariable String orderNumber
+    ) {
+        OrderDetailDto orderDetail = getOrderDetailService.getOrder(
+                username, new OrderNumber(orderNumber));
+
+        return new GetOrderDetailResultDto(orderDetail);
+    }
+
+    @PatchMapping
+    public EditOrderResultDto edit(
+            @RequestAttribute Username username,
+            @Valid @RequestBody EditOrderRequestDto editOrderRequestDto
+    ) {
+        try {
+            EditOrderRequest editOrderRequest = EditOrderRequest.of(editOrderRequestDto);
+
+            OrderNumber orderNumber = editOrderService.edit(username, editOrderRequest);
+
+            return new EditOrderResultDto(orderNumber.value());
+        } catch (OrderNotBelongToUser orderNotBelongToUser) {
+            throw orderNotBelongToUser;
+        } catch (Exception exception) {
+            throw new EditOrderFailed(exception.getMessage());
+        }
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String missingRequestInformation() {
         return "누락된 주문내용이 있습니다";
@@ -78,9 +155,21 @@ public class OrderController {
         return exception.getMessage();
     }
 
+    @ExceptionHandler(NotHaveAuthorityToGetOrders.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public String notHaveAuthorityToGetOrders(Exception exception) {
+        return exception.getMessage();
+    }
+
     @ExceptionHandler(OrderCanWriteReviewNotFound.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String orderCanWriteReviewNotFound(Exception exception) {
+        return exception.getMessage();
+    }
+
+    @ExceptionHandler(EditOrderFailed.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String editOrderFail(Exception exception) {
         return exception.getMessage();
     }
 
@@ -93,6 +182,12 @@ public class OrderController {
     @ExceptionHandler(UserNotExists.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String userNotFound(Exception exception) {
+        return exception.getMessage();
+    }
+
+    @ExceptionHandler(OrderNotBelongToUser.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public String orderNotBelongToUser(Exception exception) {
         return exception.getMessage();
     }
 }

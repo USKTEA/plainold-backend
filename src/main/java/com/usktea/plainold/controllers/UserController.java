@@ -27,7 +27,7 @@ public class UserController {
             @RequestAttribute Username username) {
         Users user = getUserService.find(username);
 
-        return new UserInformationDto(user.username(), user.role());
+        return user.toDto();
     }
 
     @ExceptionHandler(UserNotExists.class)

@@ -44,7 +44,6 @@ public class CreateOrderService {
     }
 
     public Order placeOrder(OrderRequest orderRequest) {
-        // TODO 주문수량, 주문금액 같은지 비교
         Username username = orderRequest.getUsername();
 
         getUserService.find(username);

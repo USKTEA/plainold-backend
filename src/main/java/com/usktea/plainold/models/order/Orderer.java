@@ -66,4 +66,12 @@ public class Orderer {
     public Name getName() {
         return name;
     }
+
+    public OrdererDto toDto() {
+        return new OrdererDto(
+                name.value(),
+                phoneNumber.value(),
+                email.value()
+        );
+    }
 }

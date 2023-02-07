@@ -1,6 +1,7 @@
 package com.usktea.plainold.models.inquiry;
 
 import com.usktea.plainold.dtos.CreateInquiryRequest;
+import com.usktea.plainold.exceptions.CannotAnswerToDeletedInquiry;
 import com.usktea.plainold.exceptions.InquiryCannotBeEdited;
 import com.usktea.plainold.exceptions.NotHaveDeleteInquiryAuthority;
 import com.usktea.plainold.exceptions.NotHaveEditInquiryAuthority;
@@ -203,6 +204,18 @@ public class Inquiry {
         return false;
     }
 
+    public void markFinished() {
+        if (Objects.equals(this.status, Status.DELETED)) {
+            throw new CannotAnswerToDeletedInquiry();
+        }
+
+        this.status = Status.FINISHED;
+    }
+
+    public boolean isDeleted() {
+        return Objects.equals(this.status, Status.DELETED);
+    }
+
     private String format(LocalDateTime time) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         ZonedDateTime koreaZonedDateTime = time.atZone(ZoneId.of("Asia/Seoul"));
@@ -224,9 +237,5 @@ public class Inquiry {
 
     public Status status() {
         return status;
-    }
-
-    public boolean isDeleted() {
-        return Objects.equals(this.status, Status.DELETED);
     }
 }

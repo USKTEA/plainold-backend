@@ -39,8 +39,6 @@ public class CreateAnswerService {
         Inquiry inquiry = inquiryRepository.findById(createAnswerRequest.inquiryId())
                 .orElseThrow(InquiryNotExists::new);
 
-        checkIfInquiryIsDeleted(inquiry);
-
         Answer answer = new Answer(
                 inquiry.id(),
                 new Answerer(user.username(), user.nickname()),
@@ -49,13 +47,9 @@ public class CreateAnswerService {
 
         Answer saved = answerRepository.save(answer);
 
-        return saved.id();
-    }
+        inquiry.markFinished();
 
-    private void checkIfInquiryIsDeleted(Inquiry inquiry) {
-        if (inquiry.isDeleted()) {
-            throw new CannotAnswerToDeletedInquiry();
-        }
+        return saved.id();
     }
 
     private void checkIsAdmin(Users user) {

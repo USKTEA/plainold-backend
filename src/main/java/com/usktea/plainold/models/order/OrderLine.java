@@ -1,6 +1,7 @@
 package com.usktea.plainold.models.order;
 
 import com.usktea.plainold.dtos.OrderItemDto;
+import com.usktea.plainold.dtos.OrderLineDto;
 import com.usktea.plainold.models.common.ItemOption;
 import com.usktea.plainold.models.common.Money;
 import com.usktea.plainold.models.common.Quantity;
@@ -18,11 +19,11 @@ public class OrderLine {
     @AttributeOverride(name = "value", column = @Column(name = "productId"))
     private ProductId productId;
 
-    @AttributeOverride(name = "amount", column = @Column(name = "price"))
-    private Money price;
-
     @AttributeOverride(name = "value", column = @Column(name = "productName"))
     private ProductName productName;
+
+    @AttributeOverride(name = "amount", column = @Column(name = "price"))
+    private Money price;
 
     private ThumbnailUrl thumbnailUrl;
 
@@ -85,7 +86,9 @@ public class OrderLine {
                 new ProductName("T-Shirt"),
                 new ThumbnailUrl("1"),
                 new Quantity(1L),
-                new Money(1L));
+                new Money(1L),
+                new ItemOption("XL", "Black")
+        );
     }
 
     @Override
@@ -121,5 +124,15 @@ public class OrderLine {
 
     public ItemOption getOption() {
         return itemOption;
+    }
+
+    public OrderLineDto toDto() {
+        return new OrderLineDto(
+                productName.getValue(),
+                thumbnailUrl.getThumbnailUrl(),
+                quantity.getAmount(),
+                totalPrice.getAmount(),
+                itemOption.toDto()
+        );
     }
 }

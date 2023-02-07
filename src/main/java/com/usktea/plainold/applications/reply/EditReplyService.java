@@ -40,8 +40,7 @@ public class EditReplyService {
     }
 
     private Reply findReply(Long replyId) {
-        return replyRepository.findById(replyId)
-                .orElseThrow(ReplyNotExists::new);
+        return replyRepository.findById(replyId).orElseThrow(ReplyNotExists::new);
     }
 
     private void checkReviewIsExists(Long reviewId) {

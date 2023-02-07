@@ -1,7 +1,7 @@
 package com.usktea.plainold.models.order;
 
+import com.usktea.plainold.dtos.AddressDto;
 import com.usktea.plainold.dtos.ReceiverDto;
-import com.usktea.plainold.dtos.ShippingAddressDto;
 import com.usktea.plainold.dtos.ShippingInformationDto;
 
 import javax.persistence.Embeddable;
@@ -88,7 +88,15 @@ public class ShippingInformation {
         return receiver.toDto();
     }
 
-    public ShippingAddressDto getAddressDto() {
+    public AddressDto getAddressDto() {
         return address.toDto();
+    }
+
+    public ShippingInformationDto toDto() {
+        return new ShippingInformationDto(
+                receiver.toDto(),
+                address.toDto(),
+                message
+        );
     }
 }
