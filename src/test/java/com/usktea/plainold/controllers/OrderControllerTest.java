@@ -1,6 +1,7 @@
 package com.usktea.plainold.controllers;
 
-import com.usktea.plainold.applications.EditOrderService;
+import com.usktea.plainold.applications.order.CancelOrderService;
+import com.usktea.plainold.applications.order.EditOrderService;
 import com.usktea.plainold.applications.order.CreateOrderService;
 import com.usktea.plainold.applications.order.GetOrderCanWriteReviewService;
 import com.usktea.plainold.applications.order.GetOrderDetailService;
@@ -60,6 +61,9 @@ class OrderControllerTest {
 
     @MockBean
     private EditOrderService editOrderService;
+
+    @MockBean
+    private CancelOrderService cancelOrderService;
 
     @BeforeEach
     void setup() {
@@ -331,7 +335,7 @@ class OrderControllerTest {
         given(editOrderService.edit(any(Username.class), any(EditOrderRequest.class)))
                 .willThrow(UserNotExists.class);
 
-        mockMvc.perform(MockMvcRequestBuilders.patch("/orders")
+        mockMvc.perform(MockMvcRequestBuilders.patch("/orders/shippingInformation")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
@@ -359,7 +363,7 @@ class OrderControllerTest {
         given(editOrderService.edit(any(Username.class), any(EditOrderRequest.class)))
                 .willThrow(OrderNotBelongToUser.class);
 
-        mockMvc.perform(MockMvcRequestBuilders.patch("/orders")
+        mockMvc.perform(MockMvcRequestBuilders.patch("/orders/shippingInformation")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
@@ -384,7 +388,7 @@ class OrderControllerTest {
         String token = jwtUtil.encode(username.value());
         OrderNumber orderNumber = new OrderNumber("tjrxo1234-11111111");
 
-        mockMvc.perform(MockMvcRequestBuilders.patch("/orders")
+        mockMvc.perform(MockMvcRequestBuilders.patch("/orders/shippingInformation")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
@@ -412,7 +416,7 @@ class OrderControllerTest {
         given(editOrderService.edit(any(Username.class), any(EditOrderRequest.class)))
                 .willThrow(OrderNotFound.class);
 
-        mockMvc.perform(MockMvcRequestBuilders.patch("/orders")
+        mockMvc.perform(MockMvcRequestBuilders.patch("/orders/shippingInformation")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
@@ -440,7 +444,7 @@ class OrderControllerTest {
         given(editOrderService.edit(any(Username.class), any(EditOrderRequest.class)))
                 .willThrow(OrderCannotBeEdited.class);
 
-        mockMvc.perform(MockMvcRequestBuilders.patch("/orders")
+        mockMvc.perform(MockMvcRequestBuilders.patch("/orders/shippingInformation")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
@@ -468,7 +472,7 @@ class OrderControllerTest {
         given(editOrderService.edit(any(Username.class), any(EditOrderRequest.class)))
                 .willReturn(orderNumber);
 
-        mockMvc.perform(MockMvcRequestBuilders.patch("/orders")
+        mockMvc.perform(MockMvcRequestBuilders.patch("/orders/shippingInformation")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
@@ -483,6 +487,101 @@ class OrderControllerTest {
                                 "\"address2\": \"에이원지식산업센터 612호\"" +
                                 "}," +
                                 "\"message\": \"빨리 와주세요\"" +
+                                "}"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        containsString("\"orderNumber\"")
+                ));
+    }
+
+    @Test
+    void whenUserNotExists() throws Exception {
+        Username username = new Username("notExists@gmail.com");
+        OrderNumber orderNumber = new OrderNumber("tjrxo1234-11111111");
+        String token = jwtUtil.encode(username.value());
+
+        given(cancelOrderService.cancel(any(Username.class), any(OrderNumber.class)))
+                .willThrow(UserNotExists.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/orders/orderStatus")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"orderNumber\": \"" + orderNumber.value() + "\", " +
+                                "\"cancel\": true" +
+                                "}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenUserTryToCancelNotHisOwnOrder() throws Exception {
+        Username username = new Username("notTjrxo1234@gmail.com");
+        OrderNumber orderNumber = new OrderNumber("tjrxo1234-11111111");
+        String token = jwtUtil.encode(username.value());
+
+        given(cancelOrderService.cancel(any(Username.class), any(OrderNumber.class)))
+                .willThrow(OrderNotBelongToUser.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/orders/orderStatus")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"orderNumber\": \"" + orderNumber.value() + "\", " +
+                                "\"cancel\": true" +
+                                "}"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void whenCancelOrderOrderNotExists() throws Exception {
+        Username username = new Username("notTjrxo1234@gmail.com");
+        OrderNumber orderNumber = new OrderNumber("notExists");
+        String token = jwtUtil.encode(username.value());
+
+        given(cancelOrderService.cancel(any(Username.class), any(OrderNumber.class)))
+                .willThrow(OrderNotFound.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/orders/orderStatus")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"orderNumber\": \"" + orderNumber.value() + "\", " +
+                                "\"cancel\": true" +
+                                "}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenCancelOrderRequestInformationIsNotTrue() throws Exception {
+        Username username = new Username("notTjrxo1234@gmail.com");
+        OrderNumber orderNumber = new OrderNumber("notExists");
+        String token = jwtUtil.encode(username.value());
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/orders/orderStatus")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"orderNumber\": \"" + orderNumber.value() + "\", " +
+                                "\"cancel\": false" +
+                                "}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenCancelOrderSuccess() throws Exception {
+        Username username = new Username("notTjrxo1234@gmail.com");
+        OrderNumber orderNumber = new OrderNumber("notExists");
+        String token = jwtUtil.encode(username.value());
+
+        given(cancelOrderService.cancel(any(Username.class), any(OrderNumber.class)))
+                .willReturn(orderNumber);
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/orders/orderStatus")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"orderNumber\": \"" + orderNumber.value() + "\", " +
+                                "\"cancel\": true" +
                                 "}"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(

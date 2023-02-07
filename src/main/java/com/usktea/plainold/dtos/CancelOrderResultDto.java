@@ -1,12 +1,12 @@
 package com.usktea.plainold.dtos;
 
-public class EditOrderResultDto {
+public class CancelOrderResultDto {
     private String orderNumber;
 
-    public EditOrderResultDto() {
+    public CancelOrderResultDto() {
     }
 
-    public EditOrderResultDto(String orderNumber) {
+    public CancelOrderResultDto(String orderNumber) {
         this.orderNumber = orderNumber;
     }
 

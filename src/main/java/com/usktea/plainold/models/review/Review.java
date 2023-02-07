@@ -166,7 +166,8 @@ public class Review {
             );
         }
 
-        return new ReviewDto(id,
+        return new ReviewDto(
+                id,
                 productId.value(),
                 reviewer.toDto(),
                 rate.getValue(),
