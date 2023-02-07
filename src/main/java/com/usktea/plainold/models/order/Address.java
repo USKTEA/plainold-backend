@@ -1,7 +1,6 @@
 package com.usktea.plainold.models.order;
 
 import com.usktea.plainold.dtos.AddressDto;
-import com.usktea.plainold.dtos.ShippingAddressDto;
 
 import javax.persistence.Embeddable;
 import java.util.Objects;
@@ -59,8 +58,8 @@ public class Address {
         return Objects.hash(zipCode, address1, address2);
     }
 
-    public ShippingAddressDto toDto() {
-        return new ShippingAddressDto(
+    public AddressDto toDto() {
+        return new AddressDto(
                 zipCode.value(),
                 address1.value(),
                 address2.value()

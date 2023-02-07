@@ -1,10 +1,16 @@
 package com.usktea.plainold.models.order;
 
+import com.usktea.plainold.dtos.EditOrderRequest;
+import com.usktea.plainold.dtos.OrderDetailDto;
+import com.usktea.plainold.dtos.OrderLineDto;
 import com.usktea.plainold.dtos.OrderRequest;
 import com.usktea.plainold.dtos.OrderResultDto;
+import com.usktea.plainold.dtos.OrderSummaryDto;
 import com.usktea.plainold.exceptions.EmptyOrderLines;
-import com.usktea.plainold.models.user.Username;
+import com.usktea.plainold.exceptions.OrderCannotBeEdited;
+import com.usktea.plainold.exceptions.OrderNotBelongToUser;
 import com.usktea.plainold.models.common.Money;
+import com.usktea.plainold.models.user.Username;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -18,9 +24,13 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "purchaseOrder")
@@ -65,8 +75,8 @@ public class Order {
     }
 
     public Order(OrderNumber orderNumber, OrderRequest orderRequest) {
-        setOrderLines(orderRequest.getOrderLines());
         this.orderNumber = orderNumber;
+        setOrderLines(orderRequest.getOrderLines());
         this.username = orderRequest.getUsername();
         this.orderer = orderRequest.getOrderer();
         this.shippingInformation = orderRequest.getShippingInformation();
@@ -76,18 +86,55 @@ public class Order {
         this.cost = orderRequest.getCost();
     }
 
+    public Order(OrderNumber orderNumber,
+                 OrderRequest orderRequest,
+                 LocalDateTime createdAt) {
+        this.orderNumber = orderNumber;
+        setOrderLines(orderRequest.getOrderLines());
+        this.username = orderRequest.getUsername();
+        this.orderer = orderRequest.getOrderer();
+        this.shippingInformation = orderRequest.getShippingInformation();
+        this.payment = orderRequest.getPayment();
+        this.status = OrderStatus.PAYMENT_WAITING;
+        this.shippingFee = orderRequest.getShippingFee();
+        this.cost = orderRequest.getCost();
+        this.createdAt = createdAt;
+    }
+
+    public Order(OrderNumber orderNumber,
+                 OrderRequest orderRequest,
+                 OrderStatus status,
+                 LocalDateTime createdAt) {
+        this.orderNumber = orderNumber;
+        setOrderLines(orderRequest.getOrderLines());
+        this.username = orderRequest.getUsername();
+        this.orderer = orderRequest.getOrderer();
+        this.shippingInformation = orderRequest.getShippingInformation();
+        this.payment = orderRequest.getPayment();
+        this.status = status;
+        this.shippingFee = orderRequest.getShippingFee();
+        this.cost = orderRequest.getCost();
+        this.createdAt = createdAt;
+    }
+
+    public static Order fake(OrderNumber orderNumber) {
+        OrderRequest orderRequest = OrderRequest.fake();
+
+        return new Order(orderNumber, orderRequest, LocalDateTime.now());
+    }
+
+    public static Order fake(OrderNumber orderNumber, OrderStatus status) {
+        OrderRequest orderRequest = OrderRequest.fake();
+
+        return new Order(orderNumber, orderRequest, status, LocalDateTime.now());
+    }
+
     private void setOrderLines(List<OrderLine> orderLines) {
         if (orderLines.size() == 0) {
             throw new EmptyOrderLines();
         }
 
         this.orderLines = orderLines;
-    }
-
-    public static Order fake(OrderNumber orderNumber) {
-        OrderRequest orderRequest = OrderRequest.fake();
-
-        return new Order(orderNumber, orderRequest);
     }
 
     @Override
@@ -110,12 +157,28 @@ public class Order {
         return Objects.hash(orderNumber);
     }
 
-    public OrderResultDto toOrderResultDto() {
-        return new OrderResultDto(orderNumber, cost, shippingInformation);
+    public void edit(Username username, EditOrderRequest editOrderRequest) {
+        authenticate(username);
+        ensureEditable();
+
+        this.shippingInformation = new ShippingInformation(
+                editOrderRequest.receiver(),
+                editOrderRequest.address(),
+                editOrderRequest.message()
+        );
     }
 
-    public OrderNumber orderNumber() {
-        return orderNumber;
+    private void ensureEditable() {
+        if (!Objects.equals(this.status, OrderStatus.PAYMENT_WAITING)
+                && !Objects.equals(this.status, OrderStatus.PREPARING)) {
+            throw new OrderCannotBeEdited();
+        }
+    }
+
+    public void authenticate(Username username) {
+        if (!Objects.equals(this.username, username)) {
+            throw new OrderNotBelongToUser();
+        }
     }
 
     public boolean checkHasSameOrder(List<OrderNumber> orderNumbers) {
@@ -124,5 +187,49 @@ public class Order {
         }
 
         return true;
+    }
+
+    private String format(LocalDateTime createdAt) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        ZonedDateTime koreaZonedDateTime = createdAt.atZone(ZoneId.of("Asia/Seoul"));
+
+        return formatter.format(koreaZonedDateTime);
+    }
+
+    public OrderDetailDto toDetailDto() {
+        return new OrderDetailDto(
+                orderNumber,
+                orderLines,
+                orderer,
+                shippingInformation,
+                status,
+                shippingFee,
+                cost,
+                payment.getMethod(),
+                format(createdAt)
+        );
+    }
+
+    public OrderSummaryDto toSummaryDto() {
+        return new OrderSummaryDto(
+                orderNumber.value(),
+                orderLinesToDto(),
+                status.value(),
+                format(createdAt)
+        );
+    }
+
+    public OrderResultDto toOrderResultDto() {
+        return new OrderResultDto(orderNumber, cost, shippingInformation);
+    }
+
+    private List<OrderLineDto> orderLinesToDto() {
+        return orderLines.stream()
+                .map(OrderLine::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public OrderNumber orderNumber() {
+        return orderNumber;
     }
 }

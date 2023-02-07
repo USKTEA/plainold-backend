@@ -1,5 +1,6 @@
 package com.usktea.plainold.models.review;
 
+import com.usktea.plainold.dtos.EditReviewRequest;
 import com.usktea.plainold.dtos.ReviewDto;
 import com.usktea.plainold.exceptions.ReviewerNotMatch;
 import com.usktea.plainold.models.common.Comment;
@@ -174,16 +175,20 @@ public class Review {
                 format(createdAt));
     }
 
+    public void edit(Username username, EditReviewRequest editReviewRequest) {
+        if (!Objects.equals(reviewer.getUsername(), username)) {
+            throw new ReviewerNotMatch();
+        }
+
+        this.rate = editReviewRequest.rate();
+        this.comment = editReviewRequest.comment();
+        this.imageUrl = editReviewRequest.imageUrl();
+    }
+
     public void checkUserIsItsReviewer(Username username) {
         if (!Objects.equals(reviewer.getUsername(), username)) {
             throw new ReviewerNotMatch();
         }
-    }
-
-    public void modify(Rate rate, Comment comment, ImageUrl imageUrl) {
-        this.rate = rate;
-        this.comment = comment;
-        this.imageUrl = imageUrl;
     }
 
     private String format(LocalDateTime time) {

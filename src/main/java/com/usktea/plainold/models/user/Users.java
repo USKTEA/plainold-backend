@@ -1,6 +1,8 @@
 package com.usktea.plainold.models.user;
 
+import com.usktea.plainold.dtos.UserInformationDto;
 import com.usktea.plainold.exceptions.LoginFailed;
+import com.usktea.plainold.models.common.Money;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.AttributeOverride;
@@ -32,6 +34,10 @@ public class Users {
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
 
+    @Embedded
+    @AttributeOverride(name = "amount", column = @Column(name = "purchaseAmount"))
+    private Money purchaseAmount;
+
     private LocalDateTime registeredAt;
 
     private LocalDateTime updatedAt;
@@ -42,6 +48,7 @@ public class Users {
     public Users(Username username, Nickname nickname, Role role, UserStatus userStatus) {
         this.username = username;
         this.nickname = nickname;
+        this.purchaseAmount = new Money(0L);
         this.role = role;
         this.userStatus = userStatus;
         this.registeredAt = LocalDateTime.now();
@@ -82,14 +89,6 @@ public class Users {
         }
     }
 
-    public Username username() {
-        return username;
-    }
-
-    public Nickname nickname() {
-        return nickname;
-    }
-
     @Override
     public boolean equals(Object object) {
         if (this == object) {
@@ -105,20 +104,41 @@ public class Users {
         return Objects.equals(username, otherUsers.username);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(username);
-    }
-
-    public Role role() {
-        return role;
-    }
-
     public boolean isGuest() {
         return Objects.equals(this.role, Role.GUEST);
     }
 
     public boolean isAdmin() {
         return Objects.equals(this.role, Role.ADMIN);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username);
+    }
+
+    public Username username() {
+        return username;
+    }
+
+    public Nickname nickname() {
+        return nickname;
+    }
+
+    public Role role() {
+        return role;
+    }
+
+    public Money purchaseAmount() {
+        return purchaseAmount;
+    }
+
+    public UserInformationDto toDto() {
+        return new UserInformationDto(
+                username.value(),
+                nickname.value(),
+                purchaseAmount.getAmount(),
+                role.name()
+        );
     }
 }

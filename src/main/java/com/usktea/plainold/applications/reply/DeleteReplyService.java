@@ -33,11 +33,15 @@ public class DeleteReplyService {
         reply.delete(user.username());
 
         if (reply.isFirstReply()) {
-            List<Reply> replies = replyRepository.findAllByParent(new Parent(reply.id()));
-
-            replies.stream().forEach(Reply::delete);
+            deleteAllChildren(reply.id());
         }
 
         return reply.id();
+    }
+
+    private void deleteAllChildren(Long id) {
+        List<Reply> replies = replyRepository.findAllByParent(new Parent(id));
+
+        replies.stream().forEach(Reply::delete);
     }
 }

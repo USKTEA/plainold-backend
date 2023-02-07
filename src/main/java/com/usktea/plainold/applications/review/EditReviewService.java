@@ -27,9 +27,7 @@ public class EditReviewService {
         Review review = reviewRepository.findById(editReviewRequest.reviewId())
                 .orElseThrow(ReviewNotFound::new);
 
-        review.checkUserIsItsReviewer(user.username());
-
-        review.modify(editReviewRequest.rate(), editReviewRequest.comment(), editReviewRequest.imageUrl());
+        review.edit(user.username(), editReviewRequest);
 
         return review;
     }

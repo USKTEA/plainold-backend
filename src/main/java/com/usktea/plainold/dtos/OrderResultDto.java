@@ -8,7 +8,7 @@ public class OrderResultDto {
     private String orderNumber;
     private Long cost;
     private ReceiverDto receiver;
-    private ShippingAddressDto shippingAddress;
+    private AddressDto shippingAddress;
 
     public OrderResultDto() {
     }
@@ -34,7 +34,7 @@ public class OrderResultDto {
         return receiver;
     }
 
-    public ShippingAddressDto getShippingAddress() {
+    public AddressDto getShippingAddress() {
         return shippingAddress;
     }
 }

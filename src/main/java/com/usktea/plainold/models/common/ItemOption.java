@@ -1,5 +1,6 @@
 package com.usktea.plainold.models.common;
 
+import com.usktea.plainold.dtos.ItemOptionDto;
 import com.usktea.plainold.dtos.OptionDto;
 import com.usktea.plainold.models.option.Size;
 
@@ -76,8 +77,7 @@ public class ItemOption {
         return Objects.hash(size, color);
     }
 
-    @Transient
-    public boolean isDefault() {
-        return size.isFree() && color.isBlank();
+    public ItemOptionDto toDto() {
+        return new ItemOptionDto(size.name(), color);
     }
 }
