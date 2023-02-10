@@ -90,7 +90,7 @@ public class CancelRequest {
             throw new CancelRequestNotBelongToUser();
         }
     }
-    
+
     private String format(LocalDateTime time) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         ZonedDateTime koreaZonedDateTime = time.atZone(ZoneId.of("Asia/Seoul"));
