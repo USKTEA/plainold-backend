@@ -1,6 +1,7 @@
 package com.usktea.plainold;
 
 import com.usktea.plainold.interceptors.AuthenticationInterceptor;
+import com.usktea.plainold.properties.KakaoProperties;
 import com.usktea.plainold.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
