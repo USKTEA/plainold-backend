@@ -55,9 +55,7 @@ public class CartController {
     }
 
     @GetMapping
-    public ItemsDto items(
-            @RequestAttribute Username username
-    ) {
+    public ItemsDto items(@RequestAttribute Username username) {
         try {
             List<Item> items = getCartService.cart(username);
 

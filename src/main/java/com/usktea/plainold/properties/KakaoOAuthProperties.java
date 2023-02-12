@@ -2,8 +2,8 @@ package com.usktea.plainold.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = "oauth.kakao")
-public class KakaoProperties {
+@ConfigurationProperties(prefix = "kakao")
+public class KakaoOAuthProperties {
     private String clientId;
     private String clientSecret;
     private String redirectUri;
@@ -14,7 +14,7 @@ public class KakaoProperties {
     private String responseType;
     private String provider;
 
-    public KakaoProperties() {
+    public KakaoOAuthProperties() {
     }
 
     public String getClientId() {

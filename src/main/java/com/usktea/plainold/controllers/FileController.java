@@ -28,7 +28,7 @@ public class FileController {
     public FileUploadResultDto upload(
             @RequestAttribute Username username,
             @RequestParam("file") MultipartFile file,
-            @RequestParam(required = true) String folder
+            @RequestParam String folder
     ) {
         try {
             String url = fileUploadService.upload(file, folder, username);

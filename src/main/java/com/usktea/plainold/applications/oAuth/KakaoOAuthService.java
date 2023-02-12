@@ -6,7 +6,7 @@ import com.usktea.plainold.dtos.TokenDto;
 import com.usktea.plainold.dtos.UserProfile;
 import com.usktea.plainold.models.user.Username;
 import com.usktea.plainold.models.user.Users;
-import com.usktea.plainold.properties.KakaoProperties;
+import com.usktea.plainold.properties.KakaoOAuthProperties;
 import com.usktea.plainold.repositories.UserRepository;
 import com.usktea.plainold.utils.OauthAttributes;
 import org.springframework.core.ParameterizedTypeReference;
@@ -21,11 +21,11 @@ import java.util.Objects;
 
 @Service
 public class KakaoOAuthService implements OAuthService {
-    private final KakaoProperties properties;
+    private final KakaoOAuthProperties properties;
     private final IssueTokenService issueTokenService;
     private final UserRepository userRepository;
 
-    public KakaoOAuthService(KakaoProperties properties,
+    public KakaoOAuthService(KakaoOAuthProperties properties,
                              IssueTokenService issueTokenService,
                              UserRepository userRepository) {
         this.properties = properties;

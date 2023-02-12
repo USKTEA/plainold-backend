@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 
+@SuppressWarnings("unchecked")
 public enum OauthAttributes {
     KAKAO("kakao") {
         @Override

@@ -15,4 +15,19 @@ public class UpdateItemInCartResultDto {
     public List<Long> getUpdated() {
         return updatedIds;
     }
+
+    public static class PaymentApproveResultDto {
+        private String approveCode;
+
+        public PaymentApproveResultDto() {
+        }
+
+        public PaymentApproveResultDto(String approveCode) {
+            this.approveCode = approveCode;
+        }
+
+        public String getApproveCode() {
+            return approveCode;
+        }
+    }
 }
