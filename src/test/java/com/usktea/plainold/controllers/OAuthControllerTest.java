@@ -2,10 +2,12 @@ package com.usktea.plainold.controllers;
 
 import com.usktea.plainold.applications.oAuth.OAuthService;
 import com.usktea.plainold.applications.oAuth.OAuthServiceFactory;
+import com.usktea.plainold.dtos.TokenDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,7 +26,7 @@ class OAuthControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @SpyBean
     private OAuthServiceFactory oAuthServiceFactory;
 
     @MockBean
@@ -59,9 +61,10 @@ class OAuthControllerTest {
         String provider = "kakao";
         String code = "CODE";
 
-        given(oAuthService.login(any())).willReturn("ACCESSTOKEN");
-        given(oAuthServiceFactory.getOAuthService(any()))
-                .willReturn(oAuthService);
+        TokenDto tokenDto = TokenDto.fake();
+
+        given(oAuthServiceFactory.getOAuthService(any())).willReturn(oAuthService);
+        given(oAuthService.login(any())).willReturn(tokenDto);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/oauth/session")
                         .contentType(MediaType.APPLICATION_JSON)

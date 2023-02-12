@@ -7,6 +7,7 @@ public class OrderItemDto {
     private String name;
     private String thumbnailUrl;
     private Long shippingFee;
+    private Long freeShippingAmount;
     private Long quantity;
     private Long totalPrice;
     private OptionDto option;
@@ -14,14 +15,15 @@ public class OrderItemDto {
     public OrderItemDto() {
     }
 
-    public OrderItemDto(long id,
-                        long productId,
-                        long price,
+    public OrderItemDto(Long id,
+                        Long productId,
+                        Long price,
                         String name,
                         String thumbnailUrl,
-                        long shippingFee,
-                        long quantity,
-                        long totalPrice,
+                        Long shippingFee,
+                        Long freeShippingAmount,
+                        Long quantity,
+                        Long totalPrice,
                         OptionDto option
     ) {
         this.id = id;
@@ -30,6 +32,7 @@ public class OrderItemDto {
         this.name = name;
         this.thumbnailUrl = thumbnailUrl;
         this.shippingFee = shippingFee;
+        this.freeShippingAmount = freeShippingAmount;
         this.quantity = quantity;
         this.totalPrice = totalPrice;
         this.option = option;
@@ -37,14 +40,14 @@ public class OrderItemDto {
 
     public static OrderItemDto fake() {
         return new OrderItemDto(
-                1L, 1L, 10_000L, "T-Shirt", "1", 2_500L, 1L, 12_500L,
+                1L, 1L, 10_000L, "T-Shirt", "1", 2_500L, 50_000L, 1L, 10_000L,
                 new OptionDto("XL", "Black")
         );
     }
 
     public static OrderItemDto fake(OptionDto optionDto) {
         return new OrderItemDto(
-                1L, 1L, 10_000L, "T-Shirt", "1", 2_500L, 1L, 12_500L,
+                1L, 1L, 10_000L, "T-Shirt", "1", 2_500L, 50_000L, 1L, 10_000L,
                 optionDto
         );
     }
@@ -83,5 +86,9 @@ public class OrderItemDto {
 
     public OptionDto getOption() {
         return option;
+    }
+
+    public Long getFreeShippingAmount() {
+        return freeShippingAmount;
     }
 }

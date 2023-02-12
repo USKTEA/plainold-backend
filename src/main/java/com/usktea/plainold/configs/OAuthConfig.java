@@ -1,10 +1,10 @@
-package com.usktea.plainold.config;
+package com.usktea.plainold.configs;
 
 import com.usktea.plainold.applications.oAuth.KakaoOAuthService;
 import com.usktea.plainold.applications.oAuth.OAuthService;
 import com.usktea.plainold.applications.oAuth.OAuthServiceFactory;
 import com.usktea.plainold.applications.token.IssueTokenService;
-import com.usktea.plainold.properties.KakaoProperties;
+import com.usktea.plainold.properties.KakaoOAuthProperties;
 import com.usktea.plainold.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -26,13 +26,13 @@ public class OAuthConfig {
         Map<String, OAuthService> services = new HashMap<>();
 
         services.put("kakao", new KakaoOAuthService(
-                kakaoProperties(), issueTokenService, userRepository));
+                kakaoOAuthProperties(), issueTokenService, userRepository));
 
         return new OAuthServiceFactory(services);
     }
 
     @Bean
-    public KakaoProperties kakaoProperties() {
-        return new KakaoProperties();
+    public KakaoOAuthProperties kakaoOAuthProperties() {
+        return new KakaoOAuthProperties();
     }
 }

@@ -81,9 +81,19 @@ public class Order {
         this.orderer = orderRequest.getOrderer();
         this.shippingInformation = orderRequest.getShippingInformation();
         this.payment = orderRequest.getPayment();
-        this.status = OrderStatus.PAYMENT_WAITING;
+        setStatus(payment.getMethod());
         this.shippingFee = orderRequest.getShippingFee();
         this.cost = orderRequest.getCost();
+    }
+
+    private void setStatus(PaymentMethod method) {
+        if (Objects.equals(method, PaymentMethod.CASH)) {
+            this.status = OrderStatus.PAYMENT_WAITING;
+
+            return;
+        }
+
+        this.status = OrderStatus.PREPARING;
     }
 
     public Order(OrderNumber orderNumber,
@@ -226,7 +236,11 @@ public class Order {
     }
 
     public OrderResultDto toOrderResultDto() {
-        return new OrderResultDto(orderNumber, cost, shippingInformation);
+        return new OrderResultDto(
+                orderNumber,
+                cost,
+                shippingInformation,
+                payment.getMethod());
     }
 
     private List<OrderLineDto> orderLinesToDto() {
