@@ -28,6 +28,7 @@ import com.usktea.plainold.exceptions.ProductNotFound;
 import com.usktea.plainold.exceptions.UserNotExists;
 import com.usktea.plainold.models.order.Order;
 import com.usktea.plainold.models.order.OrderNumber;
+import com.usktea.plainold.models.order.OrderStatus;
 import com.usktea.plainold.models.product.ProductId;
 import com.usktea.plainold.models.user.Username;
 import org.springframework.http.HttpStatus;
@@ -46,6 +47,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
@@ -102,10 +104,21 @@ public class OrderController {
     @GetMapping("me")
     public GetUserOrderResultDto userOrders(
             @RequestAttribute Username username,
+            @RequestParam(required = false) String status,
             HttpServletResponse response
     ) {
         try {
-            List<Order> orders = getUserOrderService.orders(username);
+            List<Order> orders = null;
+
+            if (Objects.nonNull(status)) {
+                OrderStatus orderStatus = OrderStatus.valueOf(status);
+
+                orders = getUserOrderService.orders(username, orderStatus);
+            }
+
+            if (Objects.isNull(status)) {
+                orders = getUserOrderService.orders(username);
+            }
 
             if (orders.isEmpty()) {
                 response.setStatus(204);
