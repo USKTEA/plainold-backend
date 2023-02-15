@@ -35,6 +35,10 @@ public class Image {
         return thumbnailUrl.value();
     }
 
+    public Set<ProductImageUrl> productImageUrls() {
+        return productImageUrls;
+    }
+
     @Override
     public boolean equals(Object other) {
         if (this == other) {

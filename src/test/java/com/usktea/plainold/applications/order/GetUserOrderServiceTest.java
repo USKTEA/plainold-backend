@@ -5,6 +5,7 @@ import com.usktea.plainold.exceptions.GuestIsNotAuthorized;
 import com.usktea.plainold.exceptions.UserNotExists;
 import com.usktea.plainold.models.order.Order;
 import com.usktea.plainold.models.order.OrderNumber;
+import com.usktea.plainold.models.order.OrderStatus;
 import com.usktea.plainold.models.user.Role;
 import com.usktea.plainold.models.user.Username;
 import com.usktea.plainold.models.user.Users;
@@ -12,6 +13,7 @@ import com.usktea.plainold.repositories.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
@@ -66,5 +68,20 @@ class GetUserOrderServiceTest {
         List<Order> orders = getUserOrderService.orders(username);
 
         assertThat(orders).hasSize(1);
+    }
+
+    @Test
+    void whenGetOrdersWithStatus() {
+        Username username = new Username("tjrxo1234@gmail.com");
+        OrderNumber orderNumber = new OrderNumber("tjrxo1234-11111111");
+        OrderStatus orderStatus = OrderStatus.CANCELED;
+
+        given(getUserService.find(username)).willReturn(Users.fake(username));
+        given(orderRepository.findAll(any(Specification.class), any(Sort.class)))
+                .willReturn(List.of(Order.fake(orderNumber, orderStatus)));
+
+        List<Order> orders = getUserOrderService.orders(username, orderStatus);
+
+        assertThat(orders.get(0).status()).isEqualTo(orderStatus);
     }
 }

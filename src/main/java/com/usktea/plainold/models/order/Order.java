@@ -65,7 +65,6 @@ public class Order {
     @AttributeOverride(name = "amount", column = @Column(name = "cost"))
     private Money cost;
 
-    @CreationTimestamp
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
@@ -84,6 +83,7 @@ public class Order {
         setStatus(payment.getMethod());
         this.shippingFee = orderRequest.getShippingFee();
         this.cost = orderRequest.getCost();
+        this.createdAt = LocalDateTime.now();
     }
 
     private void setStatus(PaymentMethod method) {
@@ -251,5 +251,9 @@ public class Order {
 
     public OrderNumber orderNumber() {
         return orderNumber;
+    }
+
+    public OrderStatus status() {
+        return status;
     }
 }
