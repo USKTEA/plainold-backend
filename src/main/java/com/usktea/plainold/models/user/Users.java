@@ -1,9 +1,12 @@
 package com.usktea.plainold.models.user;
 
+import com.usktea.plainold.dtos.EditUserRequest;
 import com.usktea.plainold.dtos.UserInformationDto;
 import com.usktea.plainold.dtos.UserProfile;
 import com.usktea.plainold.exceptions.LoginFailed;
+import com.usktea.plainold.exceptions.UsernameNotMatch;
 import com.usktea.plainold.models.common.Money;
+import org.apache.catalina.User;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -117,6 +120,27 @@ public class Users {
         }
     }
 
+
+    public void update(EditUserRequest editUserRequest) {
+        verifyUsername(editUserRequest.username());
+
+        this.nickname = editUserRequest.nickname();
+    }
+
+    private void verifyUsername(Username username) {
+        if (!Objects.equals(this.username, username)) {
+            throw new UsernameNotMatch();
+        }
+    }
+
+    public boolean isGuest() {
+        return Objects.equals(this.role, Role.GUEST);
+    }
+
+    public boolean isAdmin() {
+        return Objects.equals(this.role, Role.ADMIN);
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) {
@@ -130,14 +154,6 @@ public class Users {
         Users otherUsers = (Users) object;
 
         return Objects.equals(username, otherUsers.username);
-    }
-
-    public boolean isGuest() {
-        return Objects.equals(this.role, Role.GUEST);
-    }
-
-    public boolean isAdmin() {
-        return Objects.equals(this.role, Role.ADMIN);
     }
 
     @Override
@@ -168,11 +184,5 @@ public class Users {
                 purchaseAmount.getAmount(),
                 role.name()
         );
-    }
-
-    public Users update(Nickname nickname) {
-        this.nickname = nickname;
-
-        return this;
     }
 }
