@@ -1,9 +1,13 @@
 package com.usktea.plainold.controllers;
 
+import com.usktea.plainold.applications.user.CountUserService;
+import com.usktea.plainold.applications.user.CreateUserService;
 import com.usktea.plainold.applications.user.EditUserService;
 import com.usktea.plainold.applications.user.GetUserService;
+import com.usktea.plainold.dtos.CreateUserRequest;
 import com.usktea.plainold.dtos.EditUserRequest;
 import com.usktea.plainold.exceptions.UserNotExists;
+import com.usktea.plainold.exceptions.UsernameAlreadyInUse;
 import com.usktea.plainold.exceptions.UsernameNotMatch;
 import com.usktea.plainold.models.user.Username;
 import com.usktea.plainold.models.user.Users;
@@ -35,7 +39,13 @@ class UserControllerTest {
     private GetUserService getUserService;
 
     @MockBean
-    EditUserService editUserService;
+    private EditUserService editUserService;
+
+    @MockBean
+    private CountUserService countUserService;
+
+    @MockBean
+    private CreateUserService createUserService;
 
     @SpyBean
     private JwtUtil jwtUtil;
@@ -120,6 +130,101 @@ class UserControllerTest {
                         .content("{" +
                                 "\"username\": \"\", " +
                                 "\"nickname\":\"김뚜루\"" +
+                                "}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void countUserSuccess() throws Exception {
+        String username = "tjrxo1234@gmail.com";
+        Integer counts = 1;
+
+        given(countUserService.count(new Username(username))).willReturn(counts);
+
+        mockMvc.perform(MockMvcRequestBuilders.get(String.format("/users?username=%s", username)))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        containsString("\"count\"")
+                ));
+    }
+
+    @Test
+    void countUserFailed() throws Exception {
+        String username = "invalid";
+
+        mockMvc.perform(MockMvcRequestBuilders.get(String.format("/users?username=%s", username)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenCreateUserSuccess() throws Exception {
+        String nickname = "김뚜루";
+        String username = "tjrxo1234@gmail.com";
+        String password = "Password1234!";
+
+        given(createUserService.create(any(CreateUserRequest.class)))
+                .willReturn(new Username(username));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{" +
+                        "\"nickname\": \"" + nickname + "\", " +
+                        "\"username\": \"" + username + "\", " +
+                        "\"password\": \"" + password + "\"" +
+                        "}"))
+                .andExpect(status().isCreated())
+                .andExpect(content().string(
+                        containsString("\"username\"")
+                ));
+    }
+
+    @Test
+    void whenCreateUserAnyOfRequestInformationIsInvalid() throws Exception {
+        String username = "invalid";
+        String nickname = "김뚜루";
+        String password = "Password1234!";
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"nickname\": \"" + nickname + "\", " +
+                                "\"username\": \"" + username + "\", " +
+                                "\"password\": \"" + password + "\"" +
+                                "}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenCreateUserAnyOfRequestInformationIsNotExists() throws Exception {
+        String username = "";
+        String nickname = "김뚜루";
+        String password = "Password1234!";
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"nickname\": \"" + nickname + "\", " +
+                                "\"username\": \"" + username + "\", " +
+                                "\"password\": \"" + password + "\"" +
+                                "}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenUsernameAlreadyInUse() throws Exception {
+        String nickname = "김뚜루";
+        String username = "alreadyInUse@gmail.com";
+        String password = "Password1234!";
+
+        given(createUserService.create(any(CreateUserRequest.class)))
+                .willThrow(UsernameAlreadyInUse.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{" +
+                                "\"nickname\": \"" + nickname + "\", " +
+                                "\"username\": \"" + username + "\", " +
+                                "\"password\": \"" + password + "\"" +
                                 "}"))
                 .andExpect(status().isBadRequest());
     }

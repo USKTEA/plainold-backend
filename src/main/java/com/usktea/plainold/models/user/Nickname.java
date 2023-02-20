@@ -2,6 +2,7 @@ package com.usktea.plainold.models.user;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.util.List;
 import java.util.Objects;
 
 @Embeddable
@@ -11,6 +12,7 @@ public class Nickname {
 
     public Nickname() {
     }
+
 
     public Nickname(String value) {
         this.value = value;

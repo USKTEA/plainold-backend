@@ -4,6 +4,7 @@ import com.usktea.plainold.dtos.EditReviewRequest;
 import com.usktea.plainold.models.common.Comment;
 import com.usktea.plainold.models.product.ProductId;
 import com.usktea.plainold.models.user.Username;
+import com.usktea.plainold.models.user.Users;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -39,5 +40,15 @@ class ReviewTest {
         assertThat(review.comment()).isEqualTo(newComment);
         assertThat(review.rate()).isEqualTo(newRate);
         assertThat(review.imageUrl()).isEqualTo(imageUrl);
+    }
+
+    @Test
+    void checkUserAuthority() {
+        Username username = new Username("tjrxo1234@gmailc.com");
+        Users user = Users.fake(username);
+
+        Review review = Review.fake(username);
+
+        assertDoesNotThrow(() -> review.checkUserAuthority(user.username(), user.role()));
     }
 }

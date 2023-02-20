@@ -6,11 +6,15 @@ import com.usktea.plainold.exceptions.ReviewerNotMatch;
 import com.usktea.plainold.models.common.Comment;
 import com.usktea.plainold.models.order.OrderNumber;
 import com.usktea.plainold.models.product.ProductId;
+import com.usktea.plainold.models.user.Role;
 import com.usktea.plainold.models.user.Username;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
@@ -186,7 +190,11 @@ public class Review {
         this.imageUrl = editReviewRequest.imageUrl();
     }
 
-    public void checkUserIsItsReviewer(Username username) {
+    public void checkUserAuthority(Username username, Role role) {
+        if (role.isAdmin()) {
+            return;
+        }
+
         if (!Objects.equals(reviewer.getUsername(), username)) {
             throw new ReviewerNotMatch();
         }

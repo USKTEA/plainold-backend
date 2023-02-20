@@ -24,13 +24,13 @@ public class DeleteReviewService {
     public Review delete(Username username, Long id) {
         Users user = getUserService.find(username);
 
-        Review toDelete = reviewRepository.findById(id)
+        Review review = reviewRepository.findById(id)
                 .orElseThrow(ReviewNotFound::new);
 
-        toDelete.checkUserIsItsReviewer(user.username());
+        review.checkUserAuthority(user.username(), user.role());
 
-        reviewRepository.delete(toDelete);
+        reviewRepository.delete(review);
 
-        return toDelete;
+        return review;
     }
 }

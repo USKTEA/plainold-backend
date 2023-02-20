@@ -57,9 +57,9 @@ public class Users {
     public Users(Username username, Nickname nickname, Role role, UserStatus userStatus) {
         this.username = username;
         this.nickname = nickname;
-        this.purchaseAmount = new Money(0L);
         this.role = role;
         this.userStatus = userStatus;
+        this.purchaseAmount = new Money(0L);
         this.registeredAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
@@ -74,6 +74,14 @@ public class Users {
         this.role = role;
         this.userStatus = userStatus;
         this.purchaseAmount = purchaseAmount;
+    }
+
+    public Users(Username username, Nickname nickname) {
+        this.username = username;
+        this.nickname = nickname;
+        this.role = Role.MEMBER;
+        this.userStatus = UserStatus.ACTIVE;
+        this.purchaseAmount = new Money(0L);
     }
 
     public static Users fake(Username username) {
@@ -119,7 +127,6 @@ public class Users {
             throw new LoginFailed();
         }
     }
-
 
     public void update(EditUserRequest editUserRequest) {
         verifyUsername(editUserRequest.username());
