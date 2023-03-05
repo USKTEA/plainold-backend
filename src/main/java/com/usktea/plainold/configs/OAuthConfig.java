@@ -1,10 +1,12 @@
 package com.usktea.plainold.configs;
 
 import com.usktea.plainold.applications.oAuth.KakaoOAuthService;
+import com.usktea.plainold.applications.oAuth.NaverOAuthService;
 import com.usktea.plainold.applications.oAuth.OAuthService;
 import com.usktea.plainold.applications.oAuth.OAuthServiceFactory;
 import com.usktea.plainold.applications.token.IssueTokenService;
 import com.usktea.plainold.properties.KakaoOAuthProperties;
+import com.usktea.plainold.properties.NaverOAuthProperties;
 import com.usktea.plainold.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -28,11 +30,19 @@ public class OAuthConfig {
         services.put("kakao", new KakaoOAuthService(
                 kakaoOAuthProperties(), issueTokenService, userRepository));
 
+        services.put("naver", new NaverOAuthService(
+                naverOAuthProperties(), issueTokenService, userRepository));
+
         return new OAuthServiceFactory(services);
     }
 
     @Bean
     public KakaoOAuthProperties kakaoOAuthProperties() {
         return new KakaoOAuthProperties();
+    }
+
+    @Bean
+    public NaverOAuthProperties naverOAuthProperties() {
+        return new NaverOAuthProperties();
     }
 }

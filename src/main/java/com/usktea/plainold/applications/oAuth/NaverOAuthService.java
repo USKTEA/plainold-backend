@@ -1,12 +1,12 @@
 package com.usktea.plainold.applications.oAuth;
 
 import com.usktea.plainold.applications.token.IssueTokenService;
-import com.usktea.plainold.dtos.KakaoTokenResponse;
+import com.usktea.plainold.dtos.NaverTokenResponse;
 import com.usktea.plainold.dtos.TokenDto;
 import com.usktea.plainold.dtos.UserProfile;
 import com.usktea.plainold.models.user.Username;
 import com.usktea.plainold.models.user.Users;
-import com.usktea.plainold.properties.KakaoOAuthProperties;
+import com.usktea.plainold.properties.NaverOAuthProperties;
 import com.usktea.plainold.repositories.UserRepository;
 import com.usktea.plainold.utils.OauthAttributes;
 import org.springframework.core.ParameterizedTypeReference;
@@ -22,12 +22,12 @@ import java.util.Objects;
 
 @Service
 @Transactional
-public class KakaoOAuthService implements OAuthService {
-    private final KakaoOAuthProperties properties;
+public class NaverOAuthService implements OAuthService {
+    private final NaverOAuthProperties properties;
     private final IssueTokenService issueTokenService;
     private final UserRepository userRepository;
 
-    public KakaoOAuthService(KakaoOAuthProperties properties,
+    public NaverOAuthService(NaverOAuthProperties properties,
                              IssueTokenService issueTokenService,
                              UserRepository userRepository) {
         this.properties = properties;
@@ -38,14 +38,15 @@ public class KakaoOAuthService implements OAuthService {
     @Override
     public String getAuthorizationUrl() {
         return properties.getAuthorizationUri() +
-                "?client_id=" + properties.getClientId() +
-                "&redirect_uri=" + properties.getRedirectUri() +
-                "&response_type=" + properties.getResponseType();
+                "?response_type=" + properties.getResponseType() +
+                "&client_id=" + properties.getClientId() +
+                "&state=" + properties.getState() +
+                "&redirect_uri=" + properties.getRedirectUri();
     }
 
     @Override
     public TokenDto login(String code) {
-        KakaoTokenResponse tokenResponse = getToken(code);
+        NaverTokenResponse tokenResponse = getToken(code);
 
         UserProfile userProfile = getUserProfile(tokenResponse);
 
@@ -64,13 +65,13 @@ public class KakaoOAuthService implements OAuthService {
         return tokens;
     }
 
-    private UserProfile getUserProfile(KakaoTokenResponse tokenResponse) {
+    private UserProfile getUserProfile(NaverTokenResponse tokenResponse) {
         Map<String, Object> userAttributes = getUserAttributes(tokenResponse);
 
         return OauthAttributes.extract(properties.getProvider(), userAttributes);
     }
 
-    private Map<String, Object> getUserAttributes(KakaoTokenResponse tokenResponse) {
+    private Map<String, Object> getUserAttributes(NaverTokenResponse tokenResponse) {
         return WebClient.create()
                 .get()
                 .uri(properties.getUserInformationUri())
@@ -81,14 +82,14 @@ public class KakaoOAuthService implements OAuthService {
                 .block();
     }
 
-    private KakaoTokenResponse getToken(String code) {
+    private NaverTokenResponse getToken(String code) {
         return WebClient.create()
                 .post()
                 .uri(properties.getTokenUri())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .bodyValue(tokenRequest(code))
                 .retrieve()
-                .bodyToMono(KakaoTokenResponse.class)
+                .bodyToMono(NaverTokenResponse.class)
                 .block();
     }
 
@@ -97,9 +98,9 @@ public class KakaoOAuthService implements OAuthService {
 
         formData.add("grant_type", properties.getGrantType());
         formData.add("client_id", properties.getClientId());
-        formData.add("redirect_uri", properties.getRedirectUri());
-        formData.add("code", code);
         formData.add("client_secret", properties.getClientSecret());
+        formData.add("code", code);
+        formData.add("state", properties.getState());
 
         return formData;
     }
