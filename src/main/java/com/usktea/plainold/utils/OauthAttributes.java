@@ -24,6 +24,19 @@ public enum OauthAttributes {
         private Map<String, Object> getKakaoAccount(Map<String, Object> attributes) {
             return (Map<String, Object>) attributes.get("kakao_account");
         }
+    },
+    NAVER("naver") {
+        @Override
+        public UserProfile of(Map<String, Object> attributes) {
+            return UserProfile.builder()
+                    .email((String) getNaverResponse(attributes).get("email"))
+                    .nickname((String) getNaverResponse(attributes).get("nickname"))
+                    .build();
+        }
+
+        private Map<Object, Object> getNaverResponse(Map<String, Object> attributes) {
+            return (Map<Object, Object>) attributes.get("response");
+        }
     };
 
     private String providerName;
