@@ -51,7 +51,7 @@ class PaymentControllerTest {
         given(paymentServiceFactory.getmentPayService(any()))
                 .willReturn(paymentService);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/payment")
+        mockMvc.perform(MockMvcRequestBuilders.post("/payments")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
@@ -86,7 +86,7 @@ class PaymentControllerTest {
         given(paymentServiceFactory.getmentPayService(any()))
                 .willReturn(null);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/payment")
+        mockMvc.perform(MockMvcRequestBuilders.post("/payments")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
@@ -122,7 +122,7 @@ class PaymentControllerTest {
         given(paymentService.approve(any(Username.class), any(PaymentApproveRequest.class)))
                 .willReturn("1");
 
-        mockMvc.perform(MockMvcRequestBuilders.get(String.format("/payment?provider=%s&pgToken=%s&tidId=%s&partnerOrderId=%s",
+        mockMvc.perform(MockMvcRequestBuilders.get(String.format("/payments?provider=%s&pgToken=%s&tidId=%s&partnerOrderId=%s",
                                 provider, pgToken, tidId, partnerOrderId))
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
@@ -143,7 +143,7 @@ class PaymentControllerTest {
 
         given(paymentServiceFactory.getmentPayService(any())).willReturn(null);
 
-        mockMvc.perform(MockMvcRequestBuilders.get(String.format("/payment?provider=%s&pgToken=%s&tidId=%s&partnerOrderId=%s",
+        mockMvc.perform(MockMvcRequestBuilders.get(String.format("/payments?provider=%s&pgToken=%s&tidId=%s&partnerOrderId=%s",
                                 provider, pgToken, tidId, partnerOrderId))
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isBadRequest());

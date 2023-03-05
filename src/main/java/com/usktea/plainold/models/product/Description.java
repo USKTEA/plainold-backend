@@ -46,4 +46,12 @@ public class Description {
     public DescriptionDto toDto() {
         return new DescriptionDto(summary.content(), detail.content());
     }
+
+    public Summary summary() {
+        return summary;
+    }
+
+    public Detail detail() {
+        return detail;
+    }
 }

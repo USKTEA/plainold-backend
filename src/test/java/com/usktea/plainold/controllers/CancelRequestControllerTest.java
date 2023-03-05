@@ -52,7 +52,7 @@ class CancelRequestControllerTest {
         given(createCancelRequestService.create(
                 any(Username.class), any(CreateCancelRequestInput.class))).willReturn(1L);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/cancelRequest")
+        mockMvc.perform(MockMvcRequestBuilders.post("/cancelRequests")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
@@ -74,7 +74,7 @@ class CancelRequestControllerTest {
         given(createCancelRequestService.create(
                 any(Username.class), any(CreateCancelRequestInput.class))).willThrow(UserNotExists.class);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/cancelRequest")
+        mockMvc.perform(MockMvcRequestBuilders.post("/cancelRequests")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
@@ -93,7 +93,7 @@ class CancelRequestControllerTest {
         given(createCancelRequestService.create(
                 any(Username.class), any(CreateCancelRequestInput.class))).willThrow(OrderNotFound.class);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/cancelRequest")
+        mockMvc.perform(MockMvcRequestBuilders.post("/cancelRequests")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
@@ -112,7 +112,7 @@ class CancelRequestControllerTest {
         given(createCancelRequestService.create(
                 any(Username.class), any(CreateCancelRequestInput.class))).willThrow(OrderNotBelongToUser.class);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/cancelRequest")
+        mockMvc.perform(MockMvcRequestBuilders.post("/cancelRequests")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{" +
@@ -132,7 +132,7 @@ class CancelRequestControllerTest {
         given(getCancelRequestService.getCancelRequest(
                 any(Username.class), any(OrderNumber.class))).willThrow(UserNotExists.class);
 
-        mockMvc.perform(MockMvcRequestBuilders.get(String.format("/cancelRequest/%s", orderNumber.value()))
+        mockMvc.perform(MockMvcRequestBuilders.get(String.format("/cancelRequests/%s", orderNumber.value()))
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isBadRequest());
     }
@@ -147,7 +147,7 @@ class CancelRequestControllerTest {
         given(getCancelRequestService.getCancelRequest(
                 any(Username.class), any(OrderNumber.class))).willThrow(CancelRequestNotFound.class);
 
-        mockMvc.perform(MockMvcRequestBuilders.get(String.format("/cancelRequest/%s", orderNumber.value()))
+        mockMvc.perform(MockMvcRequestBuilders.get(String.format("/cancelRequests/%s", orderNumber.value()))
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isBadRequest());
     }
@@ -162,7 +162,7 @@ class CancelRequestControllerTest {
         given(getCancelRequestService.getCancelRequest(
                 any(Username.class), any(OrderNumber.class))).willThrow(CancelRequestNotBelongToUser.class);
 
-        mockMvc.perform(MockMvcRequestBuilders.get(String.format("/cancelRequest/%s", orderNumber.value()))
+        mockMvc.perform(MockMvcRequestBuilders.get(String.format("/cancelRequests/%s", orderNumber.value()))
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isUnauthorized());
     }
@@ -177,7 +177,7 @@ class CancelRequestControllerTest {
         given(getCancelRequestService.getCancelRequest(
                 any(Username.class), any(OrderNumber.class))).willReturn(CancelRequest.fake(username));
 
-        mockMvc.perform(MockMvcRequestBuilders.get(String.format("/cancelRequest/%s", orderNumber.value()))
+        mockMvc.perform(MockMvcRequestBuilders.get(String.format("/cancelRequests/%s", orderNumber.value()))
                 .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andExpect(content().string(

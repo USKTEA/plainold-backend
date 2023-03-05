@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("cancelRequest")
+@RequestMapping("cancelRequests")
 public class CancelRequestController {
     private final CreateCancelRequestService createCancelRequestService;
     private final GetCancelRequestService getCancelRequestService;

@@ -192,4 +192,8 @@ public class Users {
                 role.name()
         );
     }
+
+    public void addPurchaseAmount(Money money) {
+        this.purchaseAmount = this.purchaseAmount.add(money);
+    }
 }
