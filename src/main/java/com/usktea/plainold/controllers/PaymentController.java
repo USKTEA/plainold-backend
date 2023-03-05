@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Objects;
 
 @RestController
-@RequestMapping("payment")
+@RequestMapping("payments")
 public class PaymentController {
     private final PaymentServiceFactory paymentServiceFactory;
 

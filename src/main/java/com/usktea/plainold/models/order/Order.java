@@ -92,7 +92,7 @@ public class Order {
 
             return;
         }
-
+  
         this.status = OrderStatus.PREPARING;
     }
 
@@ -203,6 +203,10 @@ public class Order {
         }
 
         return true;
+    }
+
+    public void markDeliveryComplete() {
+        this.status = OrderStatus.DELIVERY_COMPLETED;
     }
 
     private String format(LocalDateTime createdAt) {

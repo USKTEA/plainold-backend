@@ -94,7 +94,7 @@ public class Review {
                 Reviewer.fake("김뚜루"),
                 new Rate(5),
                 new Comment("좋은 상품입니다"),
-                new ImageUrl("1"),
+                new ImageUrl("https://plainold.s3.ap-northeast-2.amazonaws.com/review-image/4d0440b4-8573-4e2b-89aa-5d9210ce9300.png"),
                 LocalDateTime.now()
         );
     }

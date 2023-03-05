@@ -25,6 +25,7 @@ public class CancelRequest {
     @Embedded
     private Username username;
 
+    @Embedded
     private OrderNumber orderNumber;
 
     @Embedded

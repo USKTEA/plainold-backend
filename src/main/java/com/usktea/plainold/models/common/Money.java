@@ -14,6 +14,10 @@ public class Money {
         this.amount = amount;
     }
 
+    public Money add(Money operand) {
+        return new Money(this.amount + operand.amount);
+    }
+
     @Override
     public boolean equals(Object other) {
         if (this == other) {

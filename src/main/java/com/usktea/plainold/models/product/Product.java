@@ -57,7 +57,11 @@ public class Product {
     public Product() {
     }
 
-    public Product(ProductId id, ProductName productName, Money price, CategoryId categoryId, Image image) {
+    public Product(ProductId id,
+                   ProductName productName,
+                   Money price,
+                   CategoryId categoryId,
+                   Image image) {
         this.id = id;
         this.productName = productName;
         setPrice(price);
