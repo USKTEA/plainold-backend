@@ -45,7 +45,7 @@ public class GetOrderCanWriteReviewService {
         Users user = getUserService.find(username);
         Product product = getProductService.find(productId);
 
-        List<Order> orders = getOrders(user.username());
+        List<Order> orders = getOrders(user.username(), productId);
         List<Review> reviews = getReviews(orders, product.id());
 
         checkHasOrders(orders);
@@ -89,9 +89,10 @@ public class GetOrderCanWriteReviewService {
         return reviewRepository.findAll(specification);
     }
 
-    private List<Order> getOrders(Username username) {
-        Specification<Order> specification = Specification.where(
-                OrderSpecification.equal(username, OrderStatus.DELIVERY_COMPLETED));
+    private List<Order> getOrders(Username username, ProductId productId) {
+        Specification<Order> specification = Specification
+                .where(OrderSpecification.equal(username, OrderStatus.DELIVERY_COMPLETED))
+                .and(OrderSpecification.equal(productId));
 
         return orderRepository.findAll(specification);
     }

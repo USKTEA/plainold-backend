@@ -2,6 +2,7 @@ package com.usktea.plainold.specifications;
 
 import com.usktea.plainold.models.order.Order;
 import com.usktea.plainold.models.order.OrderStatus;
+import com.usktea.plainold.models.product.ProductId;
 import com.usktea.plainold.models.user.Username;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -22,5 +23,10 @@ public class OrderSpecification {
 
             return criteriaBuilder.and(predicates.toArray((new Predicate[predicates.size()])));
         };
+    }
+
+    public static Specification<Order> equal(ProductId productId) {
+        return ((root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.join("orderLines").get("productId"), productId));
     }
 }
