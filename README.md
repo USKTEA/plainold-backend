@@ -1,14 +1,19 @@
 # PlainOld-backend
 ![image](https://plainold.s3.ap-northeast-2.amazonaws.com/review-image/b03af66e-4ff0-4d86-976a-1c4cdbf7a0b2.png)
 
+## 🏠배포 주소
+URL: https://usktea.github.io/plainold-frontend/ <br/>
+체험용 계정: test@gmail.com <br/>
+체험용 계정 비밀번호: Password1234! <br/>
+
 ## 📆 작업 기간
 - 2022.12 ~ 2023.2
 
 ## 프로젝트 상세 정보
-[🔗 API 설계](https://drive.google.com/file/d/1dqok7HYZSmAxAO4q1c3neL980bMYai0W/view?usp=share_link)
-[🔗 URL 및 화면](https://drive.google.com/file/d/1PMEsyVCTnAZ62xpN39HgT0po6SAQlX4S/view?usp=share_link)
-[🔗 사용자 스토리](https://drive.google.com/file/d/1AL7ivM5X_Yy3FyZzGP5aU8G_OYJ4-hOg/view?usp=share_link)
-[🔗 작업 기록](https://drive.google.com/file/d/16y1TMRcwx3wk-e5pn9C_rHSIgnv8uMm8/view?usp=share_link)
+[🔗 API 설계](https://drive.google.com/file/d/1dqok7HYZSmAxAO4q1c3neL980bMYai0W/view?usp=share_link)</br>
+[🔗 URL 및 화면](https://drive.google.com/file/d/1PMEsyVCTnAZ62xpN39HgT0po6SAQlX4S/view?usp=share_link)</br>
+[🔗 사용자 스토리](https://drive.google.com/file/d/1AL7ivM5X_Yy3FyZzGP5aU8G_OYJ4-hOg/view?usp=share_link)</br>
+[🔗 작업 기록](https://drive.google.com/file/d/16y1TMRcwx3wk-e5pn9C_rHSIgnv8uMm8/view?usp=share_link)</br>
 
 ## ERD 
 ![image](https://plainold.s3.ap-northeast-2.amazonaws.com/review-image/557b6156-231b-4cc7-a797-3faa26215fa1.png)
